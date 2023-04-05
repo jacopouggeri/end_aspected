@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "end_aspected:item/aspect_of_the_end"
+  }
+}
