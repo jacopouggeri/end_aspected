@@ -1,0 +1,4 @@
+1.1 Changelog
+====
+- 1.1 Fixed teleport issues. Added crafting recipes and textures (ender ring texture missing).
+- 1.0 Added items and main functionality.

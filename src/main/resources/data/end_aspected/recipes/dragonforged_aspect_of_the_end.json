@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "end_aspected:netherforged_aspect_of_the_end"
+  },
+  "addition": {
+    "item": "minecraft:dragon_breath"
+  },
+  "result": {
+    "item": "end_aspected:dragonforged_aspect_of_the_end"
+  }
+}

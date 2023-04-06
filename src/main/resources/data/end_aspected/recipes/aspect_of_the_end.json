@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "minecraft:diamond_sword"
+  },
+  "addition": {
+    "item": "end_aspected:ender_gem"
+  },
+  "result": {
+    "item": "end_aspected:aspect_of_the_end"
+  }
+}

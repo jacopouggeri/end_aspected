@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:eye_of_ender"
+    }
+  ],
+  "result": {
+    "item": "end_aspected:ender_gem"
+  }
+}

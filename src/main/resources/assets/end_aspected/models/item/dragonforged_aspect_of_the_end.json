@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "end_aspected:item/dragonforged_aspect_of_the_end"
+  }
+}
