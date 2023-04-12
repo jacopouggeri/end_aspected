@@ -38,7 +38,7 @@ public class ModItems {
                 () -> new AspectOfTheEndItem(ItemTier.NETHERITE,
                         4,
                         -2.4F,
-                        new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(MYTHICAL),
+                        new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC),
                         (long) 1.5
                 ));
     
@@ -47,8 +47,10 @@ public class ModItems {
             );
 
     public static final RegistryObject<Item> SHULKER_WAND = ITEMS.register("shulker_wand",
-            () -> new ShulkerWandItem(
-                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            () -> new ShulkerWandItem(ItemTier.GOLD,
+                    3,
+                    -1F,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(MYTHICAL)
             ));
 
     public static final RegistryObject<Item> ASPECTED_ARROW = ITEMS.register("aspected_arrow",

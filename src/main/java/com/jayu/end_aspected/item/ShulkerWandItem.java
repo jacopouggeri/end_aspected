@@ -5,8 +5,9 @@ import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ShulkerBulletEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -15,12 +16,14 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ShulkerWandItem extends Item {
+public class ShulkerWandItem extends SwordItem {
+
+    private int maxDurability;
 
     private final Long2LongMap cooldowns = new Long2LongOpenHashMap();
 
-    public ShulkerWandItem(Properties builder) {
-        super(builder);
+    public ShulkerWandItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
+        super(tier, attackDamageIn, attackSpeedIn, builder);
     }
 
     @Override
@@ -49,9 +52,13 @@ public class ShulkerWandItem extends Item {
             shulkerBullet.setNoGravity(true);
             world.addEntity(shulkerBullet);
 
+            ItemStack stack = player.getHeldItem(hand);
+            stack.damageItem(1, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+
             cooldowns.put(playerId, currentTime);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }
+
 
 }

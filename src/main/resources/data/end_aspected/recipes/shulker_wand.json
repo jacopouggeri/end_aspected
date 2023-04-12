@@ -6,14 +6,14 @@
     "S  "
   ],
   "key": {
-    "s": {
-      "item": "minecraft:shulker_shell"
+    "#": {
+      "item": "end_aspected:aspect_shard"
     },
     "/": {
       "item": "minecraft:end_rod"
     },
-    "#": {
-      "item": "end_aspected:aspect_shard"
+    "S": {
+      "item": "minecraft:shulker_shell"
     }
   },
   "result": {
