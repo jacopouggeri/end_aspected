@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BNB",
+    "B#B"
+  ],
+  "key": {
+    "#": {
+      "item": "end_aspected:aspect_shard"
+    },
+    "B": {
+      "item": "minecraft:chiseled_stone_bricks"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "result": {
+    "item": "end_aspected:ender_trap",
+    "count": 1
+  }
+}

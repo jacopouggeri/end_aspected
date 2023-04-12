@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "end_aspected:item/ender_gem"
+    "layer0": "end_aspected:item/aspect_shard"
   }
 }

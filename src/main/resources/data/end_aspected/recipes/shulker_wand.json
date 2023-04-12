@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  #",
+    " / ",
+    "S  "
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:shulker_shell"
+    },
+    "/": {
+      "item": "minecraft:end_rod"
+    },
+    "#": {
+      "item": "end_aspected:aspect_shard"
+    }
+  },
+  "result": {
+    "item": "end_aspected:shulker_wand",
+    "count": 1
+  }
+}

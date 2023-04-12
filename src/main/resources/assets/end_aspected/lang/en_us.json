@@ -1,7 +1,12 @@
 {
   "item.end_aspected.aspect_of_the_end": "Aspect of the End",
-  "msg.aspect_of_the_end.cooldown": "Too fast!",
   "item.end_aspected.netherforged_aspect_of_the_end": "Netherforged Aspect of the End",
   "item.end_aspected.dragonforged_aspect_of_the_end": "Dragonforged Aspect of the End",
-  "item.end_aspected.ender_gem": "Ender Gem"
+  "item.end_aspected.aspect_shard": "Aspect Shard",
+  "item.end_aspected.shulker_wand": "Shulker Wand",
+  "item.end_aspected.aspected_arrow": "Aspected Arrow",
+  "itemGroup.mainGroupTab": "End Aspected",
+  "block.end_aspected.ender_trap": "Ender Trap",
+  "msg.aspect_of_the_end.cooldown": "Too fast!",
+  "msg.aspect_of_the_end.trapped" : "You got trapped!"
 }

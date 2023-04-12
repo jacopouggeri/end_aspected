@@ -2,8 +2,8 @@ package com.jayu.end_aspected.item;
 
 import net.minecraft.item.Item;
 
-public class EnderGemItem extends Item {
-    public EnderGemItem(Properties builder) {
+public class AspectShardItem extends Item {
+    public AspectShardItem(Properties builder) {
         super(builder);
     }
 }

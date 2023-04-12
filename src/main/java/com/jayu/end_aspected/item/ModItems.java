@@ -1,7 +1,6 @@
 package com.jayu.end_aspected.item;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.text.TextFormatting;
@@ -21,9 +20,7 @@ public class ModItems {
             () -> new AspectOfTheEndItem(ItemTier.DIAMOND,
                     3,
                     -2.4F,
-                    new Item.Properties().group(ItemGroup.COMBAT).rarity(Rarity.EPIC),
-                    8,
-                    6,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC),
                     (long) 3.0
             ));
 
@@ -32,27 +29,31 @@ public class ModItems {
             () -> new AspectOfTheEndItem(ItemTier.NETHERITE,
                     3,
                     -2.4F,
-                    new Item.Properties().group(ItemGroup.COMBAT).rarity(LEGENDARY),
-                    8,
-                    12,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(LEGENDARY),
                     (long) 1.5
             ));
 
     public static final Rarity MYTHICAL = Rarity.create("Mythical", TextFormatting.DARK_PURPLE);
-
     public static final RegistryObject<Item> DRAGONFORGED_ASPECT_OF_THE_END = ITEMS.register("dragonforged_aspect_of_the_end",
-            () -> new AspectOfTheEndItem(ItemTier.NETHERITE,
-                    4,
-                    -2.4F,
-                    new Item.Properties().group(ItemGroup.COMBAT).rarity(MYTHICAL),
-                    8,
-                    20,
-                    (long) 1.5
-            ));
+                () -> new AspectOfTheEndItem(ItemTier.NETHERITE,
+                        4,
+                        -2.4F,
+                        new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(MYTHICAL),
+                        (long) 1.5
+                ));
     
-    public static final RegistryObject<Item> ENDER_EYE_GEM = ITEMS.register("ender_gem",
-            () -> new EnderGemItem(new Item.Properties().group(ItemGroup.MISC))
+    public static final RegistryObject<Item> ASPECT_SHARD = ITEMS.register("aspect_shard",
+            () -> new AspectShardItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP))
             );
+
+    public static final RegistryObject<Item> SHULKER_WAND = ITEMS.register("shulker_wand",
+            () -> new ShulkerWandItem(
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> ASPECTED_ARROW = ITEMS.register("aspected_arrow",
+            () -> new AspectedArrowItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(64)));
+
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

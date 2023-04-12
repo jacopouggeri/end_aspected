@@ -29,13 +29,13 @@ displayName="End Aspected" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="end_aspected.png" #optional
 # A text field displayed in the mod UI
-credits="Inspired to Hypixel Skyblock's aspect of the end and the Gems and Jewls mod." #optional
+credits="" #optional
 # A text field displayed in the mod UI
 authors="jayu" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Introduces the item Aspect of the End, Netherforged Aspect of the End and Ender Ring
-(needed to craft the Aspect of the End in a smithing table). The teleport distance and cooldown of each sword are configureable.
+Introduces the items Aspect of the End (Inspired to Hypixel Skyblock's Aspect of the End), with Netherforged and Dragonforged upgrades, Aspect Shard crafting ingredient, Ender Trap block and Shulker Wand.
+Cooldowns and ranges are configurable.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.end_aspected]] #optional

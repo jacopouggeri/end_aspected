@@ -4,7 +4,7 @@
     "item": "minecraft:diamond_sword"
   },
   "addition": {
-    "item": "end_aspected:ender_gem"
+    "item": "end_aspected:aspect_shard"
   },
   "result": {
     "item": "end_aspected:aspect_of_the_end"
