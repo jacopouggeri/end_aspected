@@ -18,8 +18,6 @@ import javax.annotation.Nonnull;
 
 public class ShulkerWandItem extends SwordItem {
 
-    private int maxDurability;
-
     private final Long2LongMap cooldowns = new Long2LongOpenHashMap();
 
     public ShulkerWandItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
@@ -58,6 +56,12 @@ public class ShulkerWandItem extends SwordItem {
             cooldowns.put(playerId, currentTime);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+    }
+
+    @Override
+    public boolean getIsRepairable(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
+        // The repair item must be an iron ingot
+        return repair.getItem() instanceof AspectShardItem;
     }
 
 
