@@ -64,7 +64,6 @@ public class ShulkerWandItem extends SwordItem {
 
     @Override
     public boolean getIsRepairable(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        // The repair item must be an iron ingot
         return repair.getItem() instanceof AspectShardItem;
     }
 

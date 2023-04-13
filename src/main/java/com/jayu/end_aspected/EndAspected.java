@@ -4,6 +4,7 @@ import com.jayu.end_aspected.block.EnderTrapBlock;
 import com.jayu.end_aspected.block.ModBlocks;
 import com.jayu.end_aspected.config.ModConfig;
 import com.jayu.end_aspected.item.ModItems;
+import com.jayu.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
@@ -36,10 +37,10 @@ public class EndAspected
 
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
-        // Register Items
-        ModItems.register(eventBus);
         // Register Blocks
         ModBlocks.register(eventBus);
+        // Register Items
+        ModItems.register(eventBus);
 
         // Register the setup method for modloading
         eventBus.addListener(this::setup);
@@ -55,9 +56,10 @@ public class EndAspected
 
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        LOGGER.info("HELLO FROM PREINIT");
+    private void setup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            ModTrades.fillTradeData();
+        });
 
     }
 
