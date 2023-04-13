@@ -12,6 +12,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -19,22 +20,30 @@ import javax.annotation.Nonnull;
 public class ShulkerWandItem extends SwordItem {
 
     private final Long2LongMap cooldowns = new Long2LongOpenHashMap();
+    private final boolean hasCooldown;
 
     public ShulkerWandItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
+        this.hasCooldown = ModConfig.enableShulkerWandCooldown.get();
     }
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isRemote) {
-            long cooldownTime = 20 * ModConfig.shulkerWandCooldown.get(); // cooldown in ticks;
+            if (hasCooldown) {
+                long cooldownTime = 20 * ModConfig.shulkerWandCooldown.get(); // cooldown in ticks;
 
-            long currentTime = world.getGameTime();
-            long playerId = player.getUniqueID().getLeastSignificantBits();
-            long lastTime = cooldowns.getOrDefault(playerId, - cooldownTime);
+                long currentTime = world.getGameTime();
+                long playerId = player.getUniqueID().getLeastSignificantBits();
+                long lastTime = cooldowns.getOrDefault(playerId, -cooldownTime);
 
-            if (currentTime < lastTime + cooldownTime) {
-                return new ActionResult<>(ActionResultType.FAIL, player.getHeldItem(hand));
+                if (currentTime < lastTime + cooldownTime) {
+                    ItemStack stack = player.getHeldItem(hand);
+                    stack.damageItem(ModConfig.shulkerWandLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                    player.sendStatusMessage(new TranslationTextComponent("msg.shulker_wand.cooldown"), true);
+                }
+
+                cooldowns.put(playerId, currentTime);
             }
 
             double pX = player.getPosX();
@@ -49,11 +58,6 @@ public class ShulkerWandItem extends SwordItem {
             ShulkerBulletEntity shulkerBullet = new ShulkerBulletEntity(world, pX, pY, pZ, vX, vY, vZ);
             shulkerBullet.setNoGravity(true);
             world.addEntity(shulkerBullet);
-
-            ItemStack stack = player.getHeldItem(hand);
-            stack.damageItem(1, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-
-            cooldowns.put(playerId, currentTime);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }

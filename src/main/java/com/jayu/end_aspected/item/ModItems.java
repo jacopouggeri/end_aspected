@@ -20,8 +20,7 @@ public class ModItems {
             () -> new AspectOfTheEndItem(ItemTier.DIAMOND,
                     3,
                     -2.4F,
-                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC),
-                    (long) 3.0
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC)
             ));
 
     public static final Rarity LEGENDARY = Rarity.create("Legendary", TextFormatting.GOLD);
@@ -29,8 +28,7 @@ public class ModItems {
             () -> new AspectOfTheEndItem(ItemTier.NETHERITE,
                     3,
                     -2.4F,
-                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(LEGENDARY),
-                    (long) 1.5
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(LEGENDARY)
             ));
 
     public static final Rarity MYTHICAL = Rarity.create("Mythical", TextFormatting.DARK_PURPLE);
@@ -38,8 +36,7 @@ public class ModItems {
                 () -> new AspectOfTheEndItem(ItemTier.NETHERITE,
                         4,
                         -2.4F,
-                        new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC),
-                        (long) 1.5
+                        new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC)
                 ));
     
     public static final RegistryObject<Item> ASPECT_SHARD = ITEMS.register("aspect_shard",

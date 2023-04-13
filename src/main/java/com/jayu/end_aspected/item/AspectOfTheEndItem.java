@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
 import net.minecraft.item.SwordItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
@@ -26,17 +27,27 @@ import javax.annotation.Nonnull;
 public class AspectOfTheEndItem extends SwordItem {
 
     private long cooldownTime;
-    private long cooldownEndTime;
     private long teleportsRemaining;
-    private long cooldownDecayPerTick;
+
+    private boolean haveCooldown;
+
+    private long cooldownEndTime;
     private static final double TELEPORT_OFFSET = 0.4;
 
-    public AspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder, long cooldownTime) {
+    public AspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
-        this.cooldownTime = cooldownTime;
+        if (tier == ItemTier.DIAMOND) {
+            this.cooldownTime = ModConfig.aoteCooldown.get();
+        } else if (tier == ItemTier.NETHERITE) {
+            this.cooldownTime = ModConfig.aoteCooldown.get()/2;
+        }
         this.teleportsRemaining = ModConfig.maxTeleports.get();
         this.cooldownEndTime = 0;
-        this.cooldownDecayPerTick = ModConfig.maxTeleports.get() / (20*cooldownTime);
+        if (attackDamageIn == 3) {
+            this.haveCooldown = ModConfig.enableAoteCooldown.get();
+        } else if (attackDamageIn == 4) {
+            this.haveCooldown = false;
+        }
     }
 
     public static boolean doesPlayerOverlap(World world, Entity entity, Vector3d position) {
@@ -90,14 +101,6 @@ public class AspectOfTheEndItem extends SwordItem {
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world,@Nonnull PlayerEntity player,@Nonnull Hand hand) {
         if (!world.isRemote) {
-            // System.out.println("AOTE" + ModConfig.teleportDistance.get());
-            // Check if the cooldown has ended
-            if (cooldownEndTime > world.getGameTime()) {
-                int remainingSeconds = (int) ((cooldownEndTime - world.getGameTime()) / 20);
-                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown", remainingSeconds), true);
-                return ActionResult.resultFail(player.getHeldItem(hand));
-            }
-
             Vector3d teleportPos;
 
             teleportPos = getTeleportPosition(player, ModConfig.teleportDistance.get(), Minecraft.getInstance().getRenderPartialTicks());
@@ -124,16 +127,27 @@ public class AspectOfTheEndItem extends SwordItem {
 
             player.setPositionAndUpdate(dx, dy, dz);
 
-            // Decrement the teleports remaining
-            teleportsRemaining--;
+            if (haveCooldown) {
+
+                // Decrement the teleports remaining
+                teleportsRemaining--;
 
 
-            // Check if teleports remaining is zero and reset cooldown
-            if (teleportsRemaining <= 0) {
-                cooldownEndTime = world.getGameTime() + (cooldownTime * 20);
-                teleportsRemaining += ModConfig.maxTeleports.get();
-            } else if (teleportsRemaining < ModConfig.maxTeleports.get()) {
-                teleportsRemaining += cooldownDecayPerTick;
+                // Check if the cooldown has ended, if not reduce durability
+                if (cooldownEndTime > world.getGameTime()) {
+                    ItemStack stack = player.getHeldItem(hand);
+                    stack.damageItem(ModConfig.aoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                    player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown"), true);
+                }
+                System.out.println("Teleports remaining: " + teleportsRemaining);
+
+                // Check if teleports remaining is zero and reset cooldown
+                if (teleportsRemaining <= 0) {
+                    // Set new time of last cooldown
+                    cooldownEndTime = world.getGameTime() + cooldownTime*20;
+                    teleportsRemaining = ModConfig.maxTeleports.get();
+                }
+
             }
         }
         return ActionResult.resultSuccess(player.getHeldItem(hand));
