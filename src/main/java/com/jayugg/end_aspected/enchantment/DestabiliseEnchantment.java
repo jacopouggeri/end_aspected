@@ -35,7 +35,7 @@ public class DestabiliseEnchantment extends Enchantment {
 
     public void onEntityDamaged(@Nonnull LivingEntity user, @Nonnull Entity target, int level) {
         LivingEntity livingEntity = (LivingEntity)target;
-        int i = 20 + user.getRNG().nextInt(10 * level);
+        int i = 20 + user.getRNG().nextInt(100 * level);
         livingEntity.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 1));
     }
 
