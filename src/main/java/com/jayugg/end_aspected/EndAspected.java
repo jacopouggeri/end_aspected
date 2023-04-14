@@ -1,13 +1,13 @@
-package com.jayu.end_aspected;
+package com.jayugg.end_aspected;
 
-import com.jayu.end_aspected.block.EnderTrapBlock;
-import com.jayu.end_aspected.block.ModBlocks;
-import com.jayu.end_aspected.config.ModConfig;
-import com.jayu.end_aspected.effect.ModEffects;
-import com.jayu.end_aspected.effect.UnstablePhaseEffect;
-import com.jayu.end_aspected.enchantment.ModEnchantments;
-import com.jayu.end_aspected.item.ModItems;
-import com.jayu.end_aspected.villager.ModTrades;
+import com.jayugg.end_aspected.block.EnderTrapBlock;
+import com.jayugg.end_aspected.block.ModBlocks;
+import com.jayugg.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.effect.ModEffects;
+import com.jayugg.end_aspected.effect.UnstablePhaseEffect;
+import com.jayugg.end_aspected.enchantment.ModEnchantments;
+import com.jayugg.end_aspected.item.ModItems;
+import com.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;

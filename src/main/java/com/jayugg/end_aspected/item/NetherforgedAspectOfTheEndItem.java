@@ -1,6 +1,6 @@
-package com.jayu.end_aspected.item;
+package com.jayugg.end_aspected.item;
 
-import com.jayu.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
@@ -20,13 +20,13 @@ import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
 import javax.annotation.Nonnull;
 
-public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
+public class NetherforgedAspectOfTheEndItem extends AspectOfTheEndItem{
 
     private long cooldownEndTime;
     private int teleportsRemaining;
     private boolean firstRunFlag;
 
-    public DragonforgedAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
+    public NetherforgedAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.cooldownEndTime = 0;
         this.teleportsRemaining = ModConfig.maxTeleports.get();
@@ -46,7 +46,7 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
 
             teleportPos = getTeleportPosition(player, ModConfig.teleportDistance.get(), Minecraft.getInstance().getRenderPartialTicks());
 
-            EntityTeleportEvent.EnderEntity teleportEvent = new EntityTeleportEvent.EnderEntity (player, teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
+            EntityTeleportEvent.EnderEntity teleportEvent = new EntityTeleportEvent.EnderEntity(player, teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
             MinecraftForge.EVENT_BUS.post(teleportEvent);
 
             double dx = teleportPos.x;
@@ -55,16 +55,16 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
             BlockPos destPos = new BlockPos(dx, dy, dz);
 
             if (teleportEvent.isCanceled()) {
-                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.trapped"), true);
+                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.disrupted"), true);
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
-            if (ModConfig.enableDaoteCooldown.get() && !player.isCreative()) {
+            if (ModConfig.enableNaoteCooldown.get() && !player.isCreative()) {
                 // Check if the cooldown has ended, if not reduce durability
                 if (cooldownEndTime > world.getGameTime()) {
-                    if (ModConfig.enableDaoteLostDurability.get()) {
+                    if (ModConfig.enableNaoteLostDurability.get()) {
                         ItemStack stack = player.getHeldItem(hand);
-                        stack.damageItem(ModConfig.daoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                        stack.damageItem(ModConfig.naoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
                         player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
                     } else {
                         int remainingSeconds = (int) ((cooldownEndTime - world.getGameTime()) / 20);
@@ -76,7 +76,6 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
 
             }
 
-
             // Play the Enderman sound at the destination position
             world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
@@ -86,7 +85,7 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
             player.setPositionAndUpdate(dx, dy, dz);
             player.fallDistance = 0;
 
-            if (ModConfig.enableDaoteCooldown.get() && !player.isCreative()) {
+            if (ModConfig.enableNaoteCooldown.get() && !player.isCreative()) {
 
                 // Decrement the teleports remaining
                 teleportsRemaining--;
@@ -94,7 +93,7 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
                 // Check if teleports remaining is zero and reset cooldown
                 if (teleportsRemaining <= 0) {
                     // Set new time of last cooldown
-                    cooldownEndTime = world.getGameTime() + ModConfig.daoteCooldown.get()*20;
+                    cooldownEndTime = world.getGameTime() + ModConfig.naoteCooldown.get() * 20;
                     teleportsRemaining = ModConfig.maxTeleports.get();
                 }
 

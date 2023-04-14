@@ -1,4 +1,4 @@
-package com.jayu.end_aspected.effect;
+package com.jayugg.end_aspected.effect;
 
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
@@ -7,7 +7,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.jayu.end_aspected.EndAspected.MOD_ID;
+import static com.jayugg.end_aspected.EndAspected.MOD_ID;
 
 public class ModEffects{
     public static final DeferredRegister<Effect> EFFECTS =

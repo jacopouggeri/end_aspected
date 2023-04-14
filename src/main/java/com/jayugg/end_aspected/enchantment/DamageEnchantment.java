@@ -1,4 +1,4 @@
-package com.jayu.end_aspected.enchantment;
+package com.jayugg.end_aspected.enchantment;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;

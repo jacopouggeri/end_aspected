@@ -1,6 +1,6 @@
-package com.jayu.end_aspected.item;
+package com.jayugg.end_aspected.item;
 
-import com.jayu.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -113,7 +113,7 @@ public class AspectOfTheEndItem extends SwordItem {
             BlockPos destPos = new BlockPos(dx, dy, dz);
 
             if (teleportEvent.isCanceled()) {
-                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.trapped"), true);
+                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.disrupted"), true);
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 

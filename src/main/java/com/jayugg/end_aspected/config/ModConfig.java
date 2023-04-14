@@ -1,4 +1,4 @@
-package com.jayu.end_aspected.config;
+package com.jayugg.end_aspected.config;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public final class ModConfig {

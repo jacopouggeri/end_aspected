@@ -1,7 +1,8 @@
-package com.jayu.end_aspected.villager;
+package com.jayugg.end_aspected.villager;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.jayugg.end_aspected.item.ModItems;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
@@ -17,17 +18,15 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static com.jayu.end_aspected.item.ModItems.*;
-
 public class ModTrades {
     public static void fillTradeData(){
-        MultiItemsForEmeraldsTrade shardOffer1 = new MultiItemsForEmeraldsTrade(ImmutableList.of(ASPECT_SHARD.get()), ImmutableList.of(1, 1, 1), ImmutableList.of(20, 22, 25), 2, 10);
-        MultiItemsForEmeraldsTrade shardOffer2 = new MultiItemsForEmeraldsTrade(ImmutableList.of(ASPECT_SHARD.get()), ImmutableList.of(1, 2, 4), ImmutableList.of(15, 25, 30), 4, 20);
-        MultiItemsForEmeraldsTrade swordOffer = new MultiItemsForEmeraldsTrade(ImmutableList.of(ASPECT_OF_THE_END.get(), ASPECT_OF_THE_END.get(), SHULKER_WAND.get()), ImmutableList.of(1, 1, 1), ImmutableList.of(75, 90, 150), 1, 50);
+        MultiItemsForEmeraldsTrade shardOffer1 = new MultiItemsForEmeraldsTrade(ImmutableList.of(ModItems.ASPECT_SHARD.get()), ImmutableList.of(1, 1, 1), ImmutableList.of(20, 22, 25), 2, 10);
+        MultiItemsForEmeraldsTrade shardOffer2 = new MultiItemsForEmeraldsTrade(ImmutableList.of(ModItems.ASPECT_SHARD.get()), ImmutableList.of(1, 2, 4), ImmutableList.of(15, 25, 30), 4, 20);
+        MultiItemsForEmeraldsTrade swordOffer = new MultiItemsForEmeraldsTrade(ImmutableList.of(ModItems.ASPECT_OF_THE_END.get(), ModItems.ASPECT_OF_THE_END.get(), ModItems.SHULKER_WAND.get()), ImmutableList.of(1, 1, 1), ImmutableList.of(75, 90, 150), 1, 50);
 
-        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 5, 3, 10), new VillagerTrades.EmeraldForItemsTrade(Items.COAL, 15, 16, 2), new VillagerTrades.ItemsForEmeraldsTrade(new ItemStack(Items.IRON_AXE), 3, 1, 12, 1, 0.2F), new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.IRON_SWORD, 2, 3, 1)};
-        VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{shardOffer1, new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 10, 10, 10), new VillagerTrades.EmeraldForItemsTrade(Items.IRON_INGOT, 4, 12, 10), new VillagerTrades.ItemsForEmeraldsTrade(new ItemStack(Items.BELL), 36, 1, 12, 5, 0.2F)};
-        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 10, 10, 10), swordOffer, new VillagerTrades.EmeraldForItemsTrade(Items.FLINT, 24, 12, 20)};
+        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ModItems.ASPECT_SHARD.get(), 5, 3, 10), new VillagerTrades.EmeraldForItemsTrade(Items.COAL, 15, 16, 2), new VillagerTrades.ItemsForEmeraldsTrade(new ItemStack(Items.IRON_AXE), 3, 1, 12, 1, 0.2F), new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.IRON_SWORD, 2, 3, 1)};
+        VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{shardOffer1, new VillagerTrades.EmeraldForItemsTrade(ModItems.ASPECT_SHARD.get(), 10, 10, 10), new VillagerTrades.EmeraldForItemsTrade(Items.IRON_INGOT, 4, 12, 10), new VillagerTrades.ItemsForEmeraldsTrade(new ItemStack(Items.BELL), 36, 1, 12, 5, 0.2F)};
+        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ModItems.ASPECT_SHARD.get(), 10, 10, 10), swordOffer, new VillagerTrades.EmeraldForItemsTrade(Items.FLINT, 24, 12, 20)};
         VillagerTrades.ITrade[] level4 = new VillagerTrades.ITrade[]{shardOffer2, new VillagerTrades.EmeraldForItemsTrade(Items.DIAMOND, 1, 12, 30), new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.DIAMOND_AXE, 12, 3, 15, 0.2F)};
         VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{swordOffer, new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.DIAMOND_SWORD, 8, 3, 30, 0.2F)};
 

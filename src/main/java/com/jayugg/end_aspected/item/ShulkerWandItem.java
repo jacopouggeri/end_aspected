@@ -1,6 +1,6 @@
-package com.jayu.end_aspected.item;
+package com.jayugg.end_aspected.item;
 
-import com.jayu.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.config.ModConfig;
 import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;

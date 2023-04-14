@@ -1,4 +1,4 @@
-package com.jayu.end_aspected.item;
+package com.jayugg.end_aspected.item;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.jayu.end_aspected.EndAspected.MOD_ID;
+import static com.jayugg.end_aspected.EndAspected.MOD_ID;
 
 public class ModItems {
 

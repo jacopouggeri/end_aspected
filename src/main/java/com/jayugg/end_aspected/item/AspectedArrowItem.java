@@ -1,4 +1,4 @@
-package com.jayu.end_aspected.item;
+package com.jayugg.end_aspected.item;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ArrowEntity;

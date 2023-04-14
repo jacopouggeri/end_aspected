@@ -1,6 +1,6 @@
-package com.jayu.end_aspected.effect;
+package com.jayugg.end_aspected.effect;
 
-import com.jayu.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;

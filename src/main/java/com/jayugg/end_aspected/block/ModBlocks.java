@@ -1,8 +1,8 @@
-package com.jayu.end_aspected.block;
+package com.jayugg.end_aspected.block;
 
-import com.jayu.end_aspected.EndAspected;
-import com.jayu.end_aspected.item.ModItemGroup;
-import com.jayu.end_aspected.item.ModItems;
+import com.jayugg.end_aspected.EndAspected;
+import com.jayugg.end_aspected.item.ModItemGroup;
+import com.jayugg.end_aspected.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

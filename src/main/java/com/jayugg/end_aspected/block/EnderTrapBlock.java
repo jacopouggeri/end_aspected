@@ -1,6 +1,6 @@
-package com.jayu.end_aspected.block;
+package com.jayugg.end_aspected.block;
 
-import com.jayu.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
