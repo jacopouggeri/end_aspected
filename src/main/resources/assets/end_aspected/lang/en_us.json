@@ -1,4 +1,6 @@
 {
+  "enchantment.end_aspected.ender_slayer": "Ender Slayer",
+  "enchantment.end_aspected.ender_slayer.desc": "Increase damage against End mobs",
   "item.end_aspected.aspect_of_the_end": "Aspect of the End",
   "item.end_aspected.netherforged_aspect_of_the_end": "Netherforged Aspect of the End",
   "item.end_aspected.dragonforged_aspect_of_the_end": "Dragonforged Aspect of the End",

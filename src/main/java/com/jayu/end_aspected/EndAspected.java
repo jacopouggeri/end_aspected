@@ -3,6 +3,7 @@ package com.jayu.end_aspected;
 import com.jayu.end_aspected.block.EnderTrapBlock;
 import com.jayu.end_aspected.block.ModBlocks;
 import com.jayu.end_aspected.config.ModConfig;
+import com.jayu.end_aspected.enchantment.ModEnchantments;
 import com.jayu.end_aspected.item.ModItems;
 import com.jayu.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
@@ -37,6 +38,8 @@ public class EndAspected
 
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
+        // Register Enchantments
+        ModEnchantments.register(eventBus);
         // Register Blocks
         ModBlocks.register(eventBus);
         // Register Items
