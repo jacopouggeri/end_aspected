@@ -177,7 +177,7 @@ public class AspectOfTheEndItem extends SwordItem {
 
     public int calculateUnstableDuration(long endTime, World world) {
         float cooldown = cooldownLeft(endTime, world);
-        return (int) cooldown/2;
+        return (int) (cooldown * 20 * ModConfig.unstablePhaseCooldownMultiplier.get());
     }
 
     public long cooldownLeft(long endTime, World world) {
