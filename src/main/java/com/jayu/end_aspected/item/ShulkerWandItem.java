@@ -20,21 +20,15 @@ import javax.annotation.Nonnull;
 public class ShulkerWandItem extends SwordItem {
 
     private final Long2LongMap cooldowns = new Long2LongOpenHashMap();
-    private final boolean hasCooldown;
-    private final boolean enableLostDurability;
-    private final int lostDurability;
 
     public ShulkerWandItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
-        this.hasCooldown = ModConfig.enableShulkerWandCooldown.get();
-        this.enableLostDurability = ModConfig.enableShulkerWandLostDurability.get();
-        this.lostDurability = ModConfig.shulkerWandLostDurability.get();
     }
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isRemote) {
-            if (hasCooldown && !player.isCreative()) {
+            if (ModConfig.enableShulkerWandCooldown.get() && !player.isCreative()) {
                 long cooldownTime = 20 * ModConfig.shulkerWandCooldown.get(); // cooldown in ticks;
 
                 long currentTime = world.getGameTime();
@@ -42,7 +36,7 @@ public class ShulkerWandItem extends SwordItem {
                 long lastTime = cooldowns.getOrDefault(playerId, -cooldownTime);
 
                 if (currentTime < lastTime + cooldownTime) {
-                    if (enableLostDurability) {
+                    if (ModConfig.enableShulkerWandLostDurability.get()) {
                         ItemStack stack = player.getHeldItem(hand);
                         stack.damageItem(ModConfig.shulkerWandLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
                         player.sendStatusMessage(new TranslationTextComponent("msg.shulker_wand.cooldown1"), true);
