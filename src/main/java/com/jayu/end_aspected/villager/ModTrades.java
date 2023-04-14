@@ -25,11 +25,11 @@ public class ModTrades {
         MultiItemsForEmeraldsTrade shardOffer2 = new MultiItemsForEmeraldsTrade(ImmutableList.of(ASPECT_SHARD.get()), ImmutableList.of(1, 2, 3), ImmutableList.of(10, 10, 23), 4, 10);
         MultiItemsForEmeraldsTrade swordOffer = new MultiItemsForEmeraldsTrade(ImmutableList.of(ASPECT_SHARD.get(), ASPECT_OF_THE_END.get(), ASPECT_OF_THE_END.get(), SHULKER_WAND.get()), ImmutableList.of(10, 1, 1, 1), ImmutableList.of(20, 50, 75, 100), 1, 40);
 
-        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 5, 3, 3)};
-        VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{shardOffer1, new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 10, 10, 5)};
-        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{shardOffer2, new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 10, 10, 5), swordOffer};
-        VillagerTrades.ITrade[] level4 = new VillagerTrades.ITrade[]{swordOffer};
-        VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{swordOffer};
+        VillagerTrades.ITrade[] level1 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 5, 3, 3), new VillagerTrades.EmeraldForItemsTrade(Items.COAL, 15, 16, 2), new VillagerTrades.ItemsForEmeraldsTrade(new ItemStack(Items.IRON_AXE), 3, 1, 12, 1, 0.2F), new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.IRON_SWORD, 2, 3, 1)};
+        VillagerTrades.ITrade[] level2 = new VillagerTrades.ITrade[]{shardOffer1, new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 10, 10, 5), new VillagerTrades.EmeraldForItemsTrade(Items.IRON_INGOT, 4, 12, 10), new VillagerTrades.ItemsForEmeraldsTrade(new ItemStack(Items.BELL), 36, 1, 12, 5, 0.2F)};
+        VillagerTrades.ITrade[] level3 = new VillagerTrades.ITrade[]{new VillagerTrades.EmeraldForItemsTrade(ASPECT_SHARD.get(), 10, 10, 5), swordOffer, new VillagerTrades.EmeraldForItemsTrade(Items.FLINT, 24, 12, 20)};
+        VillagerTrades.ITrade[] level4 = new VillagerTrades.ITrade[]{shardOffer2, new VillagerTrades.EmeraldForItemsTrade(Items.DIAMOND, 1, 12, 30), new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.DIAMOND_AXE, 12, 3, 15, 0.2F)};
+        VillagerTrades.ITrade[] level5 = new VillagerTrades.ITrade[]{swordOffer, new VillagerTrades.EnchantedItemForEmeraldsTrade(Items.DIAMOND_SWORD, 8, 3, 30, 0.2F)};
 
         VillagerTrades.VILLAGER_DEFAULT_TRADES.put(VillagerProfession.WEAPONSMITH, gatAsIntMap(ImmutableMap.of(1, level1, 2, level2, 3, level3, 4, level4, 5, level5)));
     }
