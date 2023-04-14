@@ -3,6 +3,8 @@ package com.jayu.end_aspected;
 import com.jayu.end_aspected.block.EnderTrapBlock;
 import com.jayu.end_aspected.block.ModBlocks;
 import com.jayu.end_aspected.config.ModConfig;
+import com.jayu.end_aspected.effect.ModEffects;
+import com.jayu.end_aspected.effect.UnstablePhaseEffect;
 import com.jayu.end_aspected.enchantment.ModEnchantments;
 import com.jayu.end_aspected.item.ModItems;
 import com.jayu.end_aspected.villager.ModTrades;
@@ -38,6 +40,8 @@ public class EndAspected
 
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
+        // Register Effects
+        ModEffects.register(eventBus);
         // Register Enchantments
         ModEnchantments.register(eventBus);
         // Register Blocks
@@ -60,10 +64,7 @@ public class EndAspected
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            ModTrades.fillTradeData();
-        });
-
+        event.enqueueWork(ModTrades::fillTradeData);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -97,6 +98,8 @@ public class EndAspected
     public void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
         //System.out.println("ENDERMAN TELEPORTED");
         Entity entity = event.getEntity();
+        // Check for teleport jamming effects
+        UnstablePhaseEffect.blockEventEntity(event, entity);
         EnderTrapBlock.trapEventEntity(event, entity);
     }
 

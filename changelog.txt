@@ -1,6 +1,6 @@
-1.16.5-1.0.5.1 Changelog
+1.16.5-1.0.6.0 Changelog
 =========================
-- 1.0.6.0 Added Ender Slayer enchantment. Rebalanced Weaponsmith Villager trades.
+- 1.0.6.0 Added Ender Slayer enchantment. Added Unstable Phase potion effect. Added Destabilise treasure enchantment. Rebalanced Weaponsmith Villager trades.
 - 1.0.5.1 Minor fixes to teleporting particles.
 - 1.0.5.0 Now Teleporting resets fall distance. Added particle effect for use during cooldown.
 - 1.0.4.1 Additional cooldown rework. Added config options of Aspect of the end cooldown. Added config options for cooldown mode (reduce durability or block use). Creative players don't get cooldowns.
