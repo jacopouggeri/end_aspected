@@ -29,6 +29,8 @@ public final class ModConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> shulkerWandLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> enderTrapRadius;
     public static ForgeConfigSpec.ConfigValue<Long>  unstablePhasePercentDamage;
+    public static ForgeConfigSpec.BooleanValue unstableTeleports;
+    public static ForgeConfigSpec.ConfigValue<Integer> unstableTeleportsLimit;
 
 
     static {
@@ -75,7 +77,11 @@ public final class ModConfig {
         BUILDER.pop();
 
         BUILDER.push("Effect Settings");
+        BUILDER.push("Unstable Phase");
         unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("percentDamage", 20, 0, Long.valueOf(100));
+        unstableTeleports = BUILDER.comment("If true, too many teleports during the Aspect of the End cooldown will give the Unstable Phase effect.").define("unstableTeleports", true);
+        unstableTeleportsLimit = BUILDER.comment("Number of teleports before the player gets Unstable Phase.").defineInRange("unstableTeleportsLimit", 20, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
         BUILDER.pop();
 
         SPEC = BUILDER.build();

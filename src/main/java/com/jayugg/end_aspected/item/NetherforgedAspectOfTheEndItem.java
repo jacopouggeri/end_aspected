@@ -1,18 +1,19 @@
 package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,12 +26,14 @@ public class NetherforgedAspectOfTheEndItem extends AspectOfTheEndItem{
     private long cooldownEndTime;
     private int teleportsRemaining;
     private boolean firstRunFlag;
+    private int teleportsAfterCooldown;
 
     public NetherforgedAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.cooldownEndTime = 0;
         this.teleportsRemaining = ModConfig.maxTeleports.get();
         this.firstRunFlag = true;
+        this.teleportsAfterCooldown = 0;
     }
 
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
@@ -38,7 +41,7 @@ public class NetherforgedAspectOfTheEndItem extends AspectOfTheEndItem{
 
             if ((teleportsRemaining != ModConfig.maxTeleports.get()) && firstRunFlag) {
                 teleportsRemaining = ModConfig.maxTeleports.get();
-                System.out.println(teleportsRemaining);
+                // System.out.println(teleportsRemaining);
                 firstRunFlag = false;
             }
 
@@ -55,20 +58,20 @@ public class NetherforgedAspectOfTheEndItem extends AspectOfTheEndItem{
             BlockPos destPos = new BlockPos(dx, dy, dz);
 
             if (teleportEvent.isCanceled()) {
-                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.disrupted"), true);
+                //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.disrupted"), true);
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
             if (ModConfig.enableNaoteCooldown.get() && !player.isCreative()) {
                 // Check if the cooldown has ended, if not reduce durability
-                if (cooldownEndTime > world.getGameTime()) {
+                if (hasCooldown(world)) {
                     if (ModConfig.enableNaoteLostDurability.get()) {
                         ItemStack stack = player.getHeldItem(hand);
                         stack.damageItem(ModConfig.naoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
+                        //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
                     } else {
-                        int remainingSeconds = (int) ((cooldownEndTime - world.getGameTime()) / 20);
-                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2", remainingSeconds), true);
+                        int remainingSeconds = (int) (cooldownLeft(world) / 20);
+                        //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2", remainingSeconds), true);
                         return ActionResult.resultFail(player.getHeldItem(hand));
                     }
                     spawnCooldownParticles(world, dx, dy, dz);
@@ -95,6 +98,18 @@ public class NetherforgedAspectOfTheEndItem extends AspectOfTheEndItem{
                     // Set new time of last cooldown
                     cooldownEndTime = world.getGameTime() + ModConfig.naoteCooldown.get() * 20;
                     teleportsRemaining = ModConfig.maxTeleports.get();
+                }
+
+                if (ModConfig.unstableTeleports.get()) {
+                    if (hasCooldown(world)) {
+                        teleportsAfterCooldown += 1;
+                        if (teleportsAfterCooldown > ModConfig.unstableTeleportsLimit.get()) {
+                            int i = calculateUnstableDuration(world);
+                            player.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 1));
+                        }
+                    } else {
+                        teleportsAfterCooldown = 0;
+                    }
                 }
 
             }

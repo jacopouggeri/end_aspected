@@ -14,7 +14,7 @@ public class ModEnchantments{
             DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, MOD_ID);
 
     public static final RegistryObject<Enchantment> ENDER_SLAYER = ENCHANTMENTS.register("ender_slayer",
-            () -> new DamageEnchantment(Enchantment.Rarity.RARE, 3, EquipmentSlotType.MAINHAND)
+            () -> new EnderSlayerEnchantment(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND)
     );
 
     public static final RegistryObject<Enchantment> DESTABILISE = ENCHANTMENTS.register("destabilise",

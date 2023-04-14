@@ -1,6 +1,7 @@
 package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.config.ModConfig;
+import com.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -9,13 +10,13 @@ import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,12 +29,14 @@ public class AspectOfTheEndItem extends SwordItem {
     private int teleportsRemaining;
     private static final double TELEPORT_OFFSET = 0.4;
     private boolean firstRunFlag;
+    private int teleportsAfterCooldown;
 
     public AspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.cooldownEndTime = 0;
         this.teleportsRemaining = ModConfig.maxTeleports.get();
         this.firstRunFlag = true;
+        this.teleportsAfterCooldown = 0;
     }
 
     public static Vector3d getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
@@ -96,7 +99,7 @@ public class AspectOfTheEndItem extends SwordItem {
 
             if ((teleportsRemaining != ModConfig.maxTeleports.get()) && firstRunFlag) {
                 teleportsRemaining = ModConfig.maxTeleports.get();
-                System.out.println(teleportsRemaining);
+                //System.out.println(teleportsRemaining);
                 firstRunFlag = false;
             }
 
@@ -113,7 +116,7 @@ public class AspectOfTheEndItem extends SwordItem {
             BlockPos destPos = new BlockPos(dx, dy, dz);
 
             if (teleportEvent.isCanceled()) {
-                player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.disrupted"), true);
+                //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.disrupted"), true);
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
@@ -123,10 +126,10 @@ public class AspectOfTheEndItem extends SwordItem {
                     if (ModConfig.enableAoteLostDurability.get()) {
                         ItemStack stack = player.getHeldItem(hand);
                         stack.damageItem(ModConfig.aoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
+                        //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
                     } else {
-                        int remainingSeconds = (int) ((cooldownEndTime - world.getGameTime()) / 20);
-                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2", remainingSeconds), true);
+                        int remainingSeconds = (int) (cooldownLeft(world) / 20);
+                        //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2", remainingSeconds), true);
                         return ActionResult.resultFail(player.getHeldItem(hand));
                     }
                     spawnCooldownParticles(world, dx, dy, dz);
@@ -155,9 +158,33 @@ public class AspectOfTheEndItem extends SwordItem {
                     teleportsRemaining = ModConfig.maxTeleports.get();
                 }
 
+                if (ModConfig.unstableTeleports.get()) {
+                    if (hasCooldown(world)) {
+                        teleportsAfterCooldown += 1;
+                        if (teleportsAfterCooldown > ModConfig.unstableTeleportsLimit.get()) {
+                            int i = calculateUnstableDuration(world);
+                            player.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 1));
+                        }
+                    } else {
+                        teleportsAfterCooldown = 0;
+                    }
+                }
+
             }
         }
         return ActionResult.resultSuccess(player.getHeldItem(hand));
+    }
+
+    public int calculateUnstableDuration(World world) {
+        float cooldown = cooldownLeft(world);
+        return (int) cooldown/2;
+    }
+
+    public long cooldownLeft(World world) {
+        return cooldownEndTime - world.getGameTime();
+    }
+    public boolean hasCooldown(World world) {
+        return cooldownLeft(world) > 0;
     }
 
     @Override
