@@ -100,7 +100,7 @@ public class DamageEnchantment extends Enchantment {
             LivingEntity livingEntity = (LivingEntity)target;
             if (this.damageType == 3 && enderEntities.contains(Objects.requireNonNull(livingEntity).getType())){
                 //System.out.println("DAMAGED ENDERMAN!");
-                float damage = (level * 2.5f);
+                float damage = (level * 4.0f);
                 livingEntity.attackEntityFrom(DamageSource.GENERIC, damage);
             } else if (this.damageType == 2 && livingEntity.getCreatureAttribute() == CreatureAttribute.ARTHROPOD) {
                 int i = 20 + user.getRNG().nextInt(10 * level);
