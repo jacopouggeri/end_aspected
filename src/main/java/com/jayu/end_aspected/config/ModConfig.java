@@ -28,6 +28,7 @@ public final class ModConfig {
     public static ForgeConfigSpec.BooleanValue enableShulkerWandLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> shulkerWandLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> enderTrapRadius;
+    public static ForgeConfigSpec.ConfigValue<Long>  unstablePhasePercentDamage;
 
 
     static {
@@ -71,6 +72,10 @@ public final class ModConfig {
 
         BUILDER.push("Block Settings");
         enderTrapRadius = BUILDER.comment("Set ender trap activation radius (below 33 will not trap endermen effectively).").defineInRange("effectRadius", 33, 0, 100);
+        BUILDER.pop();
+
+        BUILDER.push("Effect Settings");
+        unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("cooldownDuration", 20, 0, Long.valueOf(100));
         BUILDER.pop();
 
         SPEC = BUILDER.build();

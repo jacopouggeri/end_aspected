@@ -17,6 +17,10 @@ public class ModEnchantments{
             () -> new DamageEnchantment(Enchantment.Rarity.RARE, 3, EquipmentSlotType.MAINHAND)
     );
 
+    public static final RegistryObject<Enchantment> DESTABILISE = ENCHANTMENTS.register("destabilise",
+            () -> new DestabiliseEnchantment(Enchantment.Rarity.VERY_RARE, EquipmentSlotType.MAINHAND)
+    );
+
     public static void register(IEventBus eventBus) {
         ENCHANTMENTS.register(eventBus);
     }

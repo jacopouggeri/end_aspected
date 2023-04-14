@@ -76,17 +76,6 @@ public class DamageEnchantment extends Enchantment {
         }
     }
 
-    @Override
-    public int calcModifierDamage(int level, DamageSource source) {
-        Entity entity = source.getTrueSource();
-        if (this.damageType == 3 && enderEntities.contains(Objects.requireNonNull(entity).getType())){
-            System.out.println("DAMAGED ENDERMAN!");
-            return (int) (level * 2.5f);
-        } else {
-            return 0;
-        }
-    }
-
     /**
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
@@ -108,11 +97,17 @@ public class DamageEnchantment extends Enchantment {
      */
     public void onEntityDamaged(@Nonnull LivingEntity user, @Nonnull Entity target, int level) {
         if (target instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity)target;
-            if (this.damageType == 2 && livingentity.getCreatureAttribute() == CreatureAttribute.ARTHROPOD) {
+            LivingEntity livingEntity = (LivingEntity)target;
+            if (this.damageType == 3 && enderEntities.contains(Objects.requireNonNull(livingEntity).getType())){
+                //System.out.println("DAMAGED ENDERMAN!");
+                float damage = (level * 2.5f);
+                livingEntity.attackEntityFrom(DamageSource.GENERIC, damage);
+            } else if (this.damageType == 2 && livingEntity.getCreatureAttribute() == CreatureAttribute.ARTHROPOD) {
                 int i = 20 + user.getRNG().nextInt(10 * level);
-                livingentity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, i, 3));
+                livingEntity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, i, 3));
             }
+
+
         }
 
     }
