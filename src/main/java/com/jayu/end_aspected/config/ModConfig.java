@@ -6,21 +6,18 @@ public final class ModConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static ForgeConfigSpec SPEC;
     public static ForgeConfigSpec.ConfigValue<Integer> teleportDistance;
-    public static ForgeConfigSpec.ConfigValue<Long> maxTeleports;
+    public static ForgeConfigSpec.ConfigValue<Integer> maxTeleports;
 
-    public static ForgeConfigSpec.IntValue aoteDamage;
     public static ForgeConfigSpec.BooleanValue enableAoteCooldown;
     public static ForgeConfigSpec.ConfigValue<Long> aoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableAoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> aoteLostDurability;
 
-    public static ForgeConfigSpec.IntValue naoteDamage;
     public static ForgeConfigSpec.BooleanValue enableNaoteCooldown;
     public static ForgeConfigSpec.ConfigValue<Long> naoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableNaoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> naoteLostDurability;
 
-    public static ForgeConfigSpec.IntValue daoteDamage;
     public static ForgeConfigSpec.BooleanValue enableDaoteCooldown;
     public static ForgeConfigSpec.ConfigValue<Long> daoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableDaoteLostDurability;
@@ -36,10 +33,9 @@ public final class ModConfig {
     static {
         BUILDER.push("Item Settings");
         teleportDistance = BUILDER.comment("Teleport distance in blocks for the Aspect of the End and upgrades.").defineInRange("teleportDistance", 8, 0, Integer.MAX_VALUE);
-        maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 6, 0, Long.MAX_VALUE);
+        maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 6, 0, Integer.MAX_VALUE);
 
         BUILDER.push("Aspect of The End");
-        aoteDamage = BUILDER.comment("Sword damage. Default is like vanilla diamond sword.").defineInRange("damage", 7, 0, Integer.MAX_VALUE);
         enableAoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", true);
         BUILDER.push("Cooldown");
         aoteCooldown = BUILDER.comment("Cooldown duration. Works only if enabled.").defineInRange("cooldownDuration", 20, 0, Long.MAX_VALUE);
@@ -49,7 +45,6 @@ public final class ModConfig {
         BUILDER.pop();
 
         BUILDER.push("Netherforged Aspect of The End");
-        naoteDamage = BUILDER.comment("Sword damage. Default is like vanilla netherite sword.").defineInRange("damage", 8, 0, Integer.MAX_VALUE);
         enableNaoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", true);
         BUILDER.push("Cooldown");
         naoteCooldown = BUILDER.comment("Cooldown duration. Works only if enabled.").defineInRange("cooldownDuration", 10, 0, Long.MAX_VALUE);
@@ -59,7 +54,6 @@ public final class ModConfig {
         BUILDER.pop();
 
         BUILDER.push("Dragonforged Aspect of The End");
-        daoteDamage = BUILDER.comment("Sword damage. Default is like vanilla netherite sword + 1.").defineInRange("damage", 9, 0, Integer.MAX_VALUE);
         enableDaoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", false);
         BUILDER.push("Cooldown");
         daoteCooldown = BUILDER.comment("Cooldown duration. Works only if enabled.").defineInRange("cooldownDuration", 5, 0, Long.MAX_VALUE);

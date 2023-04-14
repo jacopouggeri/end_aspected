@@ -22,66 +22,21 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Field;
 
 public class AspectOfTheEndItem extends SwordItem {
-
-    private boolean hasCooldown;
-    private long cooldownTime;
-    private boolean enableLostDurability;
-    private int lostDurability;
     private long cooldownEndTime;
-    private long teleportsRemaining;
+    private int teleportsRemaining;
     private static final double TELEPORT_OFFSET = 0.4;
+    private boolean firstRunFlag;
 
-    public AspectOfTheEndItem(IItemTier tier, float attackSpeedIn, Properties builder, int upgrade) {
-        super(tier, 3, attackSpeedIn, builder);
-        switch (upgrade) {
-            case 0:
-                this.updateAttackDamage( ModConfig.aoteDamage.get());
-                this.hasCooldown = ModConfig.enableAoteCooldown.get();
-                this.cooldownTime = ModConfig.aoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
-                this.lostDurability = ModConfig.aoteLostDurability.get();
-            case 1:
-                this.updateAttackDamage(ModConfig.naoteDamage.get());
-                this.hasCooldown = ModConfig.enableNaoteCooldown.get();
-                this.cooldownTime = ModConfig.naoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableNaoteLostDurability.get();
-                this.lostDurability = ModConfig.naoteLostDurability.get();
-            case 2:
-                this.updateAttackDamage(ModConfig.daoteDamage.get());
-                this.hasCooldown = ModConfig.enableDaoteCooldown.get();
-                this.cooldownTime = ModConfig.daoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableDaoteLostDurability.get();
-                this.lostDurability = ModConfig.daoteLostDurability.get();
-            default:
-                this.updateAttackDamage(ModConfig.aoteDamage.get());
-                this.hasCooldown = ModConfig.enableAoteCooldown.get();
-                this.cooldownTime = ModConfig.aoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
-                this.lostDurability = ModConfig.aoteLostDurability.get();
-        }
-        this.teleportsRemaining = ModConfig.maxTeleports.get();
+    public AspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
+        super(tier, attackDamageIn, attackSpeedIn, builder);
         this.cooldownEndTime = 0;
+        this.teleportsRemaining = ModConfig.maxTeleports.get();
+        this.firstRunFlag = true;
     }
 
-    private void updateAttackDamage(int newDamage) {
-        try {
-            Field attackDamageIn = SwordItem.class.getDeclaredField("attackDamageIn");
-            attackDamageIn.setAccessible(true);
-            attackDamageIn.set(this, newDamage);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean doesPlayerOverlap(World world, Entity entity, Vector3d position) {
-        AxisAlignedBB entityBoundingBox = entity.getBoundingBox().offset(position).grow(TELEPORT_OFFSET);
-        return !world.hasNoCollisions(entity, entityBoundingBox);
-    }
-
-    private static Vector3d getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
+    public static Vector3d getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
         // Get the player's eye position and look vector
         Vector3d eyePos = entity.getEyePosition(partialTicks);
         Vector3d lookVec = entity.getLook(partialTicks);
@@ -104,6 +59,11 @@ public class AspectOfTheEndItem extends SwordItem {
         return adjustTeleportPosition(world, entity, teleportPos, partialTicks);
     }
 
+    public static boolean doesPlayerOverlap(World world, Entity entity, Vector3d position) {
+        AxisAlignedBB entityBoundingBox = entity.getBoundingBox().offset(position).grow(TELEPORT_OFFSET);
+        return !world.hasNoCollisions(entity, entityBoundingBox);
+    }
+
     private static Vector3d adjustTeleportPosition(World world, Entity entity, Vector3d teleportPos, float partialTicks) {
         // Check if the player's bounding box overlaps with any solid blocks's bounding box at the teleport position
         if (doesPlayerOverlap(world, entity, teleportPos)) {
@@ -124,9 +84,22 @@ public class AspectOfTheEndItem extends SwordItem {
         return teleportPos;
     }
 
+    public void spawnCooldownParticles(World world, double dx, double dy, double dz) {
+        ServerWorld serverWorld = (ServerWorld)  world;
+        serverWorld.spawnParticle(ParticleTypes.FALLING_OBSIDIAN_TEAR, dx, dy, dz, 10, 0.5, 0.5, 0.5, 0.0);
+        serverWorld.spawnParticle(ParticleTypes.ANGRY_VILLAGER, dx, dy, dz, 1, 0.5, 0.5, 0.5, 0.0);
+    }
+
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world,@Nonnull PlayerEntity player,@Nonnull Hand hand) {
         if (!world.isRemote) {
+
+            if ((teleportsRemaining != ModConfig.maxTeleports.get()) && firstRunFlag) {
+                teleportsRemaining = ModConfig.maxTeleports.get();
+                System.out.println(teleportsRemaining);
+                firstRunFlag = false;
+            }
+
             Vector3d teleportPos;
 
             teleportPos = getTeleportPosition(player, ModConfig.teleportDistance.get(), Minecraft.getInstance().getRenderPartialTicks());
@@ -134,16 +107,32 @@ public class AspectOfTheEndItem extends SwordItem {
             EntityTeleportEvent.EnderEntity teleportEvent = new EntityTeleportEvent.EnderEntity (player, teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
             MinecraftForge.EVENT_BUS.post(teleportEvent);
 
+            double dx = teleportPos.x;
+            double dy = teleportPos.y;
+            double dz = teleportPos.z;
+            BlockPos destPos = new BlockPos(dx, dy, dz);
+
             if (teleportEvent.isCanceled()) {
                 player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.trapped"), true);
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
+            if (ModConfig.enableAoteCooldown.get() && !player.isCreative()) {
+                // Check if the cooldown has ended, if not reduce durability
+                if (cooldownEndTime > world.getGameTime()) {
+                    if (ModConfig.enableAoteLostDurability.get()) {
+                        ItemStack stack = player.getHeldItem(hand);
+                        stack.damageItem(ModConfig.aoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
+                    } else {
+                        int remainingSeconds = (int) ((cooldownEndTime - world.getGameTime()) / 20);
+                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2", remainingSeconds), true);
+                        return ActionResult.resultFail(player.getHeldItem(hand));
+                    }
+                    spawnCooldownParticles(world, dx, dy, dz);
+                }
 
-            double dx = teleportPos.x;
-            double dy = teleportPos.y;
-            double dz = teleportPos.z;
-            BlockPos destPos = new BlockPos(dx, dy, dz);
+            }
 
             // Play the Enderman sound at the destination position
             world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
@@ -152,30 +141,17 @@ public class AspectOfTheEndItem extends SwordItem {
             ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, dx, dy, dz, 50, 0.5, 0.5, 0.5, 0.0);
 
             player.setPositionAndUpdate(dx, dy, dz);
+            player.fallDistance = 0;
 
-            if (hasCooldown && !player.isCreative()) {
+            if (ModConfig.enableAoteCooldown.get() && !player.isCreative()) {
 
                 // Decrement the teleports remaining
                 teleportsRemaining--;
 
-
-                // Check if the cooldown has ended, if not reduce durability
-                if (cooldownEndTime > world.getGameTime()) {
-                    if (enableLostDurability) {
-                        ItemStack stack = player.getHeldItem(hand);
-                        stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
-                    } else {
-                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2"), true);
-                        return ActionResult.resultFail(player.getHeldItem(hand));
-                    }
-                }
-                System.out.println("Teleports remaining: " + teleportsRemaining);
-
                 // Check if teleports remaining is zero and reset cooldown
                 if (teleportsRemaining <= 0) {
                     // Set new time of last cooldown
-                    cooldownEndTime = world.getGameTime() + cooldownTime*20;
+                    cooldownEndTime = world.getGameTime() + ModConfig.aoteCooldown.get()*20;
                     teleportsRemaining = ModConfig.maxTeleports.get();
                 }
 
