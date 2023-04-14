@@ -2,6 +2,7 @@ package com.jayugg.end_aspected.effect;
 
 import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
@@ -20,7 +21,9 @@ public class UnstablePhaseEffect extends Effect {
             if (livingEntity.isPotionActive(unstablePhase)) {
                 float damageFraction = (float) ModConfig.unstablePhasePercentDamage.get()/100;
                 float damage = damageFraction * livingEntity.getHealth();
-                event.setCanceled(true);
+                if (livingEntity.getType() != EntityType.ENDERMAN) {
+                    event.setCanceled(true);
+                }
                 livingEntity.attackEntityFrom(DamageSource.GENERIC, damage);
             }
         }
