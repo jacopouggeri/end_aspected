@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
 import net.minecraft.item.SwordItem;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
@@ -23,30 +22,57 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
 
 public class AspectOfTheEndItem extends SwordItem {
 
+    private boolean hasCooldown;
     private long cooldownTime;
-    private long teleportsRemaining;
-
-    private boolean haveCooldown;
-
+    private boolean enableLostDurability;
+    private int lostDurability;
     private long cooldownEndTime;
+    private long teleportsRemaining;
     private static final double TELEPORT_OFFSET = 0.4;
 
-    public AspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
-        super(tier, attackDamageIn, attackSpeedIn, builder);
-        if (tier == ItemTier.DIAMOND) {
-            this.cooldownTime = ModConfig.aoteCooldown.get();
-        } else if (tier == ItemTier.NETHERITE) {
-            this.cooldownTime = ModConfig.aoteCooldown.get()/2;
+    public AspectOfTheEndItem(IItemTier tier, float attackSpeedIn, Properties builder, int upgrade) {
+        super(tier, 3, attackSpeedIn, builder);
+        switch (upgrade) {
+            case 0:
+                this.updateAttackDamage( ModConfig.aoteDamage.get());
+                this.hasCooldown = ModConfig.enableAoteCooldown.get();
+                this.cooldownTime = ModConfig.aoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
+                this.lostDurability = ModConfig.aoteLostDurability.get();
+            case 1:
+                this.updateAttackDamage(ModConfig.naoteDamage.get());
+                this.hasCooldown = ModConfig.enableNaoteCooldown.get();
+                this.cooldownTime = ModConfig.naoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableNaoteLostDurability.get();
+                this.lostDurability = ModConfig.naoteLostDurability.get();
+            case 2:
+                this.updateAttackDamage(ModConfig.daoteDamage.get());
+                this.hasCooldown = ModConfig.enableDaoteCooldown.get();
+                this.cooldownTime = ModConfig.daoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableDaoteLostDurability.get();
+                this.lostDurability = ModConfig.daoteLostDurability.get();
+            default:
+                this.updateAttackDamage(ModConfig.aoteDamage.get());
+                this.hasCooldown = ModConfig.enableAoteCooldown.get();
+                this.cooldownTime = ModConfig.aoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
+                this.lostDurability = ModConfig.aoteLostDurability.get();
         }
         this.teleportsRemaining = ModConfig.maxTeleports.get();
         this.cooldownEndTime = 0;
-        if (attackDamageIn == 3) {
-            this.haveCooldown = ModConfig.enableAoteCooldown.get();
-        } else if (attackDamageIn == 4) {
-            this.haveCooldown = false;
+    }
+
+    private void updateAttackDamage(int newDamage) {
+        try {
+            Field attackDamageIn = SwordItem.class.getDeclaredField("attackDamageIn");
+            attackDamageIn.setAccessible(true);
+            attackDamageIn.set(this, newDamage);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
@@ -127,7 +153,7 @@ public class AspectOfTheEndItem extends SwordItem {
 
             player.setPositionAndUpdate(dx, dy, dz);
 
-            if (haveCooldown) {
+            if (hasCooldown && !player.isCreative()) {
 
                 // Decrement the teleports remaining
                 teleportsRemaining--;
@@ -135,9 +161,14 @@ public class AspectOfTheEndItem extends SwordItem {
 
                 // Check if the cooldown has ended, if not reduce durability
                 if (cooldownEndTime > world.getGameTime()) {
-                    ItemStack stack = player.getHeldItem(hand);
-                    stack.damageItem(ModConfig.aoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                    player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown"), true);
+                    if (enableLostDurability) {
+                        ItemStack stack = player.getHeldItem(hand);
+                        stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
+                    } else {
+                        player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2"), true);
+                        return ActionResult.resultFail(player.getHeldItem(hand));
+                    }
                 }
                 System.out.println("Teleports remaining: " + teleportsRemaining);
 

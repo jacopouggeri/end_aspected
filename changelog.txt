@@ -1,13 +1,12 @@
-1.16.5-1.0.4.0 Changelog
+1.16.5-1.0.4.1 Changelog
 Format: MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH
 ====
-- 1.0.4.0 Changed cooldown mechanic for Aspect of the End and Shulker Wand. Repeated use before the end of the cooldown
-    will reduce durability. Added cooldown options to config. Added villager trades! Now weaponsmiths can trade for shards.
+- 1.0.4.1 Additional cooldown rework. Added config options of Aspect of the end upgrade damage and cooldown. Added config options for cooldown mode (reduce durability or block use). Creative players don't get cooldowns.
+- 1.0.4.0 Changed cooldown mechanic for Aspect of the End and Shulker Wand. Repeated use before the end of the cooldown will reduce durability. Added cooldown options to config. Added villager trades! Now weaponsmiths can trade for shards.
 - 1.0.3.0 Release!
 - 1.0.x.x Skipped because of version renaming.
 - 0.0.3.0 Added anvil repair recipes with Aspect Shard.
 - 0.0.2.1 Fixed Shulker wand stacking, and broken crafting recipe.
-- 0.0.2.0 Replaced Ender Ring with Aspect Shard, added Ender Trap and Shulker Wand with texture and functionalities,
-    added Aspected Arrows with texture (functionalities not implemented). Added working config file. Added creative tab.
+- 0.0.2.0 Replaced Ender Ring with Aspect Shard, added Ender Trap and Shulker Wand with texture and functionalities, added Aspected Arrows with texture (functionalities not implemented). Added working config file. Added creative tab.
 - 0.0.1.0 Fixed teleport issues. Added crafting recipes and textures (ender ring texture missing).
 - 0.0.0.0 Added items and main functionality.

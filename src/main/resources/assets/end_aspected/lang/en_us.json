@@ -7,7 +7,9 @@
   "item.end_aspected.aspected_arrow": "Aspected Arrow",
   "itemGroup.mainGroupTab": "End Aspected",
   "block.end_aspected.ender_trap": "Ender Trap",
-  "msg.aspect_of_the_end.cooldown": "Slow down! Your sword will lose durability during cooldown.",
+  "msg.aspect_of_the_end.cooldown1": "Slow down! Your sword will lose durability during cooldown.",
+  "msg.aspect_of_the_end.cooldown2": "Slow down!",
   "msg.aspect_of_the_end.trapped" : "You got trapped!",
-  "msg.shulker_wand.cooldown": "Slow down! Your wand will lose durability during cooldown."
+  "msg.shulker_wand.cooldown1": "Slow down! Your wand will lose durability during cooldown.",
+  "msg.shulker_wand.cooldown2": "Slow down!"
 }
