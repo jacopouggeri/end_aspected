@@ -75,7 +75,7 @@ public final class ModConfig {
         BUILDER.pop();
 
         BUILDER.push("Effect Settings");
-        unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("cooldownDuration", 20, 0, Long.valueOf(100));
+        unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("percentDamage", 20, 0, Long.valueOf(100));
         BUILDER.pop();
 
         SPEC = BUILDER.build();
