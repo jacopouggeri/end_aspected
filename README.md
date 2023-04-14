@@ -11,20 +11,20 @@ Introduces the items Aspect of the End (Inspired to Hypixel Skyblock's Aspect of
 - Dragonforged Aspect of The End: Upgrades Netherforged Aspect of The End with higher attack power abd less cooldown.
 - Shulker Wand: Shoots Shulker Bullets with levitation effect.
 
-### Blocks:
+### Blocks
 - Ender Trap: Traps teleporting Endermen, Shulker and Players in a 32 block range by teleporting them on top of the block.
 
-### Enchantments:
+### Enchantments
 - Ender Slayer: Additional damage to End mobs.
 - Destabilise: Inflicts Unstable Phase potion effect.
 
-### Potion Effects:
+### Potion Effects
 - Unstable Phase: Afflicted entity takes damage whenever they try to teleport.
 
-### Other functionalities:
+### Other functionalities
 - Weaponsmith Villagers can trade items related to the mod.
 
-### Future Additions:
+### Future Additions
 - Aspected Arrows
 - Unstable Phase potions
 - Destabilise enchantment crafting recipe (?)
