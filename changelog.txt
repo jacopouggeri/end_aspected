@@ -2,7 +2,7 @@
 Format: MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH
 ====
 - 1.0.4.0 Changed cooldown mechanic for Aspect of the End and Shulker Wand. Repeated use before the end of the cooldown
-    will reduce durability. Added cooldown options to config. Added villager trades!
+    will reduce durability. Added cooldown options to config. Added villager trades! Now weaponsmiths can trade for shards.
 - 1.0.3.0 Release!
 - 1.0.x.x Skipped because of version renaming.
 - 0.0.3.0 Added anvil repair recipes with Aspect Shard.
