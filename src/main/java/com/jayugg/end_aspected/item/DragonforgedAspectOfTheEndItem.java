@@ -64,13 +64,13 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
 
             if (ModConfig.enableDaoteCooldown.get() && !player.isCreative()) {
                 // Check if the cooldown has ended, if not reduce durability
-                if (hasCooldown(world)) {
+                if (hasCooldown(cooldownEndTime, world)) {
                     if (ModConfig.enableDaoteLostDurability.get()) {
                         ItemStack stack = player.getHeldItem(hand);
                         stack.damageItem(ModConfig.daoteLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
                         //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown1"), true);
                     } else {
-                        int remainingSeconds = (int) (cooldownLeft(world) / 20);
+                        // int remainingSeconds = (int) (cooldownLeft(cooldownEndTime, world) / 20);
                         //player.sendStatusMessage(new TranslationTextComponent("msg.aspect_of_the_end.cooldown2", remainingSeconds), true);
                         return ActionResult.resultFail(player.getHeldItem(hand));
                     }
@@ -102,10 +102,10 @@ public class DragonforgedAspectOfTheEndItem extends AspectOfTheEndItem{
                 }
 
                 if (ModConfig.unstableTeleports.get()) {
-                    if (hasCooldown(world)) {
+                    if (hasCooldown(cooldownEndTime, world)) {
                         teleportsAfterCooldown += 1;
                         if (teleportsAfterCooldown > ModConfig.unstableTeleportsLimit.get()) {
-                            int i = calculateUnstableDuration(world);
+                            int i = calculateUnstableDuration(cooldownEndTime, world);
                             player.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 1));
                         }
                     } else {
