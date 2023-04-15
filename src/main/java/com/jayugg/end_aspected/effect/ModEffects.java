@@ -14,7 +14,7 @@ public class ModEffects{
             DeferredRegister.create(ForgeRegistries.POTIONS, MOD_ID);
 
     public static final RegistryObject<Effect> UNSTABLE_PHASE = EFFECTS.register("unstable_phase",
-            () -> new UnstablePhaseEffect(EffectType.HARMFUL, 0xFFFFFF)
+            () -> new UnstablePhaseEffect(EffectType.HARMFUL, 0x004a47)
     );
 
     public static void register(IEventBus eventBus) {
