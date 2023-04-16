@@ -1,19 +1,27 @@
 package com.jayugg.end_aspected.entity;
 
+import com.jayugg.end_aspected.item.AspectedArrowItem;
 import com.jayugg.end_aspected.item.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 public class AspectedArrowEntity extends AbstractArrowEntity {
+
+    public boolean teleportedFlag = false;
 
     public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, World world) {
         super(entityType, world);
@@ -29,6 +37,7 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
 
     public AspectedArrowEntity(World worldIn, LivingEntity shooter) {
         super(ModEntities.ASPECTED_ARROW.get(), shooter, worldIn);
+        this.teleportedFlag = true;
     }
 
     @Override
@@ -39,35 +48,40 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
     @Override
     protected void onImpact(@Nonnull RayTraceResult result) {
         super.onImpact(result);
+        //System.out.println("IMPACT!");
         World world = this.world;
-        Vector3d startPos = Objects.requireNonNull(this.getShooter()).getPositionVec();
-        // Spawn particles along the ray
-        Vector3d hitVec = result.getHitVec();
-        spawnParticlesAlongRay(world, hitVec, startPos, 0.5);
-        }
+        if (this.getShooter() != null && teleportedFlag) {
+            //System.out.println("SHOOTER: " + this.getShooter());
+            Vector3d startVec = this.getShooter().getPositionVec();
+            Vector3d hitVec = result.getHitVec();
 
-    private void spawnParticlesAlongRay(World world, Vector3d startPos, Vector3d endPos, double distanceBetweenParticles) {
-        // Assuming 'world' is a reference to the world object
-        // and 'startPos' and 'endPos' are the start and end positions of the ray
-        // and 'particleType' is the type of particle to spawn
+            // Vectors to find where to spawn particles at the start
+            Vector3d lookVec = this.getShooter().getLookVec().normalize();
+            Vector3d particleVec = startVec.add(lookVec.scale(0.5));
 
-        // Calculate the distance between the start and end positions
-        double distance = startPos.distanceTo(endPos);
+            // Spawn particles where arrow reappears
+            hitVec = hitVec.subtract(lookVec.scale(AspectedArrowItem.TELEPORT_BUFFER_DISTANCE));
 
-        // Calculate the direction of the ray
-        Vector3d direction = endPos.subtract(startPos).normalize();
+            BlockPos startPos = new BlockPos(startVec.x, startVec.y, startVec.z);
+            BlockPos destPos = new BlockPos(hitVec.x, hitVec.y, hitVec.z);
 
-        // Calculate the number of particles to spawn
-        int numParticles = (int) Math.ceil(distance / distanceBetweenParticles); // Spawn a particle every 0.25 blocks
+            // Spawn particles along the ray
+            world.playSound(null, startPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
-        // Calculate the position increment for each particle
-        Vector3d posIncrement = direction.scale(distance / numParticles);
-
-        // Spawn particles along the ray
-        for (int i = 0; i < numParticles; i++) {
-            Vector3d particlePos = startPos.add(posIncrement.scale(i));
-            world.addParticle(ParticleTypes.PORTAL, particlePos.getX(), particlePos.getY(), particlePos.getZ(), 0, 0, 0);
+            // Spawn the Enderman particle effect at the destination position
+            ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, hitVec.x, hitVec.y, hitVec.z, 50, 0.5, 0.5, 0.5, 0.0);
+            ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, particleVec.x, particleVec.y, particleVec.z, 50, 0.5, 0.5, 0.5, 0.0);
         }
     }
 
+
+    @Override
+    public @Nonnull IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public void setTeleportedFlag(boolean teleportedFlag) {
+        this.teleportedFlag = teleportedFlag;
+    }
 }

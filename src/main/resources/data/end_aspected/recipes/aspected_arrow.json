@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  #",
+    " / ",
+    "S  "
+  ],
+  "key": {
+    "#": {
+      "item": "end_aspected:aspect_shard"
+    },
+    "/": {
+      "item": "minecraft:stick"
+    },
+    "S": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "end_aspected:aspected_arrow",
+    "count": 1
+  }
+}

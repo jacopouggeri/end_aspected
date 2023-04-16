@@ -6,6 +6,7 @@ import com.jayugg.end_aspected.config.ModConfig;
 import com.jayugg.end_aspected.effect.ModEffects;
 import com.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import com.jayugg.end_aspected.enchantment.ModEnchantments;
+import com.jayugg.end_aspected.entity.ModEntities;
 import com.jayugg.end_aspected.item.ModItems;
 import com.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
@@ -24,7 +25,6 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(EndAspected.MOD_ID)
@@ -48,6 +48,8 @@ public class EndAspected
         ModBlocks.register(eventBus);
         // Register Items
         ModItems.register(eventBus);
+        // Register Entities
+        ModEntities.register(eventBus);
 
         // Register the setup method for modloading
         eventBus.addListener(this::setup);
@@ -68,7 +70,6 @@ public class EndAspected
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
