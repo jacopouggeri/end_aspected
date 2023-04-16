@@ -1,5 +1,6 @@
-1.16.5-1.0.7.1 Changelog
+1.16.5-1.0.8.0 Changelog
 =========================
+- 1.0.8.0 Added Aspected Arrow crafting recipe and custom entity. Implemented mechanic: Aspected Arrows will teleport 8 blocks before the block the player is looking at when fired.
 - 1.0.7.1 Added Unstable Phase texture.
 - 1.0.7.0 Now teleporting too much will give Unstable Phase (texture missing). Added config option to disable and control when this is triggered. Removed player status messages.
 - 1.0.6.2 Changed Ender Slayer level scaling.

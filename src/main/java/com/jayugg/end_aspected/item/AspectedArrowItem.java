@@ -69,7 +69,7 @@ public class AspectedArrowItem extends ArrowItem {
         // Set the arrow's position, motion, and shooter
         arrowEntity.setShooter(shooter);
         arrowEntity.setPosition(shooterPos.x, shooterPos.y, shooterPos.z);
-        arrowEntity.setMotion(shooter.getLookVec().scale(3.0));
+        arrowEntity.setMotion(shooter.getLookVec().scale(1.0));
 
         RayTraceResult rayTraceResult = world.rayTraceBlocks(new RayTraceContext(shooterPos, endVec, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, shooter));
 

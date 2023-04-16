@@ -57,7 +57,7 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
 
             // Vectors to find where to spawn particles at the start
             Vector3d lookVec = this.getShooter().getLookVec().normalize();
-            Vector3d particleVec = startVec.add(lookVec.scale(0.5));
+            Vector3d particleVec = startVec.add(lookVec.scale(0.25));
 
             // Spawn particles where arrow reappears
             hitVec = hitVec.subtract(lookVec.scale(AspectedArrowItem.TELEPORT_BUFFER_DISTANCE));
