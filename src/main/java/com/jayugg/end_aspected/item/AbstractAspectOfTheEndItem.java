@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
-    private long cooldownEndTime;
+    private static final String COOLDOWN_END_TAG = "cooldownEndTime";
     private long cooldown;
 
     private int maxTeleports;
@@ -43,7 +43,6 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     public AbstractAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
-        this.cooldownEndTime = 0;
         this.teleportsAfterCooldown = 0;
         this.firstRunFlag = true;
 
@@ -125,16 +124,11 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         return teleportPos;
     }
 
-    public void spawnCooldownParticles(World world, double dx, double dy, double dz) {
-        if (world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            serverWorld.spawnParticle(ParticleTypes.FALLING_OBSIDIAN_TEAR, dx, dy, dz, 10, 0.5, 0.5, 0.5, 0.0);
-            serverWorld.spawnParticle(ParticleTypes.ANGRY_VILLAGER, dx, dy, dz, 1, 0.5, 0.5, 0.5, 0.0);
-        }
-    }
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world,@Nonnull PlayerEntity player,@Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        long cooldownEndTime = stack.getOrCreateTag().getLong(COOLDOWN_END_TAG);
         if (!player.getEntityWorld().isRemote) {
 
             if ((teleportsRemaining != maxTeleports) && firstRunFlag) {
@@ -161,7 +155,6 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 // Check if the cooldown has ended, if not reduce durability
                 if (hasCooldown(cooldownEndTime, world)) {
                     if (enableLostDurability) {
-                        ItemStack stack = player.getHeldItem(hand);
                         stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
                     } else {
                         return ActionResult.resultFail(player.getHeldItem(hand));
@@ -172,7 +165,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
             }
 
             // Play the Enderman sound at the destination position
-            world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 
             // Spawn the Enderman particle effect at the destination position
             ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, dx, dy, dz, 50, 0.5, 0.5, 0.5, 0.0);
@@ -189,6 +182,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 if (teleportsRemaining <= 0) {
                     // Set new time of last cooldown
                     cooldownEndTime = world.getGameTime() + cooldown*20;
+                    stack.getOrCreateTag().putLong(COOLDOWN_END_TAG, cooldownEndTime);
                     teleportsRemaining = maxTeleports;
                 }
 
@@ -219,6 +213,14 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     }
     public boolean hasCooldown(long endTime, World world) {
         return cooldownLeft(endTime, world) > 0;
+    }
+
+    public void spawnCooldownParticles(World world, double dx, double dy, double dz) {
+        if (world instanceof ServerWorld) {
+            ServerWorld serverWorld = (ServerWorld) world;
+            serverWorld.spawnParticle(ParticleTypes.FALLING_OBSIDIAN_TEAR, dx, dy, dz, 10, 0.5, 0.5, 0.5, 0.0);
+            serverWorld.spawnParticle(ParticleTypes.ANGRY_VILLAGER, dx, dy, dz, 1, 0.5, 0.5, 0.5, 0.0);
+        }
     }
 
     @Override

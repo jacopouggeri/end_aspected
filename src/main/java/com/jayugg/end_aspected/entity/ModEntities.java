@@ -14,6 +14,12 @@ public class ModEntities {
             () -> EntityType.Builder.<AspectedArrowEntity>create(AspectedArrowEntity::new, EntityClassification.MISC)
                     .size(0.5F, 0.5F)
                     .build("end_aspected:aspected_arrow"));
+
+    public static final RegistryObject<EntityType<AspectedShulkerBulletEntity>> SHULKER_BULLET = ENTITY_TYPES.register("shulker_bullet",
+            () -> EntityType.Builder.<AspectedShulkerBulletEntity>create(AspectedShulkerBulletEntity::new, EntityClassification.MISC)
+                    .size(0.5F, 0.5F)
+                    .build("minecraft:shulker_bullet"));
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }

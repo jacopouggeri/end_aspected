@@ -8,6 +8,7 @@ import com.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import com.jayugg.end_aspected.enchantment.ModEnchantments;
 import com.jayugg.end_aspected.entity.ModEntities;
 import com.jayugg.end_aspected.item.ModItems;
+import com.jayugg.end_aspected.network.EndAspectedNetwork;
 import com.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,8 +36,10 @@ public class EndAspected
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EndAspected() {
-
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // Register the setup method for modloading
+        eventBus.addListener(this::setup);
 
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
@@ -51,8 +54,6 @@ public class EndAspected
         // Register Entities
         ModEntities.register(eventBus);
 
-        // Register the setup method for modloading
-        eventBus.addListener(this::setup);
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
@@ -67,6 +68,7 @@ public class EndAspected
 
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(ModTrades::fillTradeData);
+        EndAspectedNetwork.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -99,13 +101,11 @@ public class EndAspected
     public void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
         Entity entity = event.getEntity();
         // Check for teleport hijacking or jamming effects
-        boolean unstable = UnstablePhaseEffect.blockEventEntity(event, entity);
-        if (unstable) {
-            if (ModConfig.enderTrapJams.get()) {
-                EnderTrapBlock.jamEventEntity(event, entity);
-            } else {
-                EnderTrapBlock.trapEventEntity(event, entity);
-            }
+        UnstablePhaseEffect.damageTeleporter(entity);
+        if (ModConfig.enderTrapJams.get()) {
+            EnderTrapBlock.jamEventEntity(event, entity);
+        } else {
+            EnderTrapBlock.trapEventEntity(event, entity);
         }
 
     }
