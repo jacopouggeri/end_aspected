@@ -38,8 +38,8 @@ public final class ModConfig {
     static {
         BUILDER.push("Item Settings");
 
-        teleportDistance = BUILDER.comment("Teleport distance in blocks for the Aspect of the End and upgrades.").defineInRange("teleportDistance", 8, 0, Integer.MAX_VALUE);
-        maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 6, 0, Integer.MAX_VALUE);
+        teleportDistance = BUILDER.comment("Teleport distance in blocks for the Aspect of the End and upgrades.").defineInRange("teleportDistance", 6, 0, Integer.MAX_VALUE);
+        maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 8, 0, Integer.MAX_VALUE);
 
         BUILDER.push("Aspect of The End");
         enableAoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", true);
@@ -86,7 +86,7 @@ public final class ModConfig {
         BUILDER.push("Unstable Phase");
         unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("percentDamage", 20, 0, Long.valueOf(100));
         unstableTeleports = BUILDER.comment("If true, too many teleports during the Aspect of the End cooldown will give the Unstable Phase effect.").define("unstableTeleports", true);
-        unstableTeleportsLimit = BUILDER.comment("Number of teleports before the player gets Unstable Phase.").defineInRange("unstableTeleportsLimit", 20, 0, Integer.MAX_VALUE);
+        unstableTeleportsLimit = BUILDER.comment("Number of teleports before the player gets Unstable Phase.").defineInRange("unstableTeleportsLimit", 8, 0, Integer.MAX_VALUE);
         unstablePhaseCooldownMultiplier = BUILDER.comment("How much (in %) of the remaining cooldown should be added to the unstable phase duration?").defineInRange("unstablePhaseCooldownMultiplier", 5.0f, 0.0f, 100.0f);
         BUILDER.pop();
         BUILDER.pop();

@@ -151,17 +151,13 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
-            if (enableCooldown && !player.isCreative()) {
-                // Check if the cooldown has ended, if not reduce durability
-                if (hasCooldown(cooldownEndTime, world)) {
-                    if (enableLostDurability) {
-                        stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                    } else {
-                        return ActionResult.resultFail(player.getHeldItem(hand));
-                    }
-                    spawnCooldownParticles(world, dx, dy, dz);
+            if (enableCooldown && hasCooldown(cooldownEndTime, world)) {
+                if (enableLostDurability) {
+                    stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                } else {
+                    return ActionResult.resultFail(player.getHeldItem(hand));
                 }
-
+                spawnCooldownParticles(world, dx, dy, dz);
             }
 
             // Play the Enderman sound at the destination position
@@ -173,7 +169,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
             player.setPositionAndUpdate(dx, dy, dz);
             player.fallDistance = 0;
 
-            if (enableCooldown && !player.isCreative()) {
+            if (enableCooldown) {
 
                 // Decrement the teleports remaining
                 teleportsRemaining--;
