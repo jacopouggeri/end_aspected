@@ -28,18 +28,18 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final String COOLDOWN_END_TAG = "cooldownEndTime";
     private long cooldown;
 
-    private int maxTeleports;
+    private final int maxTeleports;
     private int teleportsRemaining;
 
-    private long teleportDistance;
+    private final long teleportDistance;
     private boolean firstRunFlag;
     private int teleportsAfterCooldown;
 
     private boolean enableCooldown;
     private boolean enableLostDurability;
     private int lostDurability;
-    private boolean enableUnstableTeleports;
-    private int unstableTeleportLimit;
+    private final boolean enableUnstableTeleports;
+    private final int unstableTeleportLimit;
 
     public AbstractAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
