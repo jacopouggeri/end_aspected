@@ -17,7 +17,7 @@ public class ModItems {
             DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
     public static final RegistryObject<Item> ASPECT_OF_THE_END = ITEMS.register("aspect_of_the_end",
-            () -> new AbstractAspectOfTheEndItem(ItemTier.DIAMOND,
+            () -> new AspectOfTheEndItem(ItemTier.DIAMOND,
                     3,
                     -2.4F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(Rarity.EPIC)
