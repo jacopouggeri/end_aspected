@@ -97,11 +97,17 @@ public class EndAspected
 
     @SubscribeEvent
     public void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
-        //System.out.println("ENDERMAN TELEPORTED");
         Entity entity = event.getEntity();
-        // Check for teleport jamming effects
-        UnstablePhaseEffect.blockEventEntity(event, entity);
-        EnderTrapBlock.trapEventEntity(event, entity);
+        // Check for teleport hijacking or jamming effects
+        boolean unstable = UnstablePhaseEffect.blockEventEntity(event, entity);
+        if (unstable) {
+            if (ModConfig.enderTrapJams.get()) {
+                EnderTrapBlock.jamEventEntity(event, entity);
+            } else {
+                EnderTrapBlock.trapEventEntity(event, entity);
+            }
+        }
+
     }
 
 }

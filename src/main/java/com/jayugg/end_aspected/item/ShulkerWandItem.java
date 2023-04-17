@@ -1,8 +1,6 @@
 package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.config.ModConfig;
-import it.unimi.dsi.fastutil.longs.Long2LongMap;
-import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ShulkerBulletEntity;
 import net.minecraft.item.IItemTier;
@@ -12,41 +10,32 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
 public class ShulkerWandItem extends SwordItem {
 
-    private final Long2LongMap cooldowns = new Long2LongOpenHashMap();
+    private long cooldownEndTime;
 
     public ShulkerWandItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
+        this.cooldownEndTime = 0;
     }
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-        if (!world.isRemote) {
+        if (!player.getEntityWorld().isRemote) {
             if (ModConfig.enableShulkerWandCooldown.get() && !player.isCreative()) {
-                long cooldownTime = 20 * ModConfig.shulkerWandCooldown.get(); // cooldown in ticks;
 
-                long currentTime = world.getGameTime();
-                long playerId = player.getUniqueID().getLeastSignificantBits();
-                long lastTime = cooldowns.getOrDefault(playerId, -cooldownTime);
-
-                if (currentTime < lastTime + cooldownTime) {
+                if (hasCooldown(cooldownEndTime, world)) {
                     if (ModConfig.enableShulkerWandLostDurability.get()) {
                         ItemStack stack = player.getHeldItem(hand);
                         stack.damageItem(ModConfig.shulkerWandLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                        player.sendStatusMessage(new TranslationTextComponent("msg.shulker_wand.cooldown1"), true);
                     } else {
-                        player.sendStatusMessage(new TranslationTextComponent("msg.shulker_wand.cooldown2"), true);
                         return ActionResult.resultFail(player.getHeldItem(hand));
                     }
                 }
-
-                cooldowns.put(playerId, currentTime);
             }
 
             double pX = player.getPosX();
@@ -61,6 +50,10 @@ public class ShulkerWandItem extends SwordItem {
             ShulkerBulletEntity shulkerBullet = new ShulkerBulletEntity(world, pX, pY, pZ, vX, vY, vZ);
             shulkerBullet.setNoGravity(true);
             world.addEntity(shulkerBullet);
+
+            // Add to cooldown
+            long cooldownTime = 20 * ModConfig.shulkerWandCooldown.get(); // cooldown in ticks;
+            cooldownEndTime += cooldownTime;
         }
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }
@@ -70,5 +63,11 @@ public class ShulkerWandItem extends SwordItem {
         return repair.getItem() instanceof AspectShardItem;
     }
 
+    public long cooldownLeft(long endTime, World world) {
+        return endTime - world.getGameTime();
+    }
+    public boolean hasCooldown(long endTime, World world) {
+        return cooldownLeft(endTime, world) > 0;
+    }
 
 }

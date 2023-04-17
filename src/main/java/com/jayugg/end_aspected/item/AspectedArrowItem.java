@@ -3,7 +3,6 @@ package com.jayugg.end_aspected.item;
 import com.jayugg.end_aspected.entity.AspectedArrowEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -47,14 +46,9 @@ public class AspectedArrowItem extends ArrowItem {
         return closestPos;
     }
 
-    private int getMaxTeleportDistance(LivingEntity shooter) {
-        if (shooter instanceof PlayerEntity) {
-            double renderDistanceWeight = Entity.getRenderDistanceWeight();
-            int renderDistanceChunks = (int) (renderDistanceWeight * 12.0D); // Convert render distance weight to number of chunks
-            return renderDistanceChunks * 16;
-        } else {
-            return 100;
-        }
+    private double getMaxTeleportDistance(LivingEntity shooter) {
+        // Should probably get some packet with the player's chunk render distance but 20 sounds like a reasonable one
+        return 10 * 16.0;
     }
 
     @Override
