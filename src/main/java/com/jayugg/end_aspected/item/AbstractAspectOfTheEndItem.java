@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ActionResult;
@@ -23,12 +24,13 @@ import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
 import javax.annotation.Nonnull;
 
+import static com.jayugg.end_aspected.EndAspected.LOGGER;
+
 public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
     private int cooldown;
 
     private final int maxTeleports;
-    private int teleportsRemaining;
 
     private final long teleportDistance;
     private boolean firstRunFlag;
@@ -39,13 +41,16 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     private final boolean enableUnstableTeleports;
     private final int unstableTeleportLimit;
 
+    public String TELEPORTS_REMAINING_TAG = "teleports_remaining";
+    public String COOLDOWN_CYCLES_TAG = "cooldownCycles";
+    public String LAST_USE_TAG = "lastUseTime";
+
     public AbstractAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.firstRunFlag = true;
 
         // Load config values
         this.teleportDistance = ModConfig.teleportDistance.get();
-        this.teleportsRemaining = ModConfig.maxTeleports.get();
         this.maxTeleports = ModConfig.maxTeleports.get();
         this.enableUnstableTeleports = ModConfig.unstableTeleports.get();
         this.unstableTeleportLimit = ModConfig.unstableTeleportsLimit.get();
@@ -121,14 +126,16 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         return teleportPos;
     }
 
+    public int getTeleportsRemaining(ItemStack stack) {
+        return stack.getOrCreateTag().getInt(TELEPORTS_REMAINING_TAG);
+    }
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world,@Nonnull PlayerEntity player,@Nonnull Hand hand) {
         if (!player.getEntityWorld().isRemote) {
             ItemStack stack = player.getHeldItem(hand);
-
-            if ((teleportsRemaining != maxTeleports) && firstRunFlag) {
-                teleportsRemaining = maxTeleports;
+            if ((getTeleportsRemaining(stack) != maxTeleports) && firstRunFlag) {
+                stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, maxTeleports);
                 firstRunFlag = false;
             }
 
@@ -148,50 +155,42 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
-            if (enableCooldown && player.getCooldownTracker().hasCooldown(this) && !player.isCreative()) {
-                spawnCooldownParticles(world, dx, dy, dz);
-            }
-
             // Play the Enderman sound at the destination position
             world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-
             // Spawn the Enderman particle effect at the destination position
             ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, dx, dy, dz, 50, 0.5, 0.5, 0.5, 0.0);
-
+            // Teleport the player
             player.setPositionAndUpdate(dx, dy, dz);
-
+            // Remove fall damage
+            player.fallDistance = 0;
             // Reduce durability
             if (enableLostDurability) {
                 stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
             }
-
-            // Remove fall damage
-            player.fallDistance = 0;
-
-            stack.getOrCreateTag().putLong("lastUseTime", world.getGameTime());
+            // Set last use
+            stack.getOrCreateTag().putLong(LAST_USE_TAG, world.getGameTime());
 
             // Handle cooldown
             if (enableCooldown && !player.isCreative()) {
+                LOGGER.info("HANDLING COOLDOWN");
                 // Decrement the teleports remaining
-                long timeSinceLastUse = world.getGameTime() - stack.getOrCreateTag().getLong("lastUseTime");
-
-                int addToCooldownCounter = (int) (1 - Math.max(timeSinceLastUse/cooldown, 1));
-                teleportsRemaining = teleportsRemaining - addToCooldownCounter;
+                stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, stack.getOrCreateTag().getInt(TELEPORTS_REMAINING_TAG) -  1);
 
                 // Check if teleports remaining is zero and reset cooldown
-                if (teleportsRemaining <= 0) {
+                if (getTeleportsRemaining(stack) <= 0) {
+                    LOGGER.info("COOLDOWN TRIGGERED");
                     // Set new time of last cooldown
                     int cooldownTime = cooldown*20;
                     player.getCooldownTracker().setCooldown(this, cooldownTime);
-                    teleportsRemaining = maxTeleports;
-                    int cooldownCycles = stack.getOrCreateTag().getInt("cooldownCycles");
-                    stack.getOrCreateTag().putInt("cooldownCycles", cooldownCycles + 1);
+                    stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, maxTeleports);
+                    int cooldownCycles = stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG);
+                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cooldownCycles + 1);
                 }
 
-                if (enableUnstableTeleports && (stack.getOrCreateTag().getInt("cooldownCycles") > unstableTeleportLimit)) {
+                if (enableUnstableTeleports && (stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG) > unstableTeleportLimit)) {
                     int i = calculateUnstableDuration();
                     player.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 0));
-                    stack.getOrCreateTag().putInt("cooldownCycles", 0);
+                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, 0);
                 }
 
             }
@@ -203,17 +202,36 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         return (int) (cooldown * 20 * ModConfig.unstablePhaseCooldownMultiplier.get());
     }
 
-    public void spawnCooldownParticles(World world, double dx, double dy, double dz) {
-        if (world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            serverWorld.spawnParticle(ParticleTypes.FALLING_OBSIDIAN_TEAR, dx, dy, dz, 10, 0.5, 0.5, 0.5, 0.0);
-            serverWorld.spawnParticle(ParticleTypes.ANGRY_VILLAGER, dx, dy, dz, 1, 0.5, 0.5, 0.5, 0.0);
-        }
-    }
-
     @Override
     public boolean getIsRepairable(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
         return repair.getItem() instanceof AspectShardItem;
+    }
+
+    // Update the last use time to decrease cooldown counter when not in use
+    @Override
+    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean selected) {
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
+            if (!world.isRemote && enableCooldown && !player.isCreative()) {
+                CompoundNBT tag = stack.getOrCreateTag();
+
+                long lastUse = tag.getLong(LAST_USE_TAG);
+                long currentTime = world.getGameTime();
+
+                if (currentTime - lastUse >= cooldown * 10L && tag.contains(TELEPORTS_REMAINING_TAG)) {
+                    int usesLeft = tag.getInt(TELEPORTS_REMAINING_TAG);
+                    if (usesLeft < maxTeleports) {
+                        tag.putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
+                        tag.putLong(TELEPORTS_REMAINING_TAG, currentTime);
+                    }
+                }
+
+                // Reset cooldown cycles if the item isn't being used
+                if (currentTime - lastUse >= cooldown * 10L) {
+                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, 0);
+                }
+            }
+        }
     }
 
 }

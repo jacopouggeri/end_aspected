@@ -6,7 +6,6 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
@@ -53,7 +52,7 @@ public class EnderSlayerEnchantment extends Enchantment {
     // Called whenever a mob is damaged
     public static void getLastDamageInflicted(LivingHurtEvent event) {
         // Find player and target anc check that code is on server
-        PlayerEntity user = (PlayerEntity) event.getSource().getTrueSource();
+        LivingEntity user = (LivingEntity) event.getSource().getTrueSource();
 
         LivingEntity target = event.getEntityLiving();
 
