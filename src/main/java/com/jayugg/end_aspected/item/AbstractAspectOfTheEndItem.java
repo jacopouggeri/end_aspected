@@ -2,7 +2,10 @@ package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.config.ModConfig;
 import com.jayugg.end_aspected.effect.ModEffects;
+import com.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
@@ -17,12 +20,16 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 import static com.jayugg.end_aspected.EndAspected.LOGGER;
 
@@ -44,6 +51,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     public String TELEPORTS_REMAINING_TAG = "teleports_remaining";
     public String COOLDOWN_CYCLES_TAG = "cooldownCycles";
     public String LAST_USE_TAG = "lastUseTime";
+    public TranslationTextComponent tooltip_lore;
 
     public AbstractAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
@@ -61,16 +69,19 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
             this.enableCooldown = ModConfig.enableAoteCooldown.get();
             this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
             this.lostDurability = ModConfig.aoteLostDurability.get();
+            this.tooltip_lore = new TranslationTextComponent("tooltip.end_aspected.aspect_of_the_end_shift");
         } else if (this instanceof NetherforgedAspectOfTheEndItem) {
             this.cooldown = ModConfig.naoteCooldown.get();
             this.enableCooldown = ModConfig.enableNaoteCooldown.get();
             this.enableLostDurability = ModConfig.enableNaoteLostDurability.get();
             this.lostDurability = ModConfig.naoteLostDurability.get();
+            this.tooltip_lore = new TranslationTextComponent("tooltip.end_aspected.netherforged_aspect_of_the_end_shift");
         } else if (this instanceof DragonforgedAspectOfTheEndItem) {
             this.cooldown = ModConfig.daoteCooldown.get();
             this.enableCooldown = ModConfig.enableDaoteCooldown.get();
             this.enableLostDurability = ModConfig.enableDaoteLostDurability.get();
             this.lostDurability = ModConfig.daoteLostDurability.get();
+            this.tooltip_lore = new TranslationTextComponent("tooltip.end_aspected.dragonforged_aspect_of_the_end_shift");
         }
     }
 
@@ -232,6 +243,49 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                     stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
                 }
             }
+        }
+    }
+
+    public long getTeleportDistance() {
+        return teleportDistance;
+    }
+
+    public double getCooldown() {
+        return cooldown;
+    }
+
+    @Override
+    public void addInformation(@Nonnull ItemStack item, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        if (Screen.hasShiftDown()) {
+
+            String reachString = FormatUtils.formatNumber(this.getTeleportDistance());
+            String cooldownString = FormatUtils.formatNumber(this.getCooldown());
+            TranslationTextComponent ability = new TranslationTextComponent("tooltip.end_aspected.aspect_of_the_end_ability");
+            TranslationTextComponent reach = new TranslationTextComponent("tooltip.end_aspected.teleport_reach", "§2" + reachString + "§r");
+            TranslationTextComponent cooldown = new TranslationTextComponent("tooltip.end_aspected.cooldown", "§2" + cooldownString + "§r");
+
+            TranslationTextComponent stats = new TranslationTextComponent("tooltip.end_aspected.stats");
+
+            // Handle no cooldown in config
+            if (enableCooldown) {
+                TranslationTextComponent message_final = (TranslationTextComponent) ability
+                        .appendSibling(tooltip_lore)
+                        .appendSibling(stats)
+                        .appendSibling(reach)
+                        .appendString("\n")
+                        .appendSibling(cooldown);
+
+                tooltip.add(message_final);
+            } else {
+                TranslationTextComponent message_final_2 = (TranslationTextComponent) ability
+                        .appendSibling(tooltip_lore)
+                        .appendSibling(stats)
+                        .appendSibling(reach);
+                tooltip.add(message_final_2);
+            }
+
+        } else {
+            tooltip.add(new TranslationTextComponent("tooltip.end_aspected.more"));
         }
     }
 

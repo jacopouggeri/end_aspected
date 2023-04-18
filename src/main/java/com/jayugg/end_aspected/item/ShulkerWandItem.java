@@ -2,15 +2,22 @@ package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.config.ModConfig;
 import com.jayugg.end_aspected.entity.AspectedShulkerBulletEntity;
+import com.jayugg.end_aspected.utils.FormatUtils;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ShulkerWandItem extends SwordItem {
 
@@ -57,6 +64,31 @@ public class ShulkerWandItem extends SwordItem {
             spawnBulletEntity(player, world);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+    }
+
+    @Override
+    public void addInformation(@Nonnull ItemStack item, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        if (Screen.hasShiftDown()) {
+
+            String cooldownString = FormatUtils.formatNumber(ModConfig.shulkerWandCooldown.get());
+            TranslationTextComponent ability = new TranslationTextComponent("tooltip.end_aspected.shulker_wand_shift");
+            TranslationTextComponent cooldown = new TranslationTextComponent("tooltip.end_aspected.cooldown", "§2" + cooldownString + "§r");
+            TranslationTextComponent stats = new TranslationTextComponent("tooltip.end_aspected.stats");
+
+            // Handle no cooldown in config
+            if (ModConfig.enableShulkerWandCooldown.get()) {
+                TranslationTextComponent message_final = (TranslationTextComponent) ability
+                        .appendSibling(stats)
+                        .appendSibling(cooldown);
+
+                tooltip.add(message_final);
+            } else {
+                tooltip.add(ability);
+            }
+
+        } else {
+            tooltip.add(new TranslationTextComponent("tooltip.end_aspected.more"));
+        }
     }
 
 }

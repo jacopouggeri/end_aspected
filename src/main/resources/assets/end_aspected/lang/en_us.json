@@ -12,9 +12,13 @@
   "item.end_aspected.aspected_arrow": "Aspected Arrow",
   "itemGroup.mainGroupTab": "End Aspected",
   "block.end_aspected.ender_trap": "Ender Trap",
-  "msg.aspect_of_the_end.cooldown1": "Slow down! Your sword will lose durability during cooldown.",
-  "msg.aspect_of_the_end.cooldown2": "Slow down!",
-  "msg.aspect_of_the_end.disrupted": "Teleport disrupted!",
-  "msg.shulker_wand.cooldown1": "Slow down! Your wand will lose durability during cooldown.",
-  "msg.shulker_wand.cooldown2": "Slow down!"
+  "tooltip.end_aspected.more": "§7Hold §r§eSHIFT§r§7 for more!§r",
+  "tooltip.end_aspected.aspect_of_the_end_ability": "§3§lITEM ABILITY§r: \n§7Teleports you in the direction you're facing.§r\n",
+  "tooltip.end_aspected.teleport_reach": " %s§r§2 Teleport Reach§r",
+  "tooltip.end_aspected.cooldown": " %s§r§2s Cooldown§r",
+  "tooltip.end_aspected.aspect_of_the_end_shift": "§7Tread carefully, as misuse might cause you to get §3unst§ka§r§3bl§ke§r§7.§r\n",
+  "tooltip.end_aspected.netherforged_aspect_of_the_end_shift": "§7This sword has been reforged in Netherite, it can now bear more of the End's power.§r\n",
+  "tooltip.end_aspected.dragonforged_aspect_of_the_end_shift": "§7This sword has been reforged in Dragon Breath, it is now a perfect recipient for the End's power.§r\n",
+  "tooltip.end_aspected.shulker_wand_shift": "§3§lITEM ABILITY§r: \n§7This wand is able to call forth the magic of End cities. Summons a shulker bullet in the direction you're facing.§r\n",
+  "tooltip.end_aspected.stats": "§7Item stats:§r\n"
 }
