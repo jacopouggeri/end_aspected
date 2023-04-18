@@ -44,8 +44,8 @@ public class ModItems {
             );
 
     public static final RegistryObject<Item> SHULKER_WAND = ITEMS.register("shulker_wand",
-            () -> new ShulkerWandItem(ItemTier.IRON,
-                    3,
+            () -> new ShulkerWandItem(ItemTier.DIAMOND,
+                    0,
                     -2.0F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(MYTHICAL)
             ));

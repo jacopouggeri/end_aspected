@@ -25,15 +25,13 @@ import javax.annotation.Nonnull;
 
 public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
-    private static final String COOLDOWN_END_TAG = "cooldownEndTime";
-    private long cooldown;
+    private int cooldown;
 
     private final int maxTeleports;
     private int teleportsRemaining;
 
     private final long teleportDistance;
     private boolean firstRunFlag;
-    private int teleportsAfterCooldown;
 
     private boolean enableCooldown;
     private boolean enableLostDurability;
@@ -43,7 +41,6 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     public AbstractAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
-        this.teleportsAfterCooldown = 0;
         this.firstRunFlag = true;
 
         // Load config values
@@ -104,7 +101,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     private static Vector3d adjustTeleportPosition(World world, Entity entity, Vector3d teleportPos, float partialTicks) {
 
-        // Check if the player's bounding box overlaps with any solid blocks's bounding box at the teleport position
+        // Check if the player's bounding box overlaps with any solid block's bounding box at the teleport position
         if (doesPlayerOverlap(world, entity, teleportPos)) {
 
             // If there is an overlap, raytrace back to find a valid teleport position
@@ -127,9 +124,8 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world,@Nonnull PlayerEntity player,@Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        long cooldownEndTime = stack.getOrCreateTag().getLong(COOLDOWN_END_TAG);
         if (!player.getEntityWorld().isRemote) {
+            ItemStack stack = player.getHeldItem(hand);
 
             if ((teleportsRemaining != maxTeleports) && firstRunFlag) {
                 teleportsRemaining = maxTeleports;
@@ -138,25 +134,21 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
             Vector3d teleportPos;
             teleportPos = getTeleportPosition(player, teleportDistance, 1.0f);
-            EntityTeleportEvent.EnderEntity teleportEvent = new EntityTeleportEvent.EnderEntity (player, teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
-            MinecraftForge.EVENT_BUS.post(teleportEvent);
 
             double dx = teleportPos.x;
             double dy = teleportPos.y;
             double dz = teleportPos.z;
             BlockPos destPos = new BlockPos(dx, dy, dz);
 
+            EntityTeleportEvent.EnderEntity teleportEvent = new EntityTeleportEvent.EnderEntity (player, teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
+            MinecraftForge.EVENT_BUS.post(teleportEvent);
+
             // Handle teleport jamming events
             if (teleportEvent.isCanceled()) {
                 return ActionResult.resultFail(player.getHeldItem(hand));
             }
 
-            if (enableCooldown && hasCooldown(cooldownEndTime, world)) {
-                if (enableLostDurability) {
-                    stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
-                } else {
-                    return ActionResult.resultFail(player.getHeldItem(hand));
-                }
+            if (enableCooldown && player.getCooldownTracker().hasCooldown(this) && !player.isCreative()) {
                 spawnCooldownParticles(world, dx, dy, dz);
             }
 
@@ -167,31 +159,39 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
             ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, dx, dy, dz, 50, 0.5, 0.5, 0.5, 0.0);
 
             player.setPositionAndUpdate(dx, dy, dz);
+
+            // Reduce durability
+            if (enableLostDurability) {
+                stack.damageItem(lostDurability, player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+            }
+
+            // Remove fall damage
             player.fallDistance = 0;
 
-            if (enableCooldown) {
+            stack.getOrCreateTag().putLong("lastUseTime", world.getGameTime());
 
+            // Handle cooldown
+            if (enableCooldown && !player.isCreative()) {
                 // Decrement the teleports remaining
-                teleportsRemaining--;
+                long timeSinceLastUse = world.getGameTime() - stack.getOrCreateTag().getLong("lastUseTime");
+
+                int addToCooldownCounter = (int) (1 - Math.max(timeSinceLastUse/cooldown, 1));
+                teleportsRemaining = teleportsRemaining - addToCooldownCounter;
 
                 // Check if teleports remaining is zero and reset cooldown
                 if (teleportsRemaining <= 0) {
                     // Set new time of last cooldown
-                    cooldownEndTime = world.getGameTime() + cooldown*20;
-                    stack.getOrCreateTag().putLong(COOLDOWN_END_TAG, cooldownEndTime);
+                    int cooldownTime = cooldown*20;
+                    player.getCooldownTracker().setCooldown(this, cooldownTime);
                     teleportsRemaining = maxTeleports;
+                    int cooldownCycles = stack.getOrCreateTag().getInt("cooldownCycles");
+                    stack.getOrCreateTag().putInt("cooldownCycles", cooldownCycles + 1);
                 }
 
-                if (enableUnstableTeleports) {
-                    if (hasCooldown(cooldownEndTime, world)) {
-                        teleportsAfterCooldown += 1;
-                        if (teleportsAfterCooldown > unstableTeleportLimit) {
-                            int i = calculateUnstableDuration(cooldownEndTime, world);
-                            player.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 1));
-                        }
-                    } else {
-                        teleportsAfterCooldown = 0;
-                    }
+                if (enableUnstableTeleports && (stack.getOrCreateTag().getInt("cooldownCycles") > unstableTeleportLimit)) {
+                    int i = calculateUnstableDuration();
+                    player.addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 0));
+                    stack.getOrCreateTag().putInt("cooldownCycles", 0);
                 }
 
             }
@@ -199,16 +199,8 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         return ActionResult.resultSuccess(player.getHeldItem(hand));
     }
 
-    public int calculateUnstableDuration(long endTime, World world) {
-        float cooldown = cooldownLeft(endTime, world);
+    public int calculateUnstableDuration() {
         return (int) (cooldown * 20 * ModConfig.unstablePhaseCooldownMultiplier.get());
-    }
-
-    public long cooldownLeft(long endTime, World world) {
-        return endTime - world.getGameTime();
-    }
-    public boolean hasCooldown(long endTime, World world) {
-        return cooldownLeft(endTime, world) > 0;
     }
 
     public void spawnCooldownParticles(World world, double dx, double dy, double dz) {

@@ -9,22 +9,22 @@ public final class ModConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> maxTeleports;
 
     public static ForgeConfigSpec.BooleanValue enableAoteCooldown;
-    public static ForgeConfigSpec.ConfigValue<Long> aoteCooldown;
+    public static ForgeConfigSpec.ConfigValue<Integer> aoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableAoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> aoteLostDurability;
 
     public static ForgeConfigSpec.BooleanValue enableNaoteCooldown;
-    public static ForgeConfigSpec.ConfigValue<Long> naoteCooldown;
+    public static ForgeConfigSpec.ConfigValue<Integer> naoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableNaoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> naoteLostDurability;
 
     public static ForgeConfigSpec.BooleanValue enableDaoteCooldown;
-    public static ForgeConfigSpec.ConfigValue<Long> daoteCooldown;
+    public static ForgeConfigSpec.ConfigValue<Integer> daoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableDaoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> daoteLostDurability;
 
     public static ForgeConfigSpec.BooleanValue enableShulkerWandCooldown;
-    public static ForgeConfigSpec.ConfigValue<Long>  shulkerWandCooldown;
+    public static ForgeConfigSpec.ConfigValue<Integer>  shulkerWandCooldown;
     public static ForgeConfigSpec.BooleanValue enableShulkerWandLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> shulkerWandLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> enderTrapRadius;
@@ -34,45 +34,51 @@ public final class ModConfig {
     public static ForgeConfigSpec.DoubleValue unstablePhaseCooldownMultiplier;
     public static ForgeConfigSpec.BooleanValue enderTrapJams;
 
-
     static {
+        String COOLDOWN_FLAG_COMMENT = "Enable cooldown.";
+        String COOLDOWN_COMMENT = "Cooldown duration. Works only if enabled.";
+
+        String DURABILITY_FLAG_COMMENT = "If true the sword will lose durability on use.";
+        String DURABILITY_COMMENT = "Durability lost on use.";
+
         BUILDER.push("Item Settings");
 
         teleportDistance = BUILDER.comment("Teleport distance in blocks for the Aspect of the End and upgrades.").defineInRange("teleportDistance", 6, 0, Integer.MAX_VALUE);
-        maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 8, 0, Integer.MAX_VALUE);
+        maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 6, 0, Integer.MAX_VALUE);
+        BUILDER.comment("Teleports after cooldown will give the Unstable Phase effect. Check its config to disable unstable teleports.");
 
         BUILDER.push("Aspect of The End");
-        enableAoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", true);
+        enableAoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", true);
         BUILDER.push("Cooldown");
-        aoteCooldown = BUILDER.comment("Cooldown duration. Works only if enabled.").defineInRange("cooldownDuration", 20, 0, Long.MAX_VALUE);
-        enableAoteLostDurability = BUILDER.comment("Enable losing durability during cooldown. If false the ability can't be used during cooldown, if true the sword can be used but will lose durability.").define("enableLostDurability", true);
-        aoteLostDurability = BUILDER.comment("Durability lost on use during cooldown.").defineInRange("lostDurability", 20, 0, Integer.MAX_VALUE);
+        aoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 2, 0, Integer.MAX_VALUE);
+        enableAoteLostDurability = BUILDER.comment(DURABILITY_FLAG_COMMENT).define("enableLostDurability", true);
+        aoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Netherforged Aspect of The End");
-        enableNaoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", true);
+        enableNaoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", true);
         BUILDER.push("Cooldown");
-        naoteCooldown = BUILDER.comment("Cooldown duration. Works only if enabled.").defineInRange("cooldownDuration", 10, 0, Long.MAX_VALUE);
-        enableNaoteLostDurability = BUILDER.comment("Enable losing durability during cooldown. If false the ability can't be used during cooldown, if true the sword can be used but will lose durability.").define("enableLostDurability", true);
-        naoteLostDurability = BUILDER.comment("Durability lost on use during cooldown.").defineInRange("lostDurability", 20, 0, Integer.MAX_VALUE);
+        naoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 1, 0, Integer.MAX_VALUE);
+        enableNaoteLostDurability = BUILDER.comment(DURABILITY_FLAG_COMMENT).define("enableLostDurability", true);
+        naoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Dragonforged Aspect of The End");
-        enableDaoteCooldown = BUILDER.comment("Enable cooldown.").define("enableCooldown", false);
+        enableDaoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", false);
         BUILDER.push("Cooldown");
-        daoteCooldown = BUILDER.comment("Cooldown duration. Works only if enabled.").defineInRange("cooldownDuration", 5, 0, Long.MAX_VALUE);
-        enableDaoteLostDurability = BUILDER.comment("Enable losing durability during cooldown. If false the ability can't be used during cooldown, if true the sword can be used but will lose durability.").define("enableLostDurability", true);
-        daoteLostDurability = BUILDER.comment("Durability lost on use during cooldown.").defineInRange("lostDurability", 20, 0, Integer.MAX_VALUE);
+        daoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 1, 0, Integer.MAX_VALUE);
+        enableDaoteLostDurability = BUILDER.comment(DURABILITY_FLAG_COMMENT).define("enableLostDurability", true);
+        daoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Shulker Wand");
-        enableShulkerWandCooldown = BUILDER.comment("Maximum number of teleports before the cooldown is triggered.").define("enableCooldown", true);
-        shulkerWandCooldown = BUILDER.comment("Cooldown duration.").defineInRange("cooldownDuration", 5, 0, Long.MAX_VALUE);
-        enableShulkerWandLostDurability = BUILDER.comment("Enable losing durability during cooldown. If false the ability can't be used during cooldown, if true the wand can be used but will lose durability.").define("enableLostDurability", true);
-        shulkerWandLostDurability = BUILDER.comment("Durability lost on use during cooldown.").defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
+        enableShulkerWandCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", true);
+        shulkerWandCooldown = BUILDER.comment("Cooldown duration.").defineInRange("cooldownDuration", 2, 0, Integer.MAX_VALUE);
+        enableShulkerWandLostDurability = BUILDER.comment("If true the wand will lose durability on use.").define("enableLostDurability", true);
+        shulkerWandLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
         BUILDER.pop();
 
         BUILDER.pop();
@@ -86,8 +92,8 @@ public final class ModConfig {
         BUILDER.push("Unstable Phase");
         unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("percentDamage", 20, 0, Long.valueOf(100));
         unstableTeleports = BUILDER.comment("If true, too many teleports during the Aspect of the End cooldown will give the Unstable Phase effect.").define("unstableTeleports", true);
-        unstableTeleportsLimit = BUILDER.comment("Number of teleports before the player gets Unstable Phase.").defineInRange("unstableTeleportsLimit", 8, 0, Integer.MAX_VALUE);
-        unstablePhaseCooldownMultiplier = BUILDER.comment("How much (in %) of the remaining cooldown should be added to the unstable phase duration?").defineInRange("unstablePhaseCooldownMultiplier", 5.0f, 0.0f, 100.0f);
+        unstableTeleportsLimit = BUILDER.comment("Number of cooldown cycles before the player gets Unstable Phase.").defineInRange("unstableTeleportsLimit", 2, 0, Integer.MAX_VALUE);
+        unstablePhaseCooldownMultiplier = BUILDER.comment("How much (in %) of the cooldown should Unstable Phase last when given?").defineInRange("unstablePhaseCooldownMultiplier", 200.0f, 0.0f, 100.0f);
         BUILDER.pop();
         BUILDER.pop();
 

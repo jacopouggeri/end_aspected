@@ -33,7 +33,7 @@ public class EndAspected
 {
     public static final String MOD_ID = "end_aspected";
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public EndAspected() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
