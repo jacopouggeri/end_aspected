@@ -93,7 +93,7 @@ public final class ModConfig {
         unstablePhasePercentDamage = BUILDER.comment("Damage (inn% of max health) the Unstable Phase effect deals on attempted teleports.").defineInRange("percentDamage", 20, 0, Long.valueOf(100));
         unstableTeleports = BUILDER.comment("If true, too many teleports during the Aspect of the End cooldown will give the Unstable Phase effect.").define("unstableTeleports", true);
         unstableTeleportsLimit = BUILDER.comment("Number of cooldown cycles before the player gets Unstable Phase.").defineInRange("unstableTeleportsLimit", 2, 0, Integer.MAX_VALUE);
-        unstablePhaseCooldownMultiplier = BUILDER.comment("How much (in %) of the cooldown should Unstable Phase last when given?").defineInRange("unstablePhaseCooldownMultiplier", 200.0f, 0.0f, 100.0f);
+        unstablePhaseCooldownMultiplier = BUILDER.comment("How much (in %) of the cooldown should Unstable Phase last when given?").defineInRange("unstablePhaseCooldownMultiplier", 200.0f, 0.0f, Float.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
