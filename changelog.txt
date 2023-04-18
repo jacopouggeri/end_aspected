@@ -1,5 +1,6 @@
-1.16.5-1.0.9.0 Changelog
+1.16.5-1.0.10.0 Changelog
 =========================
+- 1.0.10.0 Reworked cooldowns. Now items always lose durability on use (configurable). Aspect of the End cannot be used during cooldown anymore and will trigger Unstable Phase after 2 (configurable) cooldown cycles if used repeatedly. If the player doesn't use the item, cooldown counters (Aote uses and cooldown cycles) will decay.
 - 1.0.9.0 Added config for Ender Trap blocking teleports instead of trapping the entity. Fixed mod not working on servers or crashing them: fixed Aspect of The End, its upgrades and Ender Trap not working on server, fixed Shulker Wand and Aspected Arrows crashing server.
 - 1.0.8.0 Added Aspected Arrow crafting recipe and custom entity. Implemented mechanic: Aspected Arrows will teleport 8 blocks before the block the player is looking at when fired.
 - 1.0.7.1 Added Unstable Phase texture.
