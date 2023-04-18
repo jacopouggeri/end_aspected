@@ -25,10 +25,7 @@ public class ClientMessage {
 
     public static void handle(ClientMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        contextSupplier.get().enqueueWork(() ->
-                // Make sure it's only executed on the physical client
-                // Do stuff
-        );
+        //contextSupplier.get().enqueueWork(() -> {});
         context.setPacketHandled(true);
     }
 }
