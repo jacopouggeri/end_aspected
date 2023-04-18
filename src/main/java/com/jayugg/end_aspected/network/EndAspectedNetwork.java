@@ -1,7 +1,7 @@
 package com.jayugg.end_aspected.network;
 
 import com.jayugg.end_aspected.EndAspected;
-import com.jayugg.end_aspected.network.message.ShulkerBulletMessage;
+import com.jayugg.end_aspected.network.message.ClientMessage;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -13,7 +13,7 @@ public class EndAspectedNetwork {
 
     public static void init() {
 
-        CHANNEL.registerMessage(0, ShulkerBulletMessage.class, ShulkerBulletMessage::encode, ShulkerBulletMessage::decode, ShulkerBulletMessage::handle);
+        CHANNEL.registerMessage(0, ClientMessage.class, ClientMessage::encode, ClientMessage::decode, ClientMessage::handle);
 
     }
 
