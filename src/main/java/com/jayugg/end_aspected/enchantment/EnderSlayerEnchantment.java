@@ -12,14 +12,11 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.jayugg.end_aspected.EndAspected.LOGGER;
 
 public class EnderSlayerEnchantment extends Enchantment {
     private static final int MIN_COST = 5;
@@ -42,7 +39,7 @@ public class EnderSlayerEnchantment extends Enchantment {
         if (target instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity)target;
             if (enderEntities.contains(Objects.requireNonNull(livingEntity).getType())){
-                return lastDamage * (1f + 0.5f*level);
+                return lastDamage * (1f + 0.2f*level);
             }
         }
         return lastDamage;
@@ -54,7 +51,6 @@ public class EnderSlayerEnchantment extends Enchantment {
     }
 
     // Called whenever a mob is damaged
-    @SubscribeEvent
     public static void getLastDamageInflicted(LivingHurtEvent event) {
         // Find player and target anc check that code is on server
         PlayerEntity user = (PlayerEntity) event.getSource().getTrueSource();
@@ -67,7 +63,7 @@ public class EnderSlayerEnchantment extends Enchantment {
 
             // Set damage
             event.setAmount(calculateDamage(target, event.getAmount(), level));
-            LOGGER.info("DAMAGED ENDERMAN!");
+            //LOGGER.info("DAMAGED ENDERMAN!");
         }
     }
 

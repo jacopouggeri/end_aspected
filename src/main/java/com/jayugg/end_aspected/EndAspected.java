@@ -5,6 +5,7 @@ import com.jayugg.end_aspected.block.ModBlocks;
 import com.jayugg.end_aspected.config.ModConfig;
 import com.jayugg.end_aspected.effect.ModEffects;
 import com.jayugg.end_aspected.effect.UnstablePhaseEffect;
+import com.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import com.jayugg.end_aspected.enchantment.ModEnchantments;
 import com.jayugg.end_aspected.entity.ModEntities;
 import com.jayugg.end_aspected.item.ModItems;
@@ -13,6 +14,7 @@ import com.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -108,6 +110,13 @@ public class EndAspected
             EnderTrapBlock.trapEventEntity(event, entity);
         }
 
+    }
+
+    @SubscribeEvent
+    public void getEntityLastDamage(LivingHurtEvent event) {
+        //LOGGER.info("ENTITY HURT!");
+        // Handler Ender Slayer event
+        EnderSlayerEnchantment.getLastDamageInflicted(event);
     }
 
 }
