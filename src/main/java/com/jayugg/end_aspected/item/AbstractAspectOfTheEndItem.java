@@ -28,7 +28,7 @@ import static com.jayugg.end_aspected.EndAspected.LOGGER;
 
 public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
-    private int cooldown;
+    private double cooldown;
 
     private final int maxTeleports;
 
@@ -180,7 +180,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 if (getTeleportsRemaining(stack) <= 0) {
                     LOGGER.info("COOLDOWN TRIGGERED");
                     // Set new time of last cooldown
-                    int cooldownTime = cooldown*20;
+                    int cooldownTime = (int) (cooldown * 20);
                     player.getCooldownTracker().setCooldown(this, cooldownTime);
                     stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, maxTeleports);
                     int cooldownCycles = stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG);

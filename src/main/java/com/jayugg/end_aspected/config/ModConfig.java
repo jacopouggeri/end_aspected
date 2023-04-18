@@ -9,17 +9,17 @@ public final class ModConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> maxTeleports;
 
     public static ForgeConfigSpec.BooleanValue enableAoteCooldown;
-    public static ForgeConfigSpec.ConfigValue<Integer> aoteCooldown;
+    public static ForgeConfigSpec.DoubleValue aoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableAoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> aoteLostDurability;
 
     public static ForgeConfigSpec.BooleanValue enableNaoteCooldown;
-    public static ForgeConfigSpec.ConfigValue<Integer> naoteCooldown;
+    public static ForgeConfigSpec.DoubleValue naoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableNaoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> naoteLostDurability;
 
     public static ForgeConfigSpec.BooleanValue enableDaoteCooldown;
-    public static ForgeConfigSpec.ConfigValue<Integer> daoteCooldown;
+    public static ForgeConfigSpec.DoubleValue daoteCooldown;
     public static ForgeConfigSpec.BooleanValue enableDaoteLostDurability;
     public static ForgeConfigSpec.ConfigValue<Integer> daoteLostDurability;
 
@@ -50,27 +50,27 @@ public final class ModConfig {
         BUILDER.push("Aspect of The End");
         enableAoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", true);
         BUILDER.push("Cooldown");
-        aoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 2, 0, Integer.MAX_VALUE);
+        aoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 3, 0, Double.MAX_VALUE);
         enableAoteLostDurability = BUILDER.comment(DURABILITY_FLAG_COMMENT).define("enableLostDurability", true);
-        aoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
+        aoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 1, 0, Integer.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Netherforged Aspect of The End");
         enableNaoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", true);
         BUILDER.push("Cooldown");
-        naoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 1, 0, Integer.MAX_VALUE);
+        naoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 1.5, 0, Double.MAX_VALUE);
         enableNaoteLostDurability = BUILDER.comment(DURABILITY_FLAG_COMMENT).define("enableLostDurability", true);
-        naoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
+        naoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 1, 0, Integer.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Dragonforged Aspect of The End");
         enableDaoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", false);
         BUILDER.push("Cooldown");
-        daoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 1, 0, Integer.MAX_VALUE);
+        daoteCooldown = BUILDER.comment(COOLDOWN_COMMENT).defineInRange("cooldownDuration", 1, 0, Double.MAX_VALUE);
         enableDaoteLostDurability = BUILDER.comment(DURABILITY_FLAG_COMMENT).define("enableLostDurability", true);
-        daoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 5, 0, Integer.MAX_VALUE);
+        daoteLostDurability = BUILDER.comment(DURABILITY_COMMENT).defineInRange("lostDurability", 1, 0, Integer.MAX_VALUE);
         BUILDER.pop();
         BUILDER.pop();
 
