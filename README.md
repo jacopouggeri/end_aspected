@@ -6,7 +6,7 @@ Introduces the items Aspect of the End (Inspired to Hypixel Skyblock's Aspect of
 ### Items
 
 - Aspect Shard: Crafting ingredient dropped by Endermen.
-- Aspect of The End: Diamond sword that teleports 8 blocks on right click.
+- Aspect of The End: Diamond sword that teleports 6 blocks on right click.
 - Netherforged Aspect of The End: Upgrades Aspect of The End with higher attack power and less cooldown.
 - Dragonforged Aspect of The End: Upgrades Netherforged Aspect of The End with higher attack power abd less cooldown.
 - Shulker Wand: Shoots Shulker Bullets with levitation effect.
