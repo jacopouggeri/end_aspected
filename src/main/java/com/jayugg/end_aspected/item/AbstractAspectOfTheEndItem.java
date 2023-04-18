@@ -218,7 +218,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 long lastUse = tag.getLong(LAST_USE_TAG);
                 long currentTime = world.getGameTime();
 
-                if (currentTime - lastUse >= cooldown * 10L && tag.contains(TELEPORTS_REMAINING_TAG)) {
+                if (currentTime - lastUse >= 20L* cooldown && tag.contains(TELEPORTS_REMAINING_TAG)) {
                     int usesLeft = tag.getInt(TELEPORTS_REMAINING_TAG);
                     if (usesLeft < maxTeleports) {
                         tag.putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
@@ -227,8 +227,9 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 }
 
                 // Reset cooldown cycles if the item isn't being used
-                if (currentTime - lastUse >= cooldown * 10L) {
-                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, 0);
+                if (currentTime - lastUse >= 20L * cooldown * 10L) {
+                    int cycles = tag.getInt(COOLDOWN_CYCLES_TAG);
+                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
                 }
             }
         }
