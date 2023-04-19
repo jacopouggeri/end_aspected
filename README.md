@@ -1,5 +1,5 @@
 # End Aspected
-### This is a Forge 1.16.5 Mod
+### This is a Forge 1.19.2 Mod
 Introduces the items Aspect of the End (Inspired to Hypixel Skyblock's Aspect of the End) with my own personal twist. Includes upgrades to the sword, some effects and blocks that affect teleporting entities and new enchants, Cooldowns and ranges are configurable in the end_aspected.toml file in the config folder.
 
 
