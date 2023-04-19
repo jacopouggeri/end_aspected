@@ -32,7 +32,6 @@ public final class ModConfig {
     public static ForgeConfigSpec.BooleanValue unstableTeleports;
     public static ForgeConfigSpec.ConfigValue<Integer> unstableTeleportsLimit;
     public static ForgeConfigSpec.DoubleValue unstablePhaseCooldownMultiplier;
-    public static ForgeConfigSpec.BooleanValue enderTrapJams;
 
     static {
         String COOLDOWN_FLAG_COMMENT = "Enable cooldown.";
@@ -85,7 +84,6 @@ public final class ModConfig {
 
         BUILDER.push("Block Settings");
         enderTrapRadius = BUILDER.comment("Set ender trap activation radius (below 33 will not trap endermen effectively).").defineInRange("effectRadius", 33, 0, 100);
-        enderTrapJams = BUILDER.comment("Ender trap will jam teleports instead of trapping").define("ederTrapJams", false);
         BUILDER.pop();
 
         BUILDER.push("Effect Settings");

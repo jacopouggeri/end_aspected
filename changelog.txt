@@ -1,23 +1,24 @@
-1.16.5-1.0.11.0 Changelog
+1.11.0-1.19.2 Changelog
 =========================
-- 1.0.11.0 Added tooltips to handheld items.
-- 1.0.10.1 Fixed Unstable Phase duration bug.
-- 1.0.10.0 Reworked cooldowns. Now items always lose durability on use (configurable). Aspect of the End cannot be used during cooldown anymore and will trigger Unstable Phase after 2 (configurable) cooldown cycles if used repeatedly. If the player doesn't use the item, cooldown counters (Aote uses and cooldown cycles) will decay.
-- 1.0.9.0 Added config for Ender Trap blocking teleports instead of trapping the entity. Fixed mod not working on servers or crashing them: fixed Aspect of The End, its upgrades and Ender Trap not working on server, fixed Shulker Wand and Aspected Arrows crashing server.
-- 1.0.8.0 Added Aspected Arrow crafting recipe and custom entity. Implemented mechanic: Aspected Arrows will teleport 8 blocks before the block the player is looking at when fired.
-- 1.0.7.1 Added Unstable Phase texture.
-- 1.0.7.0 Now teleporting too much will give Unstable Phase (texture missing). Added config option to disable and control when this is triggered. Removed player status messages.
-- 1.0.6.2 Changed Ender Slayer level scaling.
-- 1.0.6.1 Fixed Unstable Phase bug that caused an Enderman in water to lag the game by attempting a teleport every game tick, by allowing Endermen to teleport when under the effect.
-- 1.0.6.0 Added Ender Slayer enchantment. Added Unstable Phase potion effect. Added Destabilise treasure enchantment. Rebalanced Weaponsmith Villager trades. Changed package id to match CurseForge username.
-- 1.0.5.1 Minor fixes to teleporting particles.
-- 1.0.5.0 Now Teleporting resets fall distance. Added particle effect for use during cooldown.
-- 1.0.4.1 Additional cooldown rework. Added config options of Aspect of the end cooldown. Added config options for cooldown mode (reduce durability or block use). Creative players don't get cooldowns.
-- 1.0.4.0 Changed cooldown mechanic for Aspect of the End and Shulker Wand. Repeated use before the end of the cooldown will reduce durability. Added cooldown options to config. Added Villager trades! Now Weaponsmith Villagers can trade for shards.
-- 1.0.3.0 Release!
-- 1.0.x.x Skipped because of version renaming.
-- 0.0.3.0 Added anvil repair recipes with Aspect Shard.
-- 0.0.2.1 Fixed Shulker Wand stacking, and broken crafting recipe.
-- 0.0.2.0 Replaced Ender Ring with Aspect Shard, added Ender Trap and Shulker Wand with texture and functionalities, added Aspected Arrows with texture (functionalities not implemented). Added working config file. Added creative tab.
-- 0.0.1.0 Fixed teleport issues. Added crafting recipes and textures (ender ring texture missing).
-- 0.0.0.0 Added items and main functionality.
+- 2.0.0 Updated to 1.19.2, removed ender trap jamming option (jamming Endermen in water lags the game enormously, let them teleport).
+- 1.11.0 Added tooltips to handheld items.
+- 1.10.1 Fixed Unstable Phase duration bug.
+- 1.10.0 Reworked cooldowns. Now items always lose durability on use (configurable). Aspect of the End cannot be used during cooldown anymore and will trigger Unstable Phase after 2 (configurable) cooldown cycles if used repeatedly. If the player doesn't use the item, cooldown counters (Aote uses and cooldown cycles) will decay.
+- 1.9.0 Added config for Ender Trap blocking teleports instead of trapping the entity. Fixed mod not working on servers or crashing them: fixed Aspect of The End, its upgrades and Ender Trap not working on server, fixed Shulker Wand and Aspected Arrows crashing server.
+- 1.8.0 Added Aspected Arrow crafting recipe and custom entity. Implemented mechanic: Aspected Arrows will teleport 8 blocks before the block the player is looking at when fired.
+- 1.7.1 Added Unstable Phase texture.
+- 1.7.0 Now teleporting too much will give Unstable Phase (texture missing). Added config option to disable and control when this is triggered. Removed player status messages.
+- 1.6.2 Changed Ender Slayer level scaling.
+- 1.6.1 Fixed Unstable Phase bug that caused an Enderman in water to lag the game by attempting a teleport every game tick, by allowing Endermen to teleport when under the effect.
+- 1.6.0 Added Ender Slayer enchantment. Added Unstable Phase potion effect. Added Destabilise treasure enchantment. Rebalanced Weaponsmith Villager trades. Changed package id to match CurseForge username.
+- 1.5.1 Minor fixes to teleporting particles.
+- 1.5.0 Now Teleporting resets fall distance. Added particle effect for use during cooldown.
+- 1.4.1 Additional cooldown rework. Added config options of Aspect of the end cooldown. Added config options for cooldown mode (reduce durability or block use). Creative players don't get cooldowns.
+- 1.4.0 Changed cooldown mechanic for Aspect of the End and Shulker Wand. Repeated use before the end of the cooldown will reduce durability. Added cooldown options to config. Added Villager trades! Now Weaponsmith Villagers can trade for shards.
+- 1.3.0 Release!
+- 1.x.x Skipped because of version renaming.
+- 0.3.0 Added anvil repair recipes with Aspect Shard.
+- 0.2.1 Fixed Shulker Wand stacking, and broken crafting recipe.
+- 0.2.0 Replaced Ender Ring with Aspect Shard, added Ender Trap and Shulker Wand with texture and functionalities, added Aspected Arrows with texture (functionalities not implemented). Added working config file. Added creative tab.
+- 0.1.0 Fixed teleport issues. Added crafting recipes and textures (ender ring texture missing).
+- 0.0.0 Added items and main functionality.
