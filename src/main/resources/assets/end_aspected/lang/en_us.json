@@ -16,9 +16,9 @@
   "tooltip.end_aspected.aspect_of_the_end_ability": "§3§lITEM ABILITY§r: \n§7Teleports you in the direction you're facing.§r",
   "tooltip.end_aspected.teleport_reach": " %s§r§2 Teleport Reach§r",
   "tooltip.end_aspected.cooldown": " %s§r§2s Cooldown§r",
-  "tooltip.end_aspected.aspect_of_the_end_shift": "§7Tread carefully, as misuse might cause you to get §3unst§ka§r§3bl§ke§r§7.§r",
-  "tooltip.end_aspected.netherforged_aspect_of_the_end_shift": "§7This sword has been reforged in Netherite, it can now bear more of the End's power.§r",
-  "tooltip.end_aspected.dragonforged_aspect_of_the_end_shift": "§7This sword has been reforged in Dragon Breath, it is now a perfect recipient for the End's power.§r",
-  "tooltip.end_aspected.shulker_wand_shift": "§3§lITEM ABILITY§r: \n§7This wand is able to call forth the magic of End cities. Summons a shulker bullet in the direction you're facing.§r",
+  "tooltip.end_aspected.aspect_of_the_end_shift": "§3Tread carefully, as misuse might cause you to get §3unst§ka§r§3bl§ke§r§3.§r",
+  "tooltip.end_aspected.netherforged_aspect_of_the_end_shift": "§3This sword has been reforged in Netherite, it can now bear more of the End's power.§r",
+  "tooltip.end_aspected.dragonforged_aspect_of_the_end_shift": "§3This sword has been reforged in Dragon Breath, it is now a perfect recipient for the End's power.§r",
+  "tooltip.end_aspected.shulker_wand_shift": "§3§lITEM ABILITY§r: \n§3This wand is able to call forth the magic of End cities. Summons a shulker bullet in the direction you're facing.§r",
   "tooltip.end_aspected.stats": "§7Item stats:§r"
 }

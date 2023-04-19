@@ -8,6 +8,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 
+import static com.jayugg.end_aspected.EndAspected.LOGGER;
+
 public class EnderTrapBlock extends Block {
 
     public EnderTrapBlock(Properties builder) {
@@ -22,7 +24,7 @@ public class EnderTrapBlock extends Block {
             // Search radius from config
             int radius = ModConfig.enderTrapRadius.get();
 
-            // System.out.println("TrapEvent: " + entity.getDisplayName());
+            LOGGER.info("TrapEvent: " + entity.getDisplayName());
 
             // Find the closest ender trap block within the specified radius
 
@@ -42,9 +44,8 @@ public class EnderTrapBlock extends Block {
                 }
             }
 
-
-
             if (closestPos != null) {
+                LOGGER.info("CancelTrapEvent" + closestPos);
                 event.setCanceled(true);
                 entity.teleportTo(closestPos.getX() + 0.5, closestPos.getY() + 1.0, closestPos.getZ() + 0.5);
             }

@@ -6,7 +6,6 @@ import com.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -185,7 +184,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
             // Spawn the Enderman particle effect at the destination position
             ((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, dx, dy, dz, 50, 0.5, 0.5, 0.5, 0.0);
             // Teleport the player
-            player.setPos(teleportPos);
+            player.teleportTo(dx, dy, dz);
             // Remove fall damage
             player.fallDistance = 0;
             // Reduce durability
@@ -238,22 +237,25 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         loadConfigIfNotLoaded();
         if (entity instanceof Player player) {
             if (!world.isClientSide() && enableCooldown && !player.isCreative()) {
-                CompoundTag tag = stack.getOrCreateTag();
 
-                long lastUse = tag.getLong(LAST_USE_TAG);
+                long lastUse = stack.getOrCreateTag().getLong(LAST_USE_TAG);
                 long currentTime = world.getGameTime();
 
-                if (currentTime - lastUse >= 20L* cooldown && tag.contains(TELEPORTS_REMAINING_TAG)) {
-                    int usesLeft = tag.getInt(TELEPORTS_REMAINING_TAG);
+                LOGGER.info("AOTE LAST USE: " + (int) lastUse / 20);
+
+                if (currentTime - lastUse >= 20L* cooldown && stack.getOrCreateTag().contains(TELEPORTS_REMAINING_TAG)) {
+                    int usesLeft = stack.getOrCreateTag().getInt(TELEPORTS_REMAINING_TAG);
                     if (usesLeft < maxTeleports) {
-                        tag.putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
-                        tag.putLong(LAST_USE_TAG, currentTime);
+                        stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
+                        stack.getOrCreateTag().putLong(LAST_USE_TAG, currentTime);
                     }
                 }
 
+                LOGGER.info("AOTE CYCLE: " + stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG));
+
                 // Reset cooldown cycles if the item isn't being used
                 if (currentTime - lastUse >= 20L * cooldown * 5L) {
-                    int cycles = tag.getInt(COOLDOWN_CYCLES_TAG);
+                    int cycles = stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG);
                     stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
                 }
             }
@@ -287,7 +289,6 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
             // Handle no cooldown in config
             if (enableCooldown) {
-                tooltip.add(Component.literal("\n"));
                 tooltip.add(cooldown);
             }
 
