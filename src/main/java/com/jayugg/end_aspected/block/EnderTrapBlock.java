@@ -53,18 +53,13 @@ public class EnderTrapBlock extends Block {
             int radius = ModConfig.enderTrapRadius.get();
 
             // Find the closest ender trap block within the specified radius
-
-            // Initialize variables for storing the closest ender trap block
             BlockPos closestPos = getClosestEnderTrapBlock(world, targetPos, radius);
-
             //LOGGER.info("ClosestPos" + closestPos);
 
             if (closestPos != null) {
-                if (event instanceof EntityTeleportEvent.EnderEntity) {
-                    cancelAndTeleport(event, entity, closestPos);
-                } else if (event instanceof EntityTeleportEvent.EnderPearl) {
-                    cancelAndTeleport(event, entity, closestPos);
-                } else if (event instanceof EntityTeleportEvent.ChorusFruit) {
+                if (event instanceof EntityTeleportEvent.EnderEntity ||
+                        event instanceof EntityTeleportEvent.EnderPearl ||
+                        event instanceof EntityTeleportEvent.ChorusFruit) {
                     cancelAndTeleport(event, entity, closestPos);
                 }
             }
