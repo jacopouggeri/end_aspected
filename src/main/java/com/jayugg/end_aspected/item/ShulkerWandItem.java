@@ -30,10 +30,10 @@ public class ShulkerWandItem extends SwordItem {
         double pY = player.getPosY() + player.getEyeHeight();
         double pZ = player.getPosZ();
 
-        Vector3d look = player.getLookVec().normalize().scale(1);
-        double vX = look.x;
-        double vY = look.y;
-        double vZ = look.z;
+        Vector3d velocity = player.getLookVec().normalize().scale(1);
+        double vX = velocity.x;
+        double vY = velocity.y;
+        double vZ = velocity.z;
 
         AspectedShulkerBulletEntity shulkerBullet = new AspectedShulkerBulletEntity(world, pX, pY, pZ, vX, vY, vZ);
         shulkerBullet.setNoGravity(true);

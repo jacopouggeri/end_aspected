@@ -37,16 +37,16 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
     private double cooldown;
 
-    private final int maxTeleports;
+    private int maxTeleports;
 
-    private final long teleportDistance;
+    private long teleportDistance;
     private boolean firstRunFlag;
 
     private boolean enableCooldown;
     private boolean enableLostDurability;
     private int lostDurability;
-    private final boolean enableUnstableTeleports;
-    private final int unstableTeleportLimit;
+    private boolean enableUnstableTeleports;
+    private int unstableTeleportLimit;
 
     public String TELEPORTS_REMAINING_TAG = "teleports_remaining";
     public String COOLDOWN_CYCLES_TAG = "cooldownCycles";
@@ -151,6 +151,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     @Override
     public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world,@Nonnull PlayerEntity player,@Nonnull Hand hand) {
+        loadConfigIfNotLoaded();
         if (!player.getEntityWorld().isRemote) {
             ItemStack stack = player.getHeldItem(hand);
             if ((getTeleportsRemaining(stack) != maxTeleports) && firstRunFlag) {
@@ -229,6 +230,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     // Update the last use time to decrease cooldown counter when not in use
     @Override
     public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull Entity entity, int slot, boolean selected) {
+        loadConfigIfNotLoaded();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             if (!world.isRemote && enableCooldown && !player.isCreative()) {
@@ -241,14 +243,15 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                     int usesLeft = tag.getInt(TELEPORTS_REMAINING_TAG);
                     if (usesLeft < maxTeleports) {
                         tag.putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
-                        tag.putLong(TELEPORTS_REMAINING_TAG, currentTime);
                     }
                 }
 
                 // Reset cooldown cycles if the item isn't being used
                 if (currentTime - lastUse >= 20L * cooldown * 5L) {
                     int cycles = tag.getInt(COOLDOWN_CYCLES_TAG);
-                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
+                    if (cycles > 0) {
+                        stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
+                    }
                 }
             }
         }
@@ -264,6 +267,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     @Override
     public void addInformation(@Nonnull ItemStack item, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        loadConfigIfNotLoaded();
         if (Screen.hasShiftDown()) {
 
             String reachString = FormatUtils.formatNumber(this.getTeleportDistance());

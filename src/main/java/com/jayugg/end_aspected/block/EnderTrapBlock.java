@@ -2,9 +2,10 @@ package com.jayugg.end_aspected.block;
 
 import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
@@ -14,7 +15,33 @@ public class EnderTrapBlock extends Block {
         super(builder);
     }
 
-    public static void trapEventEntity(EntityTeleportEvent.EnderEntity event, Entity entity) {
+    public static BlockPos getClosestEnderTrapBlock(World world, BlockPos center, int radius) {
+        int minDistSquared = radius * radius;
+        BlockPos closestBlock = null;
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    BlockPos currentPos = center.offset(Direction.NORTH, x)
+                            .offset(Direction.UP, y)
+                            .offset(Direction.WEST, z);
+                    Block currentBlock = world.getBlockState(currentPos).getBlock();
+
+                    if (currentBlock == ModBlocks.ENDER_TRAP_BLOCK.get()) {
+                        int distSquared = (int) center.distanceSq(currentPos);
+                        if (distSquared <= minDistSquared) {
+                            minDistSquared = distSquared;
+                            closestBlock = currentPos;
+                        }
+                    }
+                }
+            }
+        }
+
+        return closestBlock;
+    }
+
+    public static void trapEventEntity(EntityTeleportEvent event, Entity entity) {
         if (entity.world instanceof ServerWorld) {
             BlockPos targetPos = new BlockPos(event.getTarget());
             ServerWorld world = (ServerWorld) entity.world;
@@ -22,48 +49,18 @@ public class EnderTrapBlock extends Block {
             // Search radius from config
             int radius = ModConfig.enderTrapRadius.get();
 
-            // System.out.println("TrapEvent: " + entity.getDisplayName());
-
             // Find the closest ender trap block within the specified radius
-
-            // Initialize variables for storing the closest ender trap block
-            BlockPos closestPos = null;
-            double closestDistSq = Double.MAX_VALUE;
-
-            // Iterate over all block positions within the search radius
-            for (BlockPos pos : BlockPos.getAllInBoxMutable(targetPos.add(-radius, -radius, -radius), targetPos.add(radius, radius, radius))) {
-                BlockState state = world.getBlockState(pos);
-                if (state.getBlock() == ModBlocks.ENDER_TRAP_BLOCK.get()) {
-                    double distSq = entity.getDistanceSq(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
-                    if (distSq < closestDistSq) {
-                        closestPos = pos.toImmutable(); // <-- Added toImmutable()
-                        closestDistSq = distSq;
-                    }
-                }
-            }
+            BlockPos closestPos = getClosestEnderTrapBlock(world, targetPos, radius);
 
             if (closestPos != null) {
-                event.setCanceled(true);
-                entity.setPositionAndUpdate(closestPos.getX() + 0.5, closestPos.getY() + 1.0, closestPos.getZ() + 0.5);
+                setCanceledAndTeleport(event, entity, closestPos);
             }
         }
     }
 
-    // Alternative method to jam teleporting
-    public static void jamEventEntity(EntityTeleportEvent.EnderEntity event, Entity entity) {
-        if (entity.world instanceof ServerWorld) {
-            BlockPos targetPos = new BlockPos(event.getTarget());
-            ServerWorld world = (ServerWorld) entity.world;
-            int radius = ModConfig.enderTrapRadius.get();
-            // Check for an ender trap block within the specified radius
-            for (BlockPos pos : BlockPos.getAllInBoxMutable(targetPos.add(-radius, -radius, -radius), targetPos.add(radius, radius, radius))) {
-                BlockState state = world.getBlockState(pos);
-                if (state.getBlock() == ModBlocks.ENDER_TRAP_BLOCK.get()) {
-                    event.setCanceled(true);
-                    break;
-                }
-            }
-        }
+    private static void setCanceledAndTeleport(EntityTeleportEvent event, Entity entity, BlockPos closestPos) {
+        event.setCanceled(true);
+        entity.setPositionAndUpdate(closestPos.getX() + 0.5, closestPos.getY() + 1.0, closestPos.getZ() + 0.5);
     }
 
 }

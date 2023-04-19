@@ -100,7 +100,7 @@ public class EndAspected
     // Event bus for receiving Registry Events)
 
     @SubscribeEvent
-    public void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
+    public void onEntityTeleport(EntityTeleportEvent.EnderEntity event) {
         Entity entity = event.getEntity();
         // Check for teleport hijacking or jamming effects
         UnstablePhaseEffect.damageTeleporter(entity);
