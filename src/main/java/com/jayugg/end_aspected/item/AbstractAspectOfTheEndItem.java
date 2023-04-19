@@ -41,52 +41,58 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
     private double cooldown;
 
-    private final int maxTeleports;
-
-    private final long teleportDistance;
+    public boolean configLoaded;
+    private int maxTeleports;
     private boolean firstRunFlag;
 
     private boolean enableCooldown;
     private boolean enableLostDurability;
     private int lostDurability;
-    private final boolean enableUnstableTeleports;
-    private final int unstableTeleportLimit;
+    private long teleportDistance;
+    private boolean enableUnstableTeleports;
 
     public String TELEPORTS_REMAINING_TAG = "teleports_remaining";
     public String COOLDOWN_CYCLES_TAG = "cooldownCycles";
     public String LAST_USE_TAG = "lastUseTime";
     protected final RandomSource random = RandomSource.create();
     public Component tooltip_lore;
+    private int unstableTeleportLimit;
 
     public AbstractAspectOfTheEndItem(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.firstRunFlag = true;
+        this.configLoaded = false;
+    }
 
-        // Load config values
-        this.teleportDistance = ModConfig.teleportDistance.get();
-        this.maxTeleports = ModConfig.maxTeleports.get();
-        this.enableUnstableTeleports = ModConfig.unstableTeleports.get();
-        this.unstableTeleportLimit = ModConfig.unstableTeleportsLimit.get();
+    public void loadConfigIfNotLoaded(){
+        if (!this.configLoaded) {
+            // Load config values
+            this.teleportDistance = ModConfig.teleportDistance.get();
+            this.maxTeleports = ModConfig.maxTeleports.get();
+            this.enableUnstableTeleports = ModConfig.unstableTeleports.get();
+            this.unstableTeleportLimit = ModConfig.unstableTeleportsLimit.get();
 
-        // Handle config values for different items
-        if (this instanceof AspectOfTheEndItem) {
-            this.cooldown = ModConfig.aoteCooldown.get();
-            this.enableCooldown = ModConfig.enableAoteCooldown.get();
-            this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
-            this.lostDurability = ModConfig.aoteLostDurability.get();
-            this.tooltip_lore = Component.translatable("tooltip.end_aspected.aspect_of_the_end_shift");
-        } else if (this instanceof NetherforgedAspectOfTheEndItem) {
-            this.cooldown = ModConfig.naoteCooldown.get();
-            this.enableCooldown = ModConfig.enableNaoteCooldown.get();
-            this.enableLostDurability = ModConfig.enableNaoteLostDurability.get();
-            this.lostDurability = ModConfig.naoteLostDurability.get();
-            this.tooltip_lore = Component.translatable("tooltip.end_aspected.netherforged_aspect_of_the_end_shift");
-        } else if (this instanceof DragonforgedAspectOfTheEndItem) {
-            this.cooldown = ModConfig.daoteCooldown.get();
-            this.enableCooldown = ModConfig.enableDaoteCooldown.get();
-            this.enableLostDurability = ModConfig.enableDaoteLostDurability.get();
-            this.lostDurability = ModConfig.daoteLostDurability.get();
-            this.tooltip_lore = Component.translatable("tooltip.end_aspected.dragonforged_aspect_of_the_end_shift");
+            // Handle config values for different items
+            if (this instanceof AspectOfTheEndItem) {
+                this.cooldown = ModConfig.aoteCooldown.get();
+                this.enableCooldown = ModConfig.enableAoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
+                this.lostDurability = ModConfig.aoteLostDurability.get();
+                this.tooltip_lore = Component.translatable("tooltip.end_aspected.aspect_of_the_end_shift");
+            } else if (this instanceof NetherforgedAspectOfTheEndItem) {
+                this.cooldown = ModConfig.naoteCooldown.get();
+                this.enableCooldown = ModConfig.enableNaoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableNaoteLostDurability.get();
+                this.lostDurability = ModConfig.naoteLostDurability.get();
+                this.tooltip_lore = Component.translatable("tooltip.end_aspected.netherforged_aspect_of_the_end_shift");
+            } else if (this instanceof DragonforgedAspectOfTheEndItem) {
+                this.cooldown = ModConfig.daoteCooldown.get();
+                this.enableCooldown = ModConfig.enableDaoteCooldown.get();
+                this.enableLostDurability = ModConfig.enableDaoteLostDurability.get();
+                this.lostDurability = ModConfig.daoteLostDurability.get();
+                this.tooltip_lore = Component.translatable("tooltip.end_aspected.dragonforged_aspect_of_the_end_shift");
+            }
+            configLoaded = true;
         }
     }
 
@@ -150,6 +156,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     @Override
     public @Nonnull InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+        loadConfigIfNotLoaded();
         if (!player.level.isClientSide()) {
             ItemStack stack = player.getItemInHand(hand);
             if ((getTeleportsRemaining(stack) != maxTeleports) && firstRunFlag) {
@@ -228,6 +235,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     // Update the last use time to decrease cooldown counter when not in use
     @Override
     public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int slot, boolean selected) {
+        loadConfigIfNotLoaded();
         if (entity instanceof Player player) {
             if (!world.isClientSide() && enableCooldown && !player.isCreative()) {
                 CompoundTag tag = stack.getOrCreateTag();
@@ -261,6 +269,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
     @Override
     public void appendHoverText(@Nonnull ItemStack item, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+        loadConfigIfNotLoaded();
         if (Screen.hasShiftDown()) {
 
             String reachString = FormatUtils.formatNumber(this.getTeleportDistance());
