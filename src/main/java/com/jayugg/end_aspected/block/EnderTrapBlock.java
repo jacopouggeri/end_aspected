@@ -15,7 +15,7 @@ public class EnderTrapBlock extends Block {
     }
 
     public static void trapEventEntity(EntityTeleportEvent.EnderEntity event, Entity entity) {
-        if (true) {
+        if (entity.world instanceof ServerWorld) {
             BlockPos targetPos = new BlockPos(event.getTarget());
             ServerWorld world = (ServerWorld) entity.world;
 
