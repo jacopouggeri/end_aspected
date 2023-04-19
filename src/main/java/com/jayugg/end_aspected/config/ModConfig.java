@@ -83,7 +83,7 @@ public final class ModConfig {
         BUILDER.pop();
 
         BUILDER.push("Block Settings");
-        enderTrapRadius = BUILDER.comment("Set ender trap activation radius (below 33 will not trap endermen effectively).").defineInRange("effectRadius", 33, 0, 100);
+        enderTrapRadius = BUILDER.comment("Set ender trap activation radius.").defineInRange("effectRadius", 32, 0, 100);
         BUILDER.pop();
 
         BUILDER.push("Effect Settings");

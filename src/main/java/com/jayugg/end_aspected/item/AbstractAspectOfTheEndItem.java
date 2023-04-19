@@ -6,6 +6,7 @@ import com.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -33,8 +34,6 @@ import net.minecraftforge.event.entity.EntityTeleportEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-
-import static com.jayugg.end_aspected.EndAspected.LOGGER;
 
 public class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
@@ -196,13 +195,13 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
             // Handle cooldown
             if (enableCooldown && !player.isCreative()) {
-                LOGGER.info("HANDLING COOLDOWN");
+                //LOGGER.info("HANDLING COOLDOWN");
                 // Decrement the teleports remaining
                 stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, stack.getOrCreateTag().getInt(TELEPORTS_REMAINING_TAG) -  1);
 
                 // Check if teleports remaining is zero and reset cooldown
                 if (getTeleportsRemaining(stack) <= 0) {
-                    LOGGER.info("COOLDOWN TRIGGERED");
+                    //LOGGER.info("COOLDOWN TRIGGERED");
                     // Set new time of last cooldown
                     int cooldownTime = (int) (cooldown * 20);
                     player.getCooldowns().addCooldown(this, cooldownTime);
@@ -213,7 +212,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
 
                 if (enableUnstableTeleports && (stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG) > unstableTeleportLimit)) {
                     int i = calculateUnstableDuration();
-                    player.addEffect(new MobEffectInstance(ModEffects.UNSTABLE_PHASE.get(), i, 0));
+                    player.addEffect(new MobEffectInstance(ModEffects.UNSTABLE_PHASE.get(), i));
                     stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, 0);
                 }
 
@@ -223,7 +222,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     }
 
     public int calculateUnstableDuration() {
-        return (int) (cooldown * 20 * ModConfig.unstablePhaseCooldownMultiplier.get());
+        return (int) (cooldown * ModConfig.unstablePhaseCooldownMultiplier.get());
     }
 
     @Override
@@ -238,26 +237,34 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         if (entity instanceof Player player) {
             if (!world.isClientSide() && enableCooldown && !player.isCreative()) {
 
-                long lastUse = stack.getOrCreateTag().getLong(LAST_USE_TAG);
+                CompoundTag tag = stack.getOrCreateTag();
+
+                long lastUse = tag.getLong(LAST_USE_TAG);
                 long currentTime = world.getGameTime();
 
-                LOGGER.info("AOTE LAST USE: " + (int) lastUse / 20);
+                //LOGGER.info("AOTE LAST USE: " + (int) lastUse / 20);
 
-                if (currentTime - lastUse >= 20L* cooldown && stack.getOrCreateTag().contains(TELEPORTS_REMAINING_TAG)) {
-                    int usesLeft = stack.getOrCreateTag().getInt(TELEPORTS_REMAINING_TAG);
+                // Handle cooldown decay
+                if (currentTime - lastUse >= 20L*cooldown) {
+                    // If more than the cooldown has passed from last use
+                    int usesLeft = tag.getInt(TELEPORTS_REMAINING_TAG);
+                    // Check if teleports remaining is less than max
                     if (usesLeft < maxTeleports) {
-                        stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
-                        stack.getOrCreateTag().putLong(LAST_USE_TAG, currentTime);
+                        // Update teleports remaining
+                        tag.putInt(TELEPORTS_REMAINING_TAG, usesLeft + 1);
                     }
                 }
 
-                LOGGER.info("AOTE CYCLE: " + stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG));
+                //LOGGER.info("AOTE CYCLE: " + stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG));
 
-                // Reset cooldown cycles if the item isn't being used
+                // Reduce cooldown cycles if the item isn't being used for five times as long as the cooldown
                 if (currentTime - lastUse >= 20L * cooldown * 5L) {
-                    int cycles = stack.getOrCreateTag().getInt(COOLDOWN_CYCLES_TAG);
-                    stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
+                    int cycles = tag.getInt(COOLDOWN_CYCLES_TAG);
+                    if (cycles > 0) {
+                        stack.getOrCreateTag().putInt(COOLDOWN_CYCLES_TAG, cycles - 1);
+                    }
                 }
+
             }
         }
     }

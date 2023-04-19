@@ -4,11 +4,9 @@ import com.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
-
-import static com.jayugg.end_aspected.EndAspected.LOGGER;
 
 public class EnderTrapBlock extends Block {
 
@@ -16,38 +14,59 @@ public class EnderTrapBlock extends Block {
         super(builder);
     }
 
+    private static void cancelAndTeleport(EntityTeleportEvent event, Entity entity, BlockPos closestPos) {
+        event.setCanceled(true);
+        //LOGGER.info("CancelTrapEvent" + closestPos);
+        entity.teleportTo(closestPos.getX() + 0.5, closestPos.getY() + 1.0, closestPos.getZ() + 0.5);
+    }
+
+    public static BlockPos getClosestEnderTrapBlock(Level level, BlockPos center, int radius) {
+        int minDistSquared = radius * radius;
+        BlockPos closestBlock = null;
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    BlockPos currentPos = center.offset(x, y, z);
+                    Block currentBlock = level.getBlockState(currentPos).getBlock();
+
+                    if (currentBlock == ModBlocks.ENDER_TRAP_BLOCK.get()) {
+                        int distSquared = (int) center.distSqr(currentPos);
+                        if (distSquared <= minDistSquared) {
+                            minDistSquared = distSquared;
+                            closestBlock = currentPos;
+                        }
+                    }
+                }
+            }
+        }
+
+        return closestBlock;
+    }
+
     public static void trapEventEntity(EntityTeleportEvent event, Entity entity) {
-        if (true) {
+        if (!entity.getLevel().isClientSide()) {
             BlockPos targetPos = event.getEntity().getOnPos();
             ServerLevel world = (ServerLevel) entity.getLevel();
 
             // Search radius from config
             int radius = ModConfig.enderTrapRadius.get();
 
-            LOGGER.info("TrapEvent: " + entity.getDisplayName());
-
             // Find the closest ender trap block within the specified radius
 
             // Initialize variables for storing the closest ender trap block
-            BlockPos closestPos = null;
-            double closestDistSq = Double.MAX_VALUE;
+            BlockPos closestPos = getClosestEnderTrapBlock(world, targetPos, radius);
 
-            // Iterate over all block positions within the search radius
-            for (BlockPos pos : BlockPos.betweenClosedStream(targetPos.offset(-radius, -radius, -radius), targetPos.offset(radius, radius, radius)).toArray(BlockPos[]::new)) {
-                BlockState state = world.getBlockState(pos);
-                if (state.getBlock() == ModBlocks.ENDER_TRAP_BLOCK.get()) {
-                    double distSq = entity.distanceToSqr(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
-                    if (distSq < closestDistSq) {
-                        closestPos = pos.immutable();
-                        closestDistSq = distSq;
-                    }
-                }
-            }
+            //LOGGER.info("ClosestPos" + closestPos);
 
             if (closestPos != null) {
-                LOGGER.info("CancelTrapEvent" + closestPos);
-                event.setCanceled(true);
-                entity.teleportTo(closestPos.getX() + 0.5, closestPos.getY() + 1.0, closestPos.getZ() + 0.5);
+                if (event instanceof EntityTeleportEvent.EnderEntity) {
+                    cancelAndTeleport(event, entity, closestPos);
+                } else if (event instanceof EntityTeleportEvent.EnderPearl) {
+                    cancelAndTeleport(event, entity, closestPos);
+                } else if (event instanceof EntityTeleportEvent.ChorusFruit) {
+                    cancelAndTeleport(event, entity, closestPos);
+                }
             }
         }
     }
