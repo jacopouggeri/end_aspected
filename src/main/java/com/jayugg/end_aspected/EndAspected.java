@@ -88,11 +88,7 @@ public class EndAspected
         Entity entity = event.getEntity();
         // Check for teleport hijacking or jamming effects
         UnstablePhaseEffect.damageTeleporter(entity);
-        if (ModConfig.enderTrapJams.get()) {
-            EnderTrapBlock.jamEventEntity(event, entity);
-        } else {
-            EnderTrapBlock.trapEventEntity(event, entity);
-        }
+        EnderTrapBlock.trapEventEntity(event, entity);
 
     }
 

@@ -3,29 +3,14 @@ package com.jayugg.end_aspected.item;
 import com.jayugg.end_aspected.config.ModConfig;
 import com.jayugg.end_aspected.effect.ModEffects;
 import com.jayugg.end_aspected.utils.FormatUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.IItemTier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,7 +38,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
     public String LAST_USE_TAG = "lastUseTime";
     public TranslationTextComponent tooltip_lore;
 
-    public AbstractAspectOfTheEndItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
+    public AbstractAspectOfTheEndItem(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.firstRunFlag = true;
 
@@ -85,13 +70,13 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         }
     }
 
-    public static Vector3d getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
+    public static Vec3 getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
         // Get the player's eye position and look vector
-        Vector3d eyePos = entity.getEyePosition(partialTicks);
-        Vector3d lookVec = entity.getLook(partialTicks);
+        Vec3 eyePos = entity.getEyePosition(partialTicks);
+        Vec3 lookVec = entity.getLook(partialTicks);
 
         // Calculate the end position of the ray trace
-        Vector3d teleportPos = eyePos.add(lookVec.scale(teleportDistance));
+        Vec3 teleportPos = eyePos.add(lookVec.scale(teleportDistance));
         // Get the world and perform the ray trace
         World world = entity.world;
         BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(eyePos, teleportPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
@@ -110,23 +95,23 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
         return adjustTeleportPosition(world, entity, teleportPos, partialTicks);
     }
 
-    private static boolean doesPlayerOverlap(World world, Entity entity, Vector3d position) {
+    private static boolean doesPlayerOverlap(World world, Entity entity, Vec3 position) {
         AxisAlignedBB entityBoundingBox = entity.getBoundingBox().offset(position).grow(TELEPORT_OFFSET);
         return !world.hasNoCollisions(entity, entityBoundingBox);
     }
 
-    private static Vector3d adjustTeleportPosition(World world, Entity entity, Vector3d teleportPos, float partialTicks) {
+    private static Vec3 adjustTeleportPosition(World world, Entity entity, Vec3 teleportPos, float partialTicks) {
 
         // Check if the player's bounding box overlaps with any solid block's bounding box at the teleport position
         if (doesPlayerOverlap(world, entity, teleportPos)) {
 
             // If there is an overlap, raytrace back to find a valid teleport position
-            Vector3d rayTraceStart = entity.getLook(partialTicks);
-            Vector3d rayTraceEnd = teleportPos;
-            Vector3d rayTraceDir = rayTraceEnd.subtract(rayTraceStart).normalize();
+            Vec3 rayTraceStart = entity.getLook(partialTicks);
+            Vec3 rayTraceEnd = teleportPos;
+            Vec3 rayTraceDir = rayTraceEnd.subtract(rayTraceStart).normalize();
             double rayTraceDist = rayTraceEnd.distanceTo(rayTraceStart);
             for (double i = rayTraceDist; i >= 0; i -= 0.1) {
-                Vector3d rayTracePos = rayTraceStart.add(rayTraceDir.scale(i));
+                Vec3 rayTracePos = rayTraceStart.add(rayTraceDir.scale(i));
                 if (!doesPlayerOverlap(world, entity, rayTracePos)) {
                     teleportPos = rayTracePos;
                     break;
@@ -150,7 +135,7 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
                 firstRunFlag = false;
             }
 
-            Vector3d teleportPos;
+            Vec3 teleportPos;
             teleportPos = getTeleportPosition(player, teleportDistance, 1.0f);
 
             double dx = teleportPos.x;
