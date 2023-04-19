@@ -1,6 +1,6 @@
 package com.jayugg.end_aspected.item;
 
-import net.minecraft.item.IItemTier;
+import net.minecraft.world.item.IItemTier;
 
 public class AspectOfTheEndItem extends AbstractAspectOfTheEndItem {
 

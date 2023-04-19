@@ -2,12 +2,12 @@ package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.entity.AspectedArrowEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 

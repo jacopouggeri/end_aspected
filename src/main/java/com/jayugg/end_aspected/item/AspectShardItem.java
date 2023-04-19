@@ -1,6 +1,6 @@
 package com.jayugg.end_aspected.item;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class AspectShardItem extends Item {
     public AspectShardItem(Properties builder) {

@@ -1,7 +1,7 @@
 package com.jayugg.end_aspected.item;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
