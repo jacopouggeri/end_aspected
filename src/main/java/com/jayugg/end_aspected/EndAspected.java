@@ -9,7 +9,6 @@ import com.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import com.jayugg.end_aspected.enchantment.ModEnchantments;
 import com.jayugg.end_aspected.entity.ModEntities;
 import com.jayugg.end_aspected.item.ModItems;
-import com.jayugg.end_aspected.network.EndAspectedNetwork;
 import com.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
@@ -69,7 +68,7 @@ public class EndAspected
 
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(ModTrades::fillTradeData);
-        EndAspectedNetwork.init();
+        // EndAspectedNetwork.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

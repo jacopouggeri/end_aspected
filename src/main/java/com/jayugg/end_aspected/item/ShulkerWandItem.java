@@ -1,92 +1,85 @@
 package com.jayugg.end_aspected.item;
 
 import com.jayugg.end_aspected.config.ModConfig;
-import com.jayugg.end_aspected.entity.AspectedShulkerBulletEntity;
+import com.jayugg.end_aspected.entity.AspectedShulkerBullet;
 import com.jayugg.end_aspected.utils.FormatUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ShulkerWandItem extends SwordItem {
+    protected final RandomSource random = RandomSource.create();
 
     public ShulkerWandItem(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
     }
 
-    public static void spawnBulletEntity(PlayerEntity player, World world) {
-        double pX = player.getPosX();
-        double pY = player.getPosY() + player.getEyeHeight();
-        double pZ = player.getPosZ();
-
-        Vector3d look = player.getLookVec().normalize().scale(1);
-        double vX = look.x;
-        double vY = look.y;
-        double vZ = look.z;
-
-        AspectedShulkerBulletEntity shulkerBullet = new AspectedShulkerBulletEntity(world, pX, pY, pZ, vX, vY, vZ);
+    public static void spawnBulletEntity(Player player, Level world) {
+        AspectedShulkerBullet shulkerBullet = new AspectedShulkerBullet(world, player);
         shulkerBullet.setNoGravity(true);
-        world.addEntity(shulkerBullet);
+        world.addFreshEntity(shulkerBullet);
     }
 
     @Override
-    public boolean getIsRepairable(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
+    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
         return repair.getItem() instanceof AspectShardItem;
     }
 
     @Override
-    public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-        if (!player.getEntityWorld().isRemote) {
+    public @Nonnull InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+        if (!player.level.isClientSide()) {
             if (ModConfig.enableShulkerWandCooldown.get() && !player.isCreative()) {
                 // Add to cooldown
                 int cooldownTime = 20 * ModConfig.shulkerWandCooldown.get(); // cooldown in ticks;
-                player.getCooldownTracker().setCooldown(this, cooldownTime);
+                player.getCooldowns().addCooldown(this, cooldownTime);
             }
 
             // Reduce durability
             if (ModConfig.enableShulkerWandLostDurability.get()) {
-                ItemStack stack = player.getHeldItem(hand);
-                stack.damageItem(ModConfig.shulkerWandLostDurability.get(), player, (entity) -> entity.sendBreakAnimation(hand)); // reduce durability by 1
+                ItemStack stack = player.getItemInHand(hand);
+                stack.setDamageValue(stack.getDamageValue() + 1); // reduce durability by 1
             }
 
-            world.playSound(null, player.getPosition(), SoundEvents.ENTITY_SHULKER_SHOOT, SoundCategory.PLAYERS, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            world.playSound(player, player.getOnPos(), SoundEvents.SHULKER_SHOOT, SoundSource.PLAYERS, 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
             spawnBulletEntity(player, world);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
     }
 
+
     @Override
-    public void addInformation(@Nonnull ItemStack item, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack item, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
 
             String cooldownString = FormatUtils.formatNumber(ModConfig.shulkerWandCooldown.get());
-            TranslationTextComponent ability = new TranslationTextComponent("tooltip.end_aspected.shulker_wand_shift");
-            TranslationTextComponent cooldown = new TranslationTextComponent("tooltip.end_aspected.cooldown", "§2" + cooldownString + "§r");
-            TranslationTextComponent stats = new TranslationTextComponent("tooltip.end_aspected.stats");
+            Component ability = Component.translatable("tooltip.end_aspected.shulker_wand_shift");
+            Component cooldown = Component.translatable("tooltip.end_aspected.cooldown", "§2" + cooldownString + "§r");
+            Component stats = Component.translatable("tooltip.end_aspected.stats");
+
+            tooltip.add(ability);
 
             // Handle no cooldown in config
             if (ModConfig.enableShulkerWandCooldown.get()) {
-                TranslationTextComponent message_final = (TranslationTextComponent) ability
-                        .appendSibling(stats)
-                        .appendSibling(cooldown);
-
-                tooltip.add(message_final);
-            } else {
-                tooltip.add(ability);
+                tooltip.add(stats);
+                tooltip.add(cooldown);
             }
-
         } else {
-            tooltip.add(new TranslationTextComponent("tooltip.end_aspected.more"));
+            tooltip.add(Component.translatable("tooltip.end_aspected.more"));
         }
     }
 

@@ -1,23 +1,23 @@
 package com.jayugg.end_aspected.entity;
 
 import com.jayugg.end_aspected.EndAspected;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModEntities {
-    public static DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, EndAspected.MOD_ID);
-    public static final RegistryObject<EntityType<AspectedArrowEntity>> ASPECTED_ARROW = ENTITY_TYPES.register("aspected_arrow",
-            () -> EntityType.Builder.<AspectedArrowEntity>create(AspectedArrowEntity::new, EntityClassification.MISC)
-                    .size(0.5F, 0.5F)
-                    .build("end_aspected:aspected_arrow"));
+    public static DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, EndAspected.MOD_ID);
+    public static final RegistryObject<EntityType<AspectedArrowEntity>> EXPLOSIVE_ARROW = ENTITY_TYPES.register("aspected_arrow",
+            () -> EntityType.Builder.of((EntityType.EntityFactory<AspectedArrowEntity>) AspectedArrowEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .build("explosive_arrow"));
 
     public static final RegistryObject<EntityType<AspectedShulkerBulletEntity>> SHULKER_BULLET = ENTITY_TYPES.register("shulker_bullet",
-            () -> EntityType.Builder.<AspectedShulkerBulletEntity>create(AspectedShulkerBulletEntity::new, EntityClassification.MISC)
-                    .size(0.5F, 0.5F)
+            () -> EntityType.Builder.of((EntityType.EntityFactory<AspectedShulkerBulletEntity>) AspectedShulkerBulletEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
                     .build("minecraft:shulker_bullet"));
 
     public static void register(IEventBus eventBus) {

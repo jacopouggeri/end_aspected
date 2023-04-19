@@ -2,62 +2,62 @@ package com.jayugg.end_aspected.entity;
 
 import com.jayugg.end_aspected.item.AspectedArrowItem;
 import com.jayugg.end_aspected.item.ModItems;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 
-public class AspectedArrowEntity extends AbstractArrowEntity {
+public class AspectedArrowEntity extends AbstractArrow {
 
     public boolean teleportedFlag = false;
 
-    public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, World world) {
+    public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, double x, double y, double z, World world) {
+    public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, double x, double y, double z, Level world) {
         super(entityType, x, y, z, world);
     }
 
-    public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, LivingEntity shooter, World world) {
+    public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, LivingEntity shooter, Level world) {
         super(entityType, shooter, world);
     }
 
-    public AspectedArrowEntity(World worldIn, LivingEntity shooter) {
+    public AspectedArrowEntity(Level worldIn, LivingEntity shooter) {
         super(ModEntities.ASPECTED_ARROW.get(), shooter, worldIn);
         this.teleportedFlag = true;
     }
 
     @Override
-    protected @Nonnull ItemStack getArrowStack() {
+    protected @Nonnull ItemStack getPickupItem() {
         return new ItemStack(ModItems.ASPECTED_ARROW.get());
     }
 
     @Override
-    protected void onImpact(@Nonnull RayTraceResult result) {
-        super.onImpact(result);
+    protected void onHit(@Nonnull HitResult result) {
+        super.onHit(result);
         //System.out.println("IMPACT!");
-        World world = this.world;
-        if (this.getShooter() != null && teleportedFlag) {
+        Level world = this.level;
+        if (this.getOwner() != null && teleportedFlag) {
             //System.out.println("SHOOTER: " + this.getShooter());
-            Vector3d startVec = this.getShooter().getPositionVec();
-            Vector3d hitVec = result.getHitVec();
+            Vec3 startVec = this.getOwner().getPosition(1.0f);
+            Vec3 hitVec = result.getLocation();
 
             // Vectors to find where to spawn particles at the start
-            Vector3d lookVec = this.getShooter().getLookVec().normalize();
-            Vector3d particleVec = startVec.add(lookVec.scale(0.25));
+            Vec3 lookVec = this.getOwner().getLookAngle().normalize();
+            Vec3 particleVec = startVec.add(lookVec.scale(0.25));
 
             // Spawn particles where arrow reappears
             hitVec = hitVec.subtract(lookVec.scale(AspectedArrowItem.TELEPORT_BUFFER_DISTANCE));
@@ -66,18 +66,17 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
             BlockPos destPos = new BlockPos(hitVec.x, hitVec.y, hitVec.z);
 
             // Spawn particles along the ray
-            world.playSound(null, startPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, startPos, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, destPos, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
 
             // Spawn the Enderman particle effect at the destination position
-            ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, hitVec.x, hitVec.y, hitVec.z, 50, 0.5, 0.5, 0.5, 0.0);
-            ((ServerWorld) world).spawnParticle(ParticleTypes.PORTAL, particleVec.x, particleVec.y, particleVec.z, 50, 0.5, 0.5, 0.5, 0.0);
+            ((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, hitVec.x, hitVec.y, hitVec.z, 50, 0.5, 0.5, 0.5, 0.0);
+            ((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, particleVec.x, particleVec.y, particleVec.z, 50, 0.5, 0.5, 0.5, 0.0);
         }
     }
 
-
     @Override
-    public @Nonnull IPacket<?> createSpawnPacket() {
+    public @Nonnull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
