@@ -38,10 +38,10 @@ public class EndAspected
     public EndAspected() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
+
         // Register the setup method for modloading
         eventBus.addListener(this::setup);
-
-        ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
         // Register Effects
         ModEffects.register(eventBus);

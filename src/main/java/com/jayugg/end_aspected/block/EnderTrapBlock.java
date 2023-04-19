@@ -17,7 +17,7 @@ public class EnderTrapBlock extends Block {
     public static void trapEventEntity(EntityTeleportEvent event, Entity entity) {
         if (true) {
             BlockPos targetPos = event.getEntity().getOnPos();
-            ServerLevel world = (ServerLevel) entity.getCommandSenderLevel();
+            ServerLevel world = (ServerLevel) entity.getLevel();
 
             // Search radius from config
             int radius = ModConfig.enderTrapRadius.get();
