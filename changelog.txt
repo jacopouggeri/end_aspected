@@ -1,6 +1,6 @@
-1.11.0-1.19.2 Changelog
+2.0.0-1.19.2 Changelog
 =========================
-- 2.0.0 Updated to 1.19.2, removed ender trap jamming option (jamming Endermen in water lags the game enormously, let them teleport). Now Ender Trap will trap entities based on their current position and not on their landing position. Ender Trap now also traps Ender Pearl and Chorus Fruit teleports.
+- 2.0.0 Updated to 1.19.2. Reworked Aspect of the End texture to make more evident the embedded Aspect Shard. Removed ender trap jamming option (jamming Endermen in water lags the game enormously, let them teleport). Now Ender Trap will trap entities based on their current position and not on their landing position. Ender Trap now also traps Ender Pearl and Chorus Fruit teleports.
 - 1.11.0 Added tooltips to handheld items.
 - 1.10.1 Fixed Unstable Phase duration bug.
 - 1.10.0 Reworked cooldowns. Now items always lose durability on use (configurable). Aspect of the End cannot be used during cooldown anymore and will trigger Unstable Phase after 2 (configurable) cooldown cycles if used repeatedly. If the player doesn't use the item, cooldown counters (Aote uses and cooldown cycles) will decay.
