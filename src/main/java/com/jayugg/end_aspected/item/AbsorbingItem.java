@@ -1,5 +1,6 @@
 package com.jayugg.end_aspected.item;
 
+import com.jayugg.end_aspected.block.CustomOreBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreBlock;
 import net.minecraft.client.util.ITooltipFlag;
@@ -16,12 +17,10 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class AbsorbingItem extends Item {
-    private int score;
     private final int MAX_SCORE = 100;
 
     public AbsorbingItem(Properties settings) {
         super(settings.maxStackSize(1));
-        this.score = 0;
     }
 
     @Override
@@ -31,6 +30,7 @@ public class AbsorbingItem extends Item {
 
     @Override
     public void addInformation(@Nonnull ItemStack item, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        int score = item.getOrCreateTag().getInt("score");
         tooltip.add(new TranslationTextComponent("tooltip.end_aspected.absorbing_item_counter", score, MAX_SCORE));
     }
 
