@@ -85,7 +85,7 @@ public class EndAspected
     @SubscribeEvent
     public void onEntityTeleport(final EntityTeleportEvent event) {
         Entity entity = event.getEntity();
-        LOGGER.info("TELEPORT EVENT" + entity.getName());
+        // LOGGER.info("TELEPORT EVENT" + entity.getName());
         // Check for teleport hijacking or jamming effects
         UnstablePhaseEffect.damageTeleporter(entity);
         EnderTrapBlock.trapEventEntity(event, entity);
