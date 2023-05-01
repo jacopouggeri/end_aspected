@@ -33,7 +33,7 @@ import java.util.List;
 
 import static com.jayugg.end_aspected.EndAspected.LOGGER;
 
-public class AbstractAspectOfTheEndItem extends SwordItem {
+public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     private static final double TELEPORT_OFFSET = 0.4;
     private double cooldown;
 
@@ -70,28 +70,21 @@ public class AbstractAspectOfTheEndItem extends SwordItem {
             this.unstableTeleportLimit = ModConfig.unstableTeleportsLimit.get();
 
             // Handle config values for different items
-            if (this instanceof AspectOfTheEndItem) {
-                this.cooldown = ModConfig.aoteCooldown.get();
-                this.enableCooldown = ModConfig.enableAoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableAoteLostDurability.get();
-                this.lostDurability = ModConfig.aoteLostDurability.get();
-                this.tooltip_lore = new TranslationTextComponent("tooltip.end_aspected.aspect_of_the_end_shift");
-            } else if (this instanceof NetherforgedAspectOfTheEndItem) {
-                this.cooldown = ModConfig.naoteCooldown.get();
-                this.enableCooldown = ModConfig.enableNaoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableNaoteLostDurability.get();
-                this.lostDurability = ModConfig.naoteLostDurability.get();
-                this.tooltip_lore = new TranslationTextComponent("tooltip.end_aspected.netherforged_aspect_of_the_end_shift");
-            } else if (this instanceof DragonforgedAspectOfTheEndItem) {
-                this.cooldown = ModConfig.daoteCooldown.get();
-                this.enableCooldown = ModConfig.enableDaoteCooldown.get();
-                this.enableLostDurability = ModConfig.enableDaoteLostDurability.get();
-                this.lostDurability = ModConfig.daoteLostDurability.get();
-                this.tooltip_lore = new TranslationTextComponent("tooltip.end_aspected.dragonforged_aspect_of_the_end_shift");
-            }
+            this.cooldown = loadCooldownConfig();
+            this.enableCooldown = loadEnableCooldownConfig();
+            this.enableLostDurability = loadEnableLostDurabilityConfig();
+            this.lostDurability = loadLostDurabilityConfig();
+            this.tooltip_lore = getLore();
+
             configLoaded = true;
         }
     }
+
+    public abstract Double loadCooldownConfig();
+    public abstract boolean loadEnableCooldownConfig();
+    public abstract boolean loadEnableLostDurabilityConfig();
+    public abstract int loadLostDurabilityConfig();
+    public abstract TranslationTextComponent getLore();
 
     public static Vector3d getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
         // Get the player's eye position and look vector
