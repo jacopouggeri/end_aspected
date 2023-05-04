@@ -51,21 +51,29 @@ public class EnderSlayerEnchantment extends Enchantment {
 
     // Called whenever a mob is damaged
     public static void getLastDamageInflicted(LivingHurtEvent event) {
-        // Find player and target anc check that code is on server
-        if (event.getSource().getTrueSource() instanceof LivingEntity){
-            LivingEntity user = (LivingEntity) event.getSource().getTrueSource();
+        // Get the damage source's true source
+        Entity sourceEntity = event.getSource().getTrueSource();
+
+        // Check if the true source entity is a LivingEntity and the code is on the server side
+        if (sourceEntity instanceof LivingEntity && !event.getEntityLiving().getEntityWorld().isRemote) {
+            LivingEntity user = (LivingEntity) sourceEntity;
             LivingEntity target = event.getEntityLiving();
 
-            if (user != null && !user.getEntityWorld().isRemote) {
-                ItemStack stack = user.getHeldItem(Hand.MAIN_HAND);
-                int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ENDER_SLAYER.get(), stack);
+            // Get the user's main hand item
+            ItemStack stack = user.getHeldItem(Hand.MAIN_HAND);
 
-                // Set damage
-                event.setAmount(calculateDamage(target, event.getAmount(), level));
+            // Get the level of the Ender Slayer enchantment on the user's main hand item
+            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ENDER_SLAYER.get(), stack);
+
+            // If the enchantment level is greater than 0, calculate and set the new damage amount
+            if (level > 0) {
+                float newDamage = calculateDamage(target, event.getAmount(), level);
+                event.setAmount(newDamage);
                 //LOGGER.info("DAMAGED ENDERMAN!");
             }
         }
     }
+
 
     // Returns the minimal value of enchantability needed on the enchantment level passed.
     @Override
