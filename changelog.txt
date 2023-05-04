@@ -1,5 +1,6 @@
-2.0.0-1.19.2 Changelog
+2.0.2-1.19.2 Changelog
 =========================
+- 2.0.2 Fixed bug with Ender Slayer Enchantment crashing the game.
 - 2.0.1 Reworked Shulker Wand texture to reflect crafting recipe.
 - 2.0.0 Updated to 1.19.2. Renamed versions (Removed major API number as it is unused). Reworked Aspect of the End texture to make more evident the embedded Aspect Shard. Removed ender trap jamming option (jamming Endermen in water lags the game enormously, let them teleport). Now Ender Trap will trap entities based on their current position and not on their landing position. Ender Trap now also traps Ender Pearl and Chorus Fruit teleports.
 - 1.11.0 Added tooltips to handheld items.
