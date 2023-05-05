@@ -13,7 +13,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '2.0.2-1.16.5'
-group = 'com.jayugg.end_aspected' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = 'net.jayugg.end_aspected' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'end_aspected'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
