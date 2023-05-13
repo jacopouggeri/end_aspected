@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import static net.jayugg.end_aspected.EndAspected.LOGGER;
 import static net.minecraft.util.Direction.DOWN;
+import static net.minecraft.util.Direction.UP;
 
 public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     private double cooldown;
@@ -161,7 +163,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
         Vector3d lookVec = user.getLook(1.0f);
 
         // Calculate the end position of the ray trace
-        Vector3d teleportPos = eyePos.add(lookVec.scale(teleportDistance)).add(0, -1*user.getEyeHeight(), 0);
+        Vector3d teleportPos = eyePos.add(lookVec.scale(teleportDistance)).add(0, -1 * user.getEyeHeight(), 0);
 
         // Get the world and perform the ray trace
         World world = user.world;
@@ -178,6 +180,23 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
         finalTeleportPos = adjustTeleportPosition(finalTeleportPos, user, world);
         // Teleport the player
         user.setPositionAndUpdate(finalTeleportPos.x, finalTeleportPos.y, finalTeleportPos.z);
+        if (isPlayerInOneBlockSpace(user.getPositionVec(), world)) {
+            user.setPositionAndUpdate(user.getPosX(), user.getPosY() + 1, user.getPosZ());
+            user.setPose(Pose.SWIMMING);
+        }
+    }
+
+    private boolean isPlayerInOneBlockSpace(Vector3d teleportPos, World world){
+        BlockPos blockPos = new BlockPos(teleportPos.x, teleportPos.y, teleportPos.z);
+        BlockPos abovePos = blockPos.offset(UP).offset((UP));
+        BlockPos belowPos = blockPos.offset(DOWN);
+
+        boolean aboveSolid = world.getBlockState(abovePos).isSolid();
+        boolean belowSolid = world.getBlockState(belowPos).isSolid();
+
+        LOGGER.info("aboveSolid: " + aboveSolid);
+        LOGGER.info("belowSolid: " + belowSolid);
+        return aboveSolid && belowSolid;
     }
 
     public Vector3d adjustTeleportPosition(Vector3d teleportPos, LivingEntity user, World world) {

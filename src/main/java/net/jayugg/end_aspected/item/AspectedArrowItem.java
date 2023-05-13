@@ -35,7 +35,6 @@ public class AspectedArrowItem extends ArrowItem {
         Vector3d lookVec = shooter.getLookVec();
         Vector3d endVec = shooterPos.add(lookVec.normalize().scale(getMaxTeleportDistance(shooter)));
 
-        // Create a new instance of your custom arrow entity
         AspectedArrowEntity arrowEntity = new AspectedArrowEntity(shooter.world, shooter);
         // Set the arrow's position, motion, and shooter
         arrowEntity.setShooter(shooter);
