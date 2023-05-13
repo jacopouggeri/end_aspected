@@ -5,6 +5,7 @@ import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -23,8 +25,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -35,10 +35,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractAspectOfTheEndItem extends SwordItem {
-    private static final double TELEPORT_OFFSET = 0.4;
-    private double cooldown;
+import static net.minecraft.core.Direction.DOWN;
 
+public abstract class AbstractAspectOfTheEndItem extends SwordItem {
+    private double cooldown;
     public boolean configLoaded;
     private int maxTeleports;
     private boolean firstRunFlag;
@@ -87,59 +87,6 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     public abstract int loadLostDurabilityConfig();
     public abstract Component getLore();
 
-    public static Vec3 getTeleportPosition(Entity entity, double teleportDistance, float partialTicks) {
-        // Get the player's eye position and look vector
-        Vec3 eyePos = entity.getEyePosition(partialTicks);
-        Vec3 lookVec = entity.getLookAngle();
-
-        // Calculate the end position of the ray trace
-        Vec3 teleportPos = eyePos.add(lookVec.scale(teleportDistance));
-
-        // Get the world and perform the ray trace
-        Level world = entity.level;
-        BlockHitResult result = world.clip(new ClipContext(eyePos, teleportPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
-
-        // If the ray trace hits a block, check if the block is solid
-        if (result.getType() == HitResult.Type.BLOCK) {
-            BlockPos blockPos = result.getBlockPos();
-            BlockState blockState = world.getBlockState(blockPos);
-
-            // If the block is solid, move the end position to the first collision with a solid block along the ray
-            if (blockState.canOcclude()) {
-                teleportPos = result.getLocation().subtract(lookVec.normalize().scale(TELEPORT_OFFSET));
-            }
-        }
-
-        return adjustTeleportPosition(world, entity, teleportPos);
-    }
-
-
-    private static boolean doesPlayerOverlap(Level world, Entity entity, Vec3 position) {
-        AABB entityBoundingBox = entity.getBoundingBox().move(position).inflate(TELEPORT_OFFSET);
-        return !world.noCollision(entity, entityBoundingBox);
-    }
-
-    private static Vec3 adjustTeleportPosition(Level world, Entity entity, Vec3 teleportPos) {
-
-        // Check if the player's bounding box overlaps with any solid block's bounding box at the teleport position
-        if (doesPlayerOverlap(world, entity, teleportPos)) {
-
-            // If there is an overlap, raytrace back to find a valid teleport position
-            Vec3 rayTraceStart = entity.getLookAngle();
-            Vec3 rayTraceEnd = teleportPos;
-            Vec3 rayTraceDir = rayTraceEnd.subtract(rayTraceStart).normalize();
-            double rayTraceDist = rayTraceEnd.distanceTo(rayTraceStart);
-            for (double i = rayTraceDist; i >= 0; i -= 0.1) {
-                Vec3 rayTracePos = rayTraceStart.add(rayTraceDir.scale(i));
-                if (!doesPlayerOverlap(world, entity, rayTracePos)) {
-                    teleportPos = rayTracePos;
-                    break;
-                }
-            }
-        }
-        // Return the found safe teleport position
-        return teleportPos;
-    }
 
     public int getTeleportsRemaining(ItemStack stack) {
         return stack.getOrCreateTag().getInt(TELEPORTS_REMAINING_TAG);
@@ -154,16 +101,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
                 stack.getOrCreateTag().putInt(TELEPORTS_REMAINING_TAG, maxTeleports);
                 firstRunFlag = false;
             }
-
-            Vec3 teleportPos;
-            teleportPos = getTeleportPosition(player, teleportDistance, 1.0f);
-
-            double dx = teleportPos.x;
-            double dy = teleportPos.y;
-            double dz = teleportPos.z;
-            BlockPos destPos = new BlockPos(dx, dy, dz);
-
-            EntityTeleportEvent teleportEvent = new EntityTeleportEvent.EnderEntity (player, teleportPos.x, teleportPos.y, teleportPos.z);
+            EntityTeleportEvent teleportEvent = new EntityTeleportEvent.EnderEntity (player, player.getX(), player.getY(), player.getZ());
             MinecraftForge.EVENT_BUS.post(teleportEvent);
 
             // Handle teleport jamming events
@@ -171,14 +109,14 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
                 return InteractionResultHolder.fail(player.getItemInHand(hand));
             }
 
-            // Play the Enderman sound at the destination position
-            world.playSound(null, destPos, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            // Spawn the Enderman particle effect at the destination position
-            ((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, dx, dy, dz, 50, 0.5, 0.5, 0.5, 0.0);
-            // Teleport the player
-            player.teleportTo(dx, dy, dz);
+            // Teleport player
+            handleTeleport(player);
             // Remove fall damage
             player.fallDistance = 0;
+
+            // Play sound and spawn particles
+            soundAndParticles(world, player);
+
             // Reduce durability
             if (enableLostDurability) {
                 stack.setDamageValue(stack.getDamageValue() + lostDurability); // reduce durability by 1
@@ -213,6 +151,76 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
         }
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
+
+    private void handleTeleport(LivingEntity user) {
+        // Get the player's eye position and look vector
+        Vec3 eyePos = user.getEyePosition();
+        Vec3 lookVec = user.getLookAngle();
+
+        // Calculate the end position of the ray trace
+        Vec3 teleportPos = eyePos.add(lookVec.scale(teleportDistance)).add(0, -1*user.getEyeHeight(), 0);
+
+        // Get the world and perform the ray trace
+        Level world = user.getLevel();
+        BlockHitResult result = world.clip(new ClipContext(eyePos, teleportPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, user));
+
+        Vec3 finalTeleportPos = teleportPos;
+
+        if (result.getType() == HitResult.Type.BLOCK) {
+            BlockPos hitPos = result.getBlockPos();
+            Direction face = result.getDirection();
+            BlockPos adjustedPos = hitPos.relative(face).relative(DOWN);
+            finalTeleportPos = new Vec3(adjustedPos.getX() + 0.5, adjustedPos.getY() + 1.0, adjustedPos.getZ() + 0.5);
+        }
+        finalTeleportPos = adjustTeleportPosition(finalTeleportPos, user, world);
+        // Teleport the player
+        user.teleportTo(finalTeleportPos.x, finalTeleportPos.y, finalTeleportPos.z);
+    }
+
+    public Vec3 adjustTeleportPosition(Vec3 teleportPos, LivingEntity user, Level world) {
+        for (int i = 1; i <= 2; i++) {
+            teleportPos = raiseFeet(teleportPos, world);
+        }
+        for (int i = 1; i <= 2; i++) {
+            teleportPos = lowerHead(teleportPos, user, world);
+        }
+        return teleportPos;
+    }
+
+    public Vec3 lowerHead(Vec3 teleportPos, LivingEntity user, Level world) {
+        BlockPos headPos = new BlockPos(teleportPos.x, teleportPos.y + user.getBbHeight(), teleportPos.z);
+        if (world.getBlockState(headPos).canOcclude()) {
+            // If the head would be inside a block, adjust the teleport position up by the difference between the block bottom and the player's head
+            double headOverlap = teleportPos.y + user.getBbHeight() - headPos.getY();
+            teleportPos = teleportPos.add(0, -headOverlap, 0);
+        }
+        return teleportPos;
+    }
+
+    public Vec3 raiseFeet(Vec3 teleportPos, Level world) {
+        BlockPos feetPos = new BlockPos(teleportPos.x, teleportPos.y, teleportPos.z);
+        if (world.getBlockState(feetPos).canOcclude()) {
+            // If the feet would be inside a block, adjust the teleport position up by the difference between the block top and the player's feet
+            double blockY = feetPos.getY() + world.getBlockState(feetPos).getShape(world, feetPos).max(Direction.Axis.Y);
+            double feetOverlap = blockY - teleportPos.y();
+            teleportPos = teleportPos.add(0, feetOverlap, 0);
+        }
+        return teleportPos;
+    }
+
+    private void soundAndParticles(Level world, LivingEntity user) {
+        double x = user.getX();
+        double y = user.getY();
+        double z = user.getZ();
+        BlockPos destPos = new BlockPos(x, y, z);
+
+        // Play the Enderman sound at the destination position
+        world.playSound(null, destPos, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        // Spawn the Enderman particle effect at the destination position
+        ((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, x, y, z, 50, 0.5, 0.5, 0.5, 0.0);
+
+    }
+
 
     public int calculateUnstableDuration() {
         return (int) (cooldown * ModConfig.unstablePhaseCooldownMultiplier.get());
