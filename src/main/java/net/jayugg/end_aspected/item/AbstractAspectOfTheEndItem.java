@@ -18,6 +18,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -36,6 +37,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.minecraft.core.Direction.DOWN;
+import static net.jayugg.end_aspected.EndAspected.LOGGER;
 
 public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     private double cooldown;
@@ -175,7 +177,26 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
         finalTeleportPos = adjustTeleportPosition(finalTeleportPos, user, world);
         // Teleport the player
         user.teleportTo(finalTeleportPos.x, finalTeleportPos.y, finalTeleportPos.z);
+        // Check if the player is in a 1-block tall space and make them crawl
+        if (isPlayerInOneBlockSpace(user.getPosition(1.0f), world)) {
+            user.teleportTo(user.getX(), user.getY() + 1, user.getZ());
+            user.setPose(Pose.SWIMMING);
+        }
     }
+
+    private boolean isPlayerInOneBlockSpace(Vec3 teleportPos, Level world) {
+        BlockPos blockPos = new BlockPos(teleportPos.x(), teleportPos.y(), teleportPos.z());
+        BlockPos abovePos = blockPos.above().above();
+        BlockPos belowPos = blockPos.below();
+
+        boolean aboveSolid = world.getBlockState(abovePos).canOcclude();
+        boolean belowSolid = world.getBlockState(belowPos).canOcclude();
+
+        LOGGER.info("aboveSolid: " + aboveSolid);
+        LOGGER.info("belowSolid: " + belowSolid);
+        return aboveSolid && belowSolid;
+    }
+
 
     public Vec3 adjustTeleportPosition(Vec3 teleportPos, LivingEntity user, Level world) {
         for (int i = 1; i <= 2; i++) {
