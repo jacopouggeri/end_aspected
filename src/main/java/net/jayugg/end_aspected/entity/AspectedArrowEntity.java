@@ -1,6 +1,5 @@
 package net.jayugg.end_aspected.entity;
 
-import net.jayugg.end_aspected.item.AspectedArrowItem;
 import net.jayugg.end_aspected.item.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -21,8 +20,6 @@ import javax.annotation.Nonnull;
 
 public class AspectedArrowEntity extends AbstractArrowEntity {
 
-    public boolean teleportedFlag = false;
-
     public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -37,7 +34,6 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
 
     public AspectedArrowEntity(World worldIn, LivingEntity shooter) {
         super(ModEntities.ASPECTED_ARROW.get(), shooter, worldIn);
-        this.teleportedFlag = true;
     }
 
     @Override
@@ -50,7 +46,7 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
         super.onImpact(result);
         //System.out.println("IMPACT!");
         World world = this.world;
-        if (this.getShooter() != null && teleportedFlag) {
+        if (this.getShooter() != null) {
             //System.out.println("SHOOTER: " + this.getShooter());
             Vector3d startVec = this.getShooter().getPositionVec();
             Vector3d hitVec = result.getHitVec();
@@ -60,7 +56,6 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
             Vector3d particleVec = startVec.add(lookVec.scale(0.25));
 
             // Spawn particles where arrow reappears
-            hitVec = hitVec.subtract(lookVec.scale(AspectedArrowItem.TELEPORT_BUFFER_DISTANCE));
 
             BlockPos startPos = new BlockPos(startVec.x, startVec.y, startVec.z);
             BlockPos destPos = new BlockPos(hitVec.x, hitVec.y, hitVec.z);
@@ -79,9 +74,5 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
     @Override
     public @Nonnull IPacket<?> createSpawnPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    public void setTeleportedFlag(boolean teleportedFlag) {
-        this.teleportedFlag = teleportedFlag;
     }
 }

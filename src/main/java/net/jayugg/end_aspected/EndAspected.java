@@ -105,7 +105,6 @@ public class EndAspected
         // Check for teleport hijacking or jamming effects
         UnstablePhaseEffect.damageTeleporter(entity);
         EnderTrapBlock.trapEventEntity(event, entity);
-
     }
 
     @SubscribeEvent

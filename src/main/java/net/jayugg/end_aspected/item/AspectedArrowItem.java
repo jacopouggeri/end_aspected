@@ -1,6 +1,7 @@
 package net.jayugg.end_aspected.item;
 
 import net.jayugg.end_aspected.entity.AspectedArrowEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.ArrowItem;
@@ -16,14 +17,11 @@ import javax.annotation.Nonnull;
 
 public class AspectedArrowItem extends ArrowItem {
 
-    public static double TELEPORT_BUFFER_DISTANCE;
-
     public AspectedArrowItem(Properties properties) {
         super(properties);
-        TELEPORT_BUFFER_DISTANCE = 8;
     }
 
-    private int getMaxTeleportDistance(LivingEntity shooter) {
+    private int getTeleportRange() {
             return 20 * 16;
     }
 
@@ -33,57 +31,42 @@ public class AspectedArrowItem extends ArrowItem {
 
         Vector3d shooterPos = shooter.getEyePosition(1.0f);
         Vector3d lookVec = shooter.getLookVec();
-        Vector3d endVec = shooterPos.add(lookVec.normalize().scale(getMaxTeleportDistance(shooter)));
+        Vector3d endVec = shooterPos.add(lookVec.normalize().scale(getTeleportRange()));
 
         AspectedArrowEntity arrowEntity = new AspectedArrowEntity(shooter.world, shooter);
         // Set the arrow's position, motion, and shooter
         arrowEntity.setShooter(shooter);
-        arrowEntity.setPosition(shooterPos.x, shooterPos.y, shooterPos.z);
-        arrowEntity.setMotion(shooter.getLookVec().scale(1.0));
+        arrowEntity.setMotion(shooter.getLookVec());
 
         // Use the AxisAlignedBB to include entities in the ray tracing
-        AxisAlignedBB aabb = shooter.getBoundingBox().expand(lookVec.scale(getMaxTeleportDistance(shooter)));
+        AxisAlignedBB aabb = shooter.getBoundingBox().expand(lookVec.scale(getTeleportRange()));
         EntityRayTraceResult entityResult = ProjectileHelper.rayTraceEntities(world, shooter, shooterPos, endVec, aabb, (target) -> !target.isSpectator() && target.canBeCollidedWith());
 
-        if (entityResult != null) {
-            handleTeleportHit(entityResult, shooter, arrowEntity);
-            arrowEntity.setTeleportedFlag(true);
-        } else {
-            RayTraceResult rayTraceResult = world.rayTraceBlocks(new RayTraceContext(shooterPos, endVec, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, shooter));
+        RayTraceResult blockResult = world.rayTraceBlocks(new RayTraceContext(shooterPos, endVec, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, shooter));
 
-            if (rayTraceResult.getType() != RayTraceResult.Type.MISS) {
-                handleTeleportHit(rayTraceResult, shooter, arrowEntity);
-                arrowEntity.setTeleportedFlag(true);
-            }
+        double entityDistance = Integer.MAX_VALUE;
+        double blockDistance = Integer.MAX_VALUE;
+
+        if (entityResult != null) {
+            Entity entity = entityResult.getEntity();
+            double bbLength = entity.getBoundingBox().getAverageEdgeLength();
+            entityDistance = entityResult.getHitVec().distanceTo(shooterPos);
         }
 
-        // Set other arrow parameters
-        arrowEntity.setNoGravity(true);
+        if (blockResult.getType() != RayTraceResult.Type.MISS) {
+            blockDistance = blockResult.getHitVec().distanceTo(shooterPos);
+        }
+
+        // Teleport the arrow
+        double teleportDistance = Math.min(blockDistance, entityDistance);
+        teleportDistance = Math.min(0.95 * teleportDistance, teleportDistance - 1.5);
+        // Set to 0 if no raytrace hit
+        teleportDistance = teleportDistance == Integer.MAX_VALUE ? 0: teleportDistance;
+        Vector3d destination = arrowEntity.getPositionVec().add(arrowEntity.getMotion().normalize().scale(teleportDistance));
+        arrowEntity.setPosition(destination.getX(), destination.getY(), destination.getZ());
 
         // Return the arrow entity
         return arrowEntity;
-    }
-
-    private void handleTeleportHit(RayTraceResult hitResult, LivingEntity shooter, AspectedArrowEntity arrowEntity) {
-        Vector3d hitVec = hitResult.getHitVec();
-        Vector3d shooterPos = shooter.getEyePosition(1.0f);
-        Vector3d teleportPos = arrowEntity.getPositionVec();
-
-        if (hitResult.getType() == RayTraceResult.Type.ENTITY || hitResult.getType() == RayTraceResult.Type.BLOCK) {
-            Vector3d distanceVec = hitVec.subtract(shooterPos);
-            // Check if the arrow has traveled far enough before teleporting it
-            if (distanceVec.lengthSquared() > Math.pow(TELEPORT_BUFFER_DISTANCE + 0.5, 2)) {
-                // Handle entity or block hit
-                teleportPos = hitVec.subtract(shooter.getLookVec().normalize().scale(TELEPORT_BUFFER_DISTANCE));
-            }
-
-        }
-        if (hitResult.getType() == RayTraceResult.Type.ENTITY) {
-            // Add an offset for the height of the arrow
-            teleportPos = teleportPos.add(0, shooter.getEyeHeight(), 0);
-        }
-
-        arrowEntity.setPosition(teleportPos.x, teleportPos.y, teleportPos.z);
     }
 
 }
