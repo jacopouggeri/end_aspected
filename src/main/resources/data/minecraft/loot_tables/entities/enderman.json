@@ -9,12 +9,12 @@
       "entries": [
         {
           "type": "item",
-          "weight": 1,
+          "weight": 5,
           "name": "end_aspected:aspect_shard",
           "conditions": [
             {
               "condition": "random_chance_with_looting",
-              "chance": 0.05,
+              "chance": 0.1,
               "looting_multiplier": 0.1
             },
             {
@@ -25,6 +25,21 @@
         {
           "type": "item",
           "weight": 1,
+          "name": "end_aspected:souvenir",
+          "conditions": [
+            {
+              "condition": "random_chance_with_looting",
+              "chance": 0.5,
+              "looting_multiplier": 0.1
+            },
+            {
+              "condition": "killed_by_player"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "weight": 10,
           "name": "minecraft:ender_pearl"
         }
       ]

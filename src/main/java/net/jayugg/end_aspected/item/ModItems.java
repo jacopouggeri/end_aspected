@@ -53,6 +53,9 @@ public class ModItems {
     public static final RegistryObject<Item> ASPECTED_ARROW = ITEMS.register("aspected_arrow",
             () -> new AspectedArrowItem(new Item.Properties().tab(ModItemGroup.MAIN_GROUP)));
 
+    public static final RegistryObject<Item> SOUVENIR_ITEM = ITEMS.register("souvenir",
+            () -> new SouvenirItem(new Item.Properties().tab(ModItemGroup.MAIN_GROUP)));
+
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

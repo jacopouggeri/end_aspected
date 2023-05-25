@@ -1,6 +1,5 @@
 package net.jayugg.end_aspected.entity;
 
-import net.jayugg.end_aspected.item.AspectedArrowItem;
 import net.jayugg.end_aspected.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -60,8 +59,6 @@ public class AspectedArrowEntity extends AbstractArrow {
             Vec3 particleVec = startVec.add(lookVec.scale(0.25));
 
             // Spawn particles where arrow reappears
-            hitVec = hitVec.subtract(lookVec.scale(AspectedArrowItem.TELEPORT_BUFFER_DISTANCE));
-
             BlockPos startPos = new BlockPos(startVec.x, startVec.y, startVec.z);
             BlockPos destPos = new BlockPos(hitVec.x, hitVec.y, hitVec.z);
 

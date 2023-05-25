@@ -5,6 +5,7 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
+import net.jayugg.end_aspected.enchantment.DestabiliseEnchantment;
 import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import net.jayugg.end_aspected.enchantment.ModEnchantments;
 import net.jayugg.end_aspected.entity.ModEntities;
@@ -96,6 +97,7 @@ public class EndAspected
         //LOGGER.info("ENTITY HURT!");
         // Handler Ender Slayer event
         EnderSlayerEnchantment.getLastDamageInflicted(event);
+        DestabiliseEnchantment.onLivingHurt(event);
     }
 
 }

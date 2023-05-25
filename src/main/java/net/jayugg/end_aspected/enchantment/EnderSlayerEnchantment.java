@@ -77,7 +77,7 @@ public class EnderSlayerEnchantment extends Enchantment {
     // Determines if the enchantment passed can be applied together with this enchantment.
     @Override
     public boolean checkCompatibility(@NotNull Enchantment enchantment) {
-        return !(enchantment instanceof net.minecraft.world.item.enchantment.DamageEnchantment);
+        return !(enchantment instanceof net.minecraft.world.item.enchantment.DamageEnchantment) && !(enchantment instanceof EnderSlayerEnchantment) && super.checkCompatibility(enchantment);
     }
 
     // Determines if this enchantment can be applied to a specific ItemStack.
