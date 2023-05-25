@@ -49,7 +49,6 @@ public class AspectedArrowItem extends ArrowItem {
 
         if (entityResult != null) {
             Entity entity = entityResult.getEntity();
-            double bbLength = entity.getBoundingBox().getAverageEdgeLength();
             entityDistance = entityResult.getHitVec().distanceTo(shooterPos);
         }
 
