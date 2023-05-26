@@ -1,9 +1,10 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.aote;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.VoidlingEntity;
+import net.jayugg.end_aspected.item.AspectShardItem;
 import net.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -150,7 +151,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     }
 
     private void spawnVoidling(World world, PlayerEntity player) {
-        if (random.nextFloat() < 0.95) {
+        if (random.nextFloat() > 0.95) {
             VoidlingEntity voidling = new VoidlingEntity(ModEntityTypes.VOIDLING.get(), world);
             voidling.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
             world.addEntity(voidling);

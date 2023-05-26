@@ -1,6 +1,9 @@
 package net.jayugg.end_aspected.item;
 
 import net.jayugg.end_aspected.entity.ModEntityTypes;
+import net.jayugg.end_aspected.item.aote.AspectOfTheEndItem;
+import net.jayugg.end_aspected.item.aote.DragonforgedAspectOfTheEndItem;
+import net.jayugg.end_aspected.item.aote.NetherforgedAspectOfTheEndItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.Rarity;

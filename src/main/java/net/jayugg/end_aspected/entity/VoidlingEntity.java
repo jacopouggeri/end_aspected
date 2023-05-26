@@ -51,27 +51,10 @@ public class VoidlingEntity extends MonsterEntity {
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
     }
 
-    @Override
-    protected int getExperiencePoints(@Nonnull PlayerEntity player)
-    {
-        return 3 + this.world.rand.nextInt(5);
-    }
-
-    @Override
-    public boolean attackEntityAsMob(@Nonnull Entity entityIn) {
-        if (!super.attackEntityAsMob(entityIn)) {
-            return false;
-        } else {
-            if (entityIn instanceof EndermanEntity || entityIn instanceof PlayerEntity) {
-                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), 200,3));
-            }
-            return true;
-        }
-    }
-
     protected float getStandingEyeHeight(@Nonnull Pose poseIn, @Nonnull EntitySize sizeIn) {
         return 0.13F;
     }
+
     protected boolean canTriggerWalking() {
         return false;
     }
@@ -129,6 +112,24 @@ public class VoidlingEntity extends MonsterEntity {
     }
 
     @Override
+    protected int getExperiencePoints(@Nonnull PlayerEntity player)
+    {
+        return 3 + this.world.rand.nextInt(5);
+    }
+
+    @Override
+    public boolean attackEntityAsMob(@Nonnull Entity entityIn) {
+        if (!super.attackEntityAsMob(entityIn)) {
+            return false;
+        } else {
+            if (entityIn instanceof EndermanEntity || entityIn instanceof PlayerEntity) {
+                ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(ModEffects.UNSTABLE_PHASE.get(), 200,3));
+            }
+            return true;
+        }
+    }
+
+    @Override
     public void livingTick() {
         super.livingTick();
         if (this.world.isRemote) {
@@ -141,6 +142,9 @@ public class VoidlingEntity extends MonsterEntity {
             }
 
             if (this.lifetime >= 2400) {
+                for(int i = 0; i < 2; ++i) {
+                    this.world.addParticle(ParticleTypes.PORTAL, this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
+                }
                 this.remove();
             }
         }

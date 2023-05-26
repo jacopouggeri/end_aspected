@@ -7,11 +7,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,9 +53,13 @@ public class VoidSeedItem extends Item {
             return ActionResult.resultFail(thisItem);
         }
 
-        // Start eating the offhand item
-        playerIn.setActiveHand(handIn);
-        return ActionResult.resultConsume(thisItem);
+        int itemCount = heldItem.getCount();
+        // Calculates the amount of items to eat, if fullness overflows, it will return the amount of items that can be eaten
+        int reduceAmount = addFullness(thisItem, itemCount);
+        heldItem.shrink(reduceAmount);
+        playerIn.playSound(SoundEvents.BLOCK_CONDUIT_ACTIVATE, 1.0F, random.nextFloat() * 0.4F + 0.8F);
+        ((ServerWorld) worldIn).spawnParticle(ParticleTypes.WARPED_SPORE, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), 50, 0.5, 0.5, 0.5, 0.0);
+        return ActionResult.resultSuccess(thisItem);
     }
 
     @Nonnull

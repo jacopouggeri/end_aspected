@@ -26,5 +26,5 @@
   "tooltip.end_aspected.stats": "§7Item stats:§r\n",
   "tooltip.end_aspected.void_seed.fullness": "§2Fullness: %1$s §2/ %2$s§r",
   "tooltip.end_aspected.void_seed.full": "§cFull§r",
-  "tooltip.end_aspected.void_seed.desc": "§eA cursed seed that hungers for the very essence of other items.\n§7Shift click with an item in your hand hand to consume it."
+  "tooltip.end_aspected.void_seed.desc": "§eIt seems to radiate an endless hunger."
 }

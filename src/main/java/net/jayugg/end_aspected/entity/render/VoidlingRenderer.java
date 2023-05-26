@@ -1,6 +1,5 @@
 package net.jayugg.end_aspected.entity.render;
 
-import net.jayugg.end_aspected.EndAspected;
 import net.jayugg.end_aspected.entity.VoidlingEntity;
 import net.jayugg.end_aspected.entity.model.VoidlingModel;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -9,8 +8,10 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
+import static net.jayugg.end_aspected.EndAspected.MOD_ID;
+
 public class VoidlingRenderer extends MobRenderer<VoidlingEntity, VoidlingModel<VoidlingEntity>> {
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(EndAspected.MOD_ID, "textures/entity/voidling.png");
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(MOD_ID, "textures/entity/voidling.png");
     public VoidlingRenderer(EntityRendererManager manager) {
         super(manager, new VoidlingModel<>(), 0.3F);
         this.addLayer(new VoidlingEyesLayer<>(this));
