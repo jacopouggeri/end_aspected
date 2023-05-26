@@ -1,6 +1,9 @@
 package net.jayugg.end_aspected.entity.renderer;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.jayugg.end_aspected.entity.model.VoidlingModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
@@ -19,6 +22,13 @@ public class VoidlingEyesLayer<T extends Entity, M extends VoidlingModel<T>> ext
 
     public VoidlingEyesLayer(RenderLayerParent<T, M> p_117507_) {
         super(p_117507_);
+    }
+
+    @Override
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entityIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        RenderSystem.setShaderTexture(0, new ResourceLocation(MOD_ID, "textures/entity/voidling_eyes.png"));
+        RenderSystem.setupDefaultState(0, 0, 0, 255);
+        super.render(matrixStackIn, bufferIn, 15728640, entityIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
     }
 
     public @Nonnull RenderType renderType() {
