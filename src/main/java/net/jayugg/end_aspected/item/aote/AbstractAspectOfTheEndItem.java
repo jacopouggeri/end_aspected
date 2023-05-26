@@ -257,7 +257,8 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     @Override
     public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity entity, int slot, boolean selected) {
         loadConfigIfNotLoaded();
-        if (entity instanceof Player player) {
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
             if (!world.isClientSide() && enableCooldown && !player.isCreative()) {
 
                 CompoundTag tag = stack.getOrCreateTag();
