@@ -1,5 +1,6 @@
 package net.jayugg.end_aspected.item;
 
+import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.Rarity;
@@ -55,7 +56,11 @@ public class ModItems {
 
     public static final RegistryObject<Item> SOUVENIR = ITEMS.register("souvenir",
             () -> new SouvenirItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1)));
-
+    public static final RegistryObject<Item> VOID_SEED = ITEMS.register("void_seed",
+            () -> new VoidSeedItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1)));
+    public static final RegistryObject<ModSpawnEggItem> VOIDLING_SPAWN_EGG = ITEMS.register("voidling_spawn_egg",
+            () -> new ModSpawnEggItem(ModEntityTypes.VOIDLING, 0x5164d0, 0x030a29,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

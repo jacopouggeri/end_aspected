@@ -1,6 +1,7 @@
-package net.jayugg.end_aspected.entity;
+package net.jayugg.end_aspected.entity.render;
 
 import net.jayugg.end_aspected.EndAspected;
+import net.jayugg.end_aspected.entity.AspectedArrowEntity;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;

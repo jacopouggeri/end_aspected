@@ -33,7 +33,7 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
     }
 
     public AspectedArrowEntity(World worldIn, LivingEntity shooter) {
-        super(ModEntities.ASPECTED_ARROW.get(), shooter, worldIn);
+        super(ModEntityTypes.ASPECTED_ARROW.get(), shooter, worldIn);
     }
 
     @Override

@@ -2,8 +2,8 @@ package net.jayugg.end_aspected.client;
 
 
 import net.jayugg.end_aspected.EndAspected;
-import net.jayugg.end_aspected.entity.AspectedArrowRenderer;
-import net.jayugg.end_aspected.entity.ModEntities;
+import net.jayugg.end_aspected.entity.render.AspectedArrowRenderer;
+import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,6 +15,6 @@ import static net.minecraftforge.fml.client.registry.RenderingRegistry.registerE
 public class ClientSetup {
     @SubscribeEvent
     public static void doSetup(FMLClientSetupEvent event) {
-        registerEntityRenderingHandler(ModEntities.ASPECTED_ARROW.get(), AspectedArrowRenderer::new);
+        registerEntityRenderingHandler(ModEntityTypes.ASPECTED_ARROW.get(), AspectedArrowRenderer::new);
     }
 }

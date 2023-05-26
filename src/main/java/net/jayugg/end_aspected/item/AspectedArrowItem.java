@@ -48,7 +48,6 @@ public class AspectedArrowItem extends ArrowItem {
         double blockDistance = Integer.MAX_VALUE;
 
         if (entityResult != null) {
-            Entity entity = entityResult.getEntity();
             entityDistance = entityResult.getHitVec().distanceTo(shooterPos);
         }
 

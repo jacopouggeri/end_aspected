@@ -7,17 +7,24 @@ import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import net.jayugg.end_aspected.enchantment.ModEnchantments;
-import net.jayugg.end_aspected.entity.ModEntities;
+import net.jayugg.end_aspected.entity.ModEntityTypes;
+import net.jayugg.end_aspected.entity.VoidlingEntity;
+import net.jayugg.end_aspected.entity.render.VoidlingRenderer;
 import net.jayugg.end_aspected.item.ModItems;
+import net.jayugg.end_aspected.item.ModSpawnEggItem;
 import net.jayugg.end_aspected.network.EndAspectedNetwork;
 import net.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -54,7 +61,7 @@ public class EndAspected
         // Register Items
         ModItems.register(eventBus);
         // Register Entities
-        ModEntities.register(eventBus);
+        ModEntityTypes.register(eventBus);
 
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);
@@ -74,6 +81,7 @@ public class EndAspected
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDLING.get(), VoidlingRenderer::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
@@ -110,7 +118,6 @@ public class EndAspected
     @SubscribeEvent
     public void getEntityLastDamage(LivingHurtEvent event) {
         //LOGGER.info("ENTITY HURT!");
-        // Handler Ender Slayer event
         EnderSlayerEnchantment.getLastDamageInflicted(event);
     }
 
