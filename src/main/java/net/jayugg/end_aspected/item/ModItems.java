@@ -1,9 +1,14 @@
 package net.jayugg.end_aspected.item;
 
+import net.jayugg.end_aspected.entity.ModEntityTypes;
+import net.jayugg.end_aspected.item.aote.AspectOfTheEndItem;
+import net.jayugg.end_aspected.item.aote.DragonforgedAspectOfTheEndItem;
+import net.jayugg.end_aspected.item.aote.NetherforgedAspectOfTheEndItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -55,6 +60,13 @@ public class ModItems {
 
     public static final RegistryObject<Item> SOUVENIR_ITEM = ITEMS.register("souvenir",
             () -> new SouvenirItem(new Item.Properties().tab(ModItemGroup.MAIN_GROUP)));
+
+    public static final RegistryObject<Item> VOIDLING_SPAWN_EGG = ITEMS.register("voidling_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntityTypes.VOIDLING, 0x5164d0, 0x030a29,
+                    new Item.Properties().tab(ModItemGroup.MAIN_GROUP)));
+
+    public static final RegistryObject<Item> VOID_SEED = ITEMS.register("void_seed",
+            () -> new VoidSeedItem(new Item.Properties().tab(ModItemGroup.MAIN_GROUP)));
 
 
     public static void register(IEventBus eventBus) {

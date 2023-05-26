@@ -11,6 +11,8 @@
   "item.end_aspected.shulker_wand": "Shulker Wand",
   "item.end_aspected.aspected_arrow": "Aspected Arrow",
   "item.end_aspected.souvenir": "Souvenir",
+  "item.end_aspected.voidling_spawn_egg": "Voidling Spawn Egg",
+  "item.end_aspected.void_seed": "§1Void Seed",
   "itemGroup.mainGroupTab": "End Aspected",
   "block.end_aspected.ender_trap": "Ender Trap",
   "tooltip.end_aspected.more": "§7Hold §r§eSHIFT§r§7 for more!§r",
@@ -21,5 +23,8 @@
   "tooltip.end_aspected.netherforged_aspect_of_the_end_shift": "§3This sword has been reforged in Netherite, it can now bear more of the End's power.§r",
   "tooltip.end_aspected.dragonforged_aspect_of_the_end_shift": "§3This sword has been reforged in Dragon Breath, it is now a perfect recipient for the End's power.§r",
   "tooltip.end_aspected.shulker_wand_shift": "§6§lITEM ABILITY§r: \n§6Summons a shulker bullet in the direction you're facing.\n§r§3This wand is able to call forth the magic of End cities.§r",
-  "tooltip.end_aspected.stats": "§7Item stats:§r"
+  "tooltip.end_aspected.stats": "§7Item stats:§r",
+  "tooltip.end_aspected.void_seed.fullness": "§2Fullness: %1$s §2/ %2$s§r",
+  "tooltip.end_aspected.void_seed.full": "§cFull§r",
+  "tooltip.end_aspected.void_seed.desc": "§eIt seems to radiate an endless hunger."
 }

@@ -35,7 +35,7 @@ public class AspectedArrowEntity extends AbstractArrow {
     }
 
     public AspectedArrowEntity(Level worldIn, LivingEntity shooter) {
-        super(ModEntities.ASPECTED_ARROW.get(), shooter, worldIn);
+        super(ModEntityTypes.ASPECTED_ARROW.get(), shooter, worldIn);
         this.teleportedFlag = true;
     }
 

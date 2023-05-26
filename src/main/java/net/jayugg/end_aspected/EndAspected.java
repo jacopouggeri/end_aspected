@@ -8,10 +8,12 @@ import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import net.jayugg.end_aspected.enchantment.DestabiliseEnchantment;
 import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import net.jayugg.end_aspected.enchantment.ModEnchantments;
-import net.jayugg.end_aspected.entity.ModEntities;
+import net.jayugg.end_aspected.entity.ModEntityTypes;
+import net.jayugg.end_aspected.entity.renderer.VoidlingRenderer;
 import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.world.entity.Entity;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -53,7 +55,7 @@ public class EndAspected
         // Register Items
         ModItems.register(eventBus);
         // Register Entities
-        ModEntities.register(eventBus);
+        ModEntityTypes.register(eventBus);
 
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);

@@ -1,7 +1,8 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.aote;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.item.AspectShardItem;
 import net.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
