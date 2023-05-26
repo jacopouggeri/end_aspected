@@ -23,7 +23,6 @@ import java.util.List;
 public class VoidSeedItem extends Item {
 
     private static final int MAX_FULLNESS = 1024;
-    private static final int EATING_DURATION = 32; // You can adjust this value to change the duration of eating
 
     public VoidSeedItem(Properties properties) {
         super(properties.maxStackSize(1));
@@ -64,17 +63,6 @@ public class VoidSeedItem extends Item {
         return ActionResult.resultSuccess(thisItem);
     }
 
-    @Nonnull
-    @Override
-    public UseAction getUseAction(@Nonnull ItemStack stack) {
-        return UseAction.EAT;
-    }
-
-    @Override
-    public int getUseDuration(@Nonnull ItemStack stack) {
-        return EATING_DURATION;
-    }
-
     private static int addFullness(ItemStack stack, int toAdd) {
         CompoundNBT nbt = stack.getOrCreateTag();
         int fullness = nbt.getInt("fullness");
@@ -100,21 +88,6 @@ public class VoidSeedItem extends Item {
     @Override
     public boolean hasEffect(@Nonnull ItemStack stack) {
         return isFull(stack);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack onItemUseFinish(@Nonnull ItemStack stack, @Nonnull World worldIn, @Nonnull LivingEntity entityLiving) {
-        if (entityLiving instanceof PlayerEntity) {
-            PlayerEntity playerIn = (PlayerEntity) entityLiving;
-            ItemStack heldItem = playerIn.getHeldItemMainhand();
-            int itemCount = heldItem.getCount();
-            // Calculates the amount of items to eat, if fullness overflows, it will return the amount of items that can be eaten
-            int reduce = addFullness(stack, itemCount);
-            heldItem.shrink(reduce);
-        }
-
-        return stack;
     }
 
     @Override

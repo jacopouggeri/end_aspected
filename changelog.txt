@@ -1,5 +1,6 @@
-2.2.0-1.16.5 Changelog
+2.2.1-1.16.5 Changelog
 =========================
+- 2.2.1 Various bug fixes.
 - 2.2.0 Added Voidling and Void Seed.
 - 2.1.1 Improved Aspected Arrow behaviour. Increased aspected arrow count from crafting recipe to 3.
 - 2.1.0 Now Aspected Arrows can hit entities too. Reworked teleport code to be smoother when teleporting against walls, celings and floors. Teleporting in a 1 block tall space will make you crawl.

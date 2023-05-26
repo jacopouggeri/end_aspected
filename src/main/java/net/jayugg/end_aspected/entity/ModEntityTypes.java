@@ -22,7 +22,7 @@ public class ModEntityTypes {
 
     public static final RegistryObject<EntityType<VoidlingEntity>> VOIDLING = ENTITY_TYPES.register("voidling",
             () -> EntityType.Builder.create(VoidlingEntity::new, EntityClassification.MONSTER)
-                    .size(1F, 1F)
+                    .size(0.5F, 0.5F)
                     .build("end_aspected:voidling"));
 
     public static void register(IEventBus eventBus) {
