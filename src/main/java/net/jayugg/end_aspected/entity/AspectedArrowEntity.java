@@ -20,8 +20,6 @@ import javax.annotation.Nonnull;
 
 public class AspectedArrowEntity extends AbstractArrow {
 
-    public boolean teleportedFlag = false;
-
     public AspectedArrowEntity(EntityType<AspectedArrowEntity> entityType, Level world) {
         super(entityType, world);
     }
@@ -36,7 +34,6 @@ public class AspectedArrowEntity extends AbstractArrow {
 
     public AspectedArrowEntity(Level worldIn, LivingEntity shooter) {
         super(ModEntityTypes.ASPECTED_ARROW.get(), shooter, worldIn);
-        this.teleportedFlag = true;
     }
 
     @Override
@@ -49,7 +46,7 @@ public class AspectedArrowEntity extends AbstractArrow {
         super.onHit(result);
         //System.out.println("IMPACT!");
         Level world = this.level;
-        if (this.getOwner() != null && teleportedFlag) {
+        if (this.getOwner() != null) {
             //System.out.println("SHOOTER: " + this.getShooter());
             Vec3 startVec = this.getOwner().getPosition(1.0f);
             Vec3 hitVec = result.getLocation();
@@ -75,9 +72,5 @@ public class AspectedArrowEntity extends AbstractArrow {
     @Override
     public @Nonnull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    public void setTeleportedFlag(boolean teleportedFlag) {
-        this.teleportedFlag = teleportedFlag;
     }
 }
