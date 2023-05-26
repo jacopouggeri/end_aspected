@@ -21,7 +21,7 @@ public class ModEntityTypes {
                     .build("minecraft:shulker_bullet"));
 
     public static final RegistryObject<EntityType<VoidlingEntity>> VOIDLING = ENTITY_TYPES.register("voidling",
-            () -> EntityType.Builder.of((EntityType.EntityFactory<VoidlingEntity>) VoidlingEntity::new, MobCategory.MONSTER)
+            () -> EntityType.Builder.of(VoidlingEntity::new, MobCategory.MONSTER)
                     .sized(0.5F, 0.5F)
                     .build("end_aspected:voidling"));
 

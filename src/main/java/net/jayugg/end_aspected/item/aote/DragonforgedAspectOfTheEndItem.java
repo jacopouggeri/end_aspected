@@ -1,7 +1,6 @@
 package net.jayugg.end_aspected.item.aote;
 
 import net.jayugg.end_aspected.config.ModConfig;
-import net.jayugg.end_aspected.item.aote.AbstractAspectOfTheEndItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Tier;
 
