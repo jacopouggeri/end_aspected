@@ -2,11 +2,13 @@ package net.jayugg.end_aspected.entity.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.jayugg.end_aspected.entity.model.VoidlingModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,10 +27,10 @@ public class VoidlingEyesLayer<T extends Entity, M extends VoidlingModel<T>> ext
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entityIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        RenderSystem.setShaderTexture(0, new ResourceLocation(MOD_ID, "textures/entity/voidling_eyes.png"));
-        RenderSystem.setupDefaultState(0, 0, 0, 255);
-        super.render(matrixStackIn, bufferIn, 15728640, entityIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+    public void render(PoseStack matrixStack, MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(this.renderType());
+        getParentModel().renderToBuffer(matrixStack, vertexConsumer, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public @Nonnull RenderType renderType() {

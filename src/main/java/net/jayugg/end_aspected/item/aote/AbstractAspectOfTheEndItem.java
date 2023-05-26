@@ -2,6 +2,8 @@ package net.jayugg.end_aspected.item.aote;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.entity.ModEntityTypes;
+import net.jayugg.end_aspected.entity.VoidlingEntity;
 import net.jayugg.end_aspected.item.AspectShardItem;
 import net.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screens.Screen;
@@ -152,6 +154,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
 
             }
         }
+        spawnVoidling(world, player);
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 
@@ -243,6 +246,13 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
 
     }
 
+    private void spawnVoidling(Level world, Player player) {
+        if (random.nextFloat() > 0.95) {
+            VoidlingEntity voidling = new VoidlingEntity(ModEntityTypes.VOIDLING.get(), world);
+            voidling.setPos(player.getX(), player.getY(), player.getZ());
+            world.addFreshEntity(voidling);
+        }
+    }
 
     public int calculateUnstableDuration() {
         return (int) (cooldown * ModConfig.unstablePhaseCooldownMultiplier.get());
