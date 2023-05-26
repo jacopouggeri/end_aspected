@@ -58,7 +58,9 @@ public class VoidSeedItem extends Item {
         int reduceAmount = addFullness(thisItem, itemCount);
         heldItem.shrink(reduceAmount);
         playerIn.playSound(SoundEvents.BLOCK_CONDUIT_ACTIVATE, 1.0F, random.nextFloat() * 0.4F + 0.8F);
-        ((ServerWorld) worldIn).spawnParticle(ParticleTypes.WARPED_SPORE, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), 50, 0.5, 0.5, 0.5, 0.0);
+        if (worldIn.isRemote) {
+            ((ServerWorld) worldIn).spawnParticle(ParticleTypes.WARPED_SPORE, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), 50, 0.5, 0.5, 0.5, 0.0);
+        }
         return ActionResult.resultSuccess(thisItem);
     }
 
