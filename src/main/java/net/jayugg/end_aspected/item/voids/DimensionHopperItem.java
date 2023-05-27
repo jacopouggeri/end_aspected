@@ -57,7 +57,7 @@ public class DimensionHopperItem extends Item {
             }
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
+        return ActionResult.resultSuccess(playerIn.getHeldItem(handIn));
     }
 
     private double getDimensionScale(RegistryKey<World> currentDimension, RegistryKey<World> destinationDimension) {
@@ -68,9 +68,5 @@ public class DimensionHopperItem extends Item {
         }
         return 1;  // For all other dimensions, no scaling is applied
     }
-
-
-
-
 
 }
