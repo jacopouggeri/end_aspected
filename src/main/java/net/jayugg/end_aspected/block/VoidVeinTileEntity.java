@@ -12,6 +12,7 @@ public class VoidVeinTileEntity extends TileEntity {
 
     public VoidVeinTileEntity() {
         super(ModTileEntities.VOID_VEIN.get());
+        this.lifetime = 0;
     }
 
     @Override

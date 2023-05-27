@@ -34,6 +34,21 @@ public class VoidVeinBlock extends Block {
     }
 
     @Override
+    public boolean ticksRandomly(@Nonnull BlockState state) {
+        return true;
+    }
+
+    @Override
+    public void onBlockAdded(@Nonnull BlockState state, World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+        worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
+    }
+
+    @Override
+    public void neighborChanged(@Nonnull BlockState state, World worldIn, @Nonnull BlockPos pos, @Nonnull Block blockIn, @Nonnull BlockPos fromPos, boolean isMoving) {
+        worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
+    }
+
+    @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return this.tileEntityTypeSupplier.get().create();
     }
@@ -61,7 +76,6 @@ public class VoidVeinBlock extends Block {
     @Override
     public void tick(@Nonnull BlockState state, ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
         if (!worldIn.isRemote) {
-            int MAX_LIFETIME = 200;
 
             // Retrieve the TileEntity
             TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -70,7 +84,7 @@ public class VoidVeinBlock extends Block {
                 voidVeinTileEntity.increaseLifetime();
                 int lifetime = voidVeinTileEntity.getLifetime();
 
-                if (lifetime > MAX_LIFETIME && voidVeinTileEntity.isPlacedByVoidling()) {
+                if (lifetime > 0 && voidVeinTileEntity.isPlacedByVoidling()) {
                     worldIn.destroyBlock(pos, true);
                 }
             }
