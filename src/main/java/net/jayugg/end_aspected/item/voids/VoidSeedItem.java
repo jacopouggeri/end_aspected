@@ -1,9 +1,8 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.voids;
 
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;

@@ -37,7 +37,7 @@ public class ModBlocks {
 
     private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block) {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
-                new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
+                new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(ModItems.ASPECT)));
     }
 
     public static void register(IEventBus eventBus) {

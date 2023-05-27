@@ -32,6 +32,7 @@ public final class ModConfig {
     public static ForgeConfigSpec.BooleanValue unstableTeleports;
     public static ForgeConfigSpec.ConfigValue<Integer> unstableTeleportsLimit;
     public static ForgeConfigSpec.DoubleValue unstablePhaseCooldownMultiplier;
+    public static final ForgeConfigSpec.DoubleValue voidlingSpawnChance;
 
     static {
         String COOLDOWN_FLAG_COMMENT = "Enable cooldown.";
@@ -45,6 +46,7 @@ public final class ModConfig {
         teleportDistance = BUILDER.comment("Teleport distance in blocks for the Aspect of the End and upgrades.").defineInRange("teleportDistance", 6, 0, Integer.MAX_VALUE);
         maxTeleports = BUILDER.comment("Maximum number of teleports of Aspect of the End and upgrades before the cooldown is triggered.").defineInRange("maxTeleports", 6, 0, Integer.MAX_VALUE);
         BUILDER.comment("Teleports after cooldown will give the Unstable Phase effect. Check its config to disable unstable teleports.");
+        voidlingSpawnChance = BUILDER.comment("Chance of a voidling spawning on teleport. 0 = 0%, 1 = 100%.").defineInRange("voidlingSpawnChance", 0.02, 0, 1);
 
         BUILDER.push("Aspect of The End");
         enableAoteCooldown = BUILDER.comment(COOLDOWN_FLAG_COMMENT).define("enableCooldown", true);

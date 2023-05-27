@@ -49,6 +49,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     private int lostDurability;
     private boolean enableUnstableTeleports;
     private int unstableTeleportLimit;
+    private double voidlingSpawnChance;
 
     public String TELEPORTS_REMAINING_TAG = "teleports_remaining";
     public String COOLDOWN_CYCLES_TAG = "cooldownCycles";
@@ -70,6 +71,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
             this.maxTeleports = ModConfig.maxTeleports.get();
             this.enableUnstableTeleports = ModConfig.unstableTeleports.get();
             this.unstableTeleportLimit = ModConfig.unstableTeleportsLimit.get();
+            this.voidlingSpawnChance = ModConfig.voidlingSpawnChance.get();
 
             // Handle config values for different items
             this.cooldown = loadCooldownConfig();
@@ -151,7 +153,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     }
 
     private void spawnVoidling(World world, PlayerEntity player) {
-        if (random.nextFloat() > 0.95) {
+        if (random.nextFloat() > 1 - voidlingSpawnChance) {
             VoidlingEntity voidling = new VoidlingEntity(ModEntityTypes.VOIDLING.get(), world);
             voidling.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
             world.addEntity(voidling);
