@@ -1,7 +1,6 @@
 package net.jayugg.end_aspected.entity;
 
 import net.jayugg.end_aspected.block.ModBlocks;
-import net.jayugg.end_aspected.block.VoidVeinTileEntity;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -14,7 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
