@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class SouvenirItem extends Item {
+public class SouvenirItem extends Item{
 
     public SouvenirItem(Properties properties) {
         super(properties);
