@@ -1,5 +1,6 @@
-2.2.0-1.19.2 Changelog
+2.2.1-1.19.2 Changelog
 =========================
+- 2.2.1 Minor texture adjustments, added Dimension Hopper item (creative only). Added config option to set Voidling Spawn chance when teleporting.
 - 2.2.0 Added Voidling and Void Seed.
 - 2.1.1 Smoothed out aspected arrow behaviour. Now Aspected Arrows can hit entities too. Increased arrow count on crafting to 3. Fixed bug that made Ender Slayer enchantment stack with itself. Fixed Destabilise enchantment not working.
 - 2.1.0 Reworked teleport code to be smoother when teleporting against walls, celings and floors. Teleporting in 1 block tall spaces will make you crawl.

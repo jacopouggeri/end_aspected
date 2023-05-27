@@ -30,7 +30,7 @@ public class DimensionHopperItem extends Item {
             }
 
             // Get the list of all dimensions
-            List<ResourceLocation> allDimensions = worldIn.getServer().registryAccess().registryOrThrow(Registry.DIMENSION_REGISTRY).keySet().stream()
+            List<ResourceLocation> allDimensions = worldIn.getServer().registryAccess().registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).keySet().stream()
                     .toList();
 
             if (!allDimensions.isEmpty()) {
