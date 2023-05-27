@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 public class VoidVeinBlock extends Block {
     private final Supplier<TileEntityType<VoidVeinTileEntity>> tileEntityTypeSupplier;
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 0.0D, 16.0D);
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 0.1D, 16.0D);
     public VoidVeinBlock(Properties properties, Supplier<TileEntityType<VoidVeinTileEntity>> tileEntityTypeSupplier) {
         super(properties.tickRandomly());
         this.tileEntityTypeSupplier = tileEntityTypeSupplier;
