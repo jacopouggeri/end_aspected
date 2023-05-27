@@ -67,7 +67,7 @@ public class ModItems {
             () -> new ModSpawnEggItem(ModEntityTypes.VOIDLING, 0x07111e, 0x327b97,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
 
-    public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper",
+    public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper.json",
             () -> new DimensionHopperItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1).rarity(VOID)));
 
     public static void register(IEventBus eventBus) {
