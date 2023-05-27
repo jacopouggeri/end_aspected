@@ -13,6 +13,8 @@ import net.jayugg.end_aspected.entity.render.VoidlingRenderer;
 import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.network.EndAspectedNetwork;
 import net.jayugg.end_aspected.villager.ModTrades;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
@@ -80,6 +82,7 @@ public class EndAspected
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDLING.get(), VoidlingRenderer::new);
+        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN_BLOCK.get(), RenderType.getCutoutMipped());
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
