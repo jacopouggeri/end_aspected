@@ -4,6 +4,8 @@ import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.item.aote.AspectOfTheEndItem;
 import net.jayugg.end_aspected.item.aote.DragonforgedAspectOfTheEndItem;
 import net.jayugg.end_aspected.item.aote.NetherforgedAspectOfTheEndItem;
+import net.jayugg.end_aspected.item.voids.DimensionHopperItem;
+import net.jayugg.end_aspected.item.voids.VoidSeedItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -65,6 +67,9 @@ public class ModItems {
 
     public static final RegistryObject<Item> VOID_SEED = ITEMS.register("void_seed",
             () -> new VoidSeedItem(new Item.Properties().tab(ModItemGroup.MAIN_GROUP).rarity(VOID)));
+
+    public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper",
+            () -> new DimensionHopperItem(new Item.Properties().tab(ModItemGroup.MAIN_GROUP).rarity(VOID)));
 
     public static final RegistryObject<Item> VOIDLING_SPAWN_EGG = ITEMS.register("voidling_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntityTypes.VOIDLING, 0x07111e, 0x327b97,

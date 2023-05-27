@@ -3,7 +3,9 @@
   "enchantment.end_aspected.ender_slayer.desc": "Increase damage against End mobs",
   "enchantment.end_aspected.destabilise": "Destabilise",
   "enchantment.end_aspected.destabilise.desc": "Inflicts Unstable Phase effect on mobs",
+
   "effect.end_aspected.unstable_phase": "Unstable Phase",
+
   "item.end_aspected.aspect_of_the_end": "Aspect of the End",
   "item.end_aspected.netherforged_aspect_of_the_end": "Netherforged Aspect of the End",
   "item.end_aspected.dragonforged_aspect_of_the_end": "Dragonforged Aspect of the End",
@@ -13,8 +15,13 @@
   "item.end_aspected.souvenir": "Souvenir",
   "item.end_aspected.voidling_spawn_egg": "Voidling Spawn Egg",
   "item.end_aspected.void_seed": "Void Seed",
+  "item.end_aspected.dimension_hopper": "Dimension Hopper",
   "itemGroup.mainGroupTab": "End Aspected",
+
   "block.end_aspected.ender_trap": "Ender Trap",
+
+  "entity.end_aspected.voidling": "Voidling",
+
   "tooltip.end_aspected.more": "§7Hold §r§eSHIFT§r§7 for more!§r",
   "tooltip.end_aspected.aspect_of_the_end_ability": "§6§lITEM ABILITY§r: \n§6Teleports you in the direction you're facing.§r",
   "tooltip.end_aspected.teleport_reach": " %s§r§2 Teleport Reach§r",

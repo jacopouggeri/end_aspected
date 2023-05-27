@@ -1,4 +1,4 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.voids;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.particles.ParticleTypes;
