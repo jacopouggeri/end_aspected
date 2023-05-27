@@ -1,5 +1,7 @@
 package net.jayugg.end_aspected.entity;
 
+import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.VoidVeinTileEntity;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -12,10 +14,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -132,6 +136,9 @@ public class VoidlingEntity extends MonsterEntity {
     @Override
     public void livingTick() {
         super.livingTick();
+        if (this.isOnGround()) { // Check if entity is standing on a solid block
+            placeVoidVeinBlock();
+        }
         if (this.world.isRemote) {
             for(int i = 0; i < 2; ++i) {
                 this.world.addParticle(ParticleTypes.WARPED_SPORE, this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
@@ -148,6 +155,18 @@ public class VoidlingEntity extends MonsterEntity {
                 this.remove();
             }
         }
+    }
 
+    private void placeVoidVeinBlock() {
+        BlockState blockstate = ModBlocks.VOID_VEIN_BLOCK.get().getDefaultState();
+        for(int l = 0; l < 4; ++l) {
+            int i = MathHelper.floor(this.getPosX() + (double)((float)(l % 2 * 2 - 1) * 0.25F));
+            int j = MathHelper.floor(this.getPosY());
+            int k = MathHelper.floor(this.getPosZ() + (double)((float)(l / 2 % 2 * 2 - 1) * 0.25F));
+            BlockPos blockpos = new BlockPos(i, j, k);
+            if (this.world.isAirBlock(blockpos)  && blockstate.isValidPosition(this.world, blockpos)) {
+                this.world.setBlockState(blockpos, blockstate);
+            }
+        }
     }
 }

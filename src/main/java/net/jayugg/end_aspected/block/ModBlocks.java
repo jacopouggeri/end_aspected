@@ -29,6 +29,14 @@ public class ModBlocks {
                     .sound(SoundType.LODESTONE)
             ));
 
+    public static final RegistryObject<Block> VOID_VEIN_BLOCK = registerBlock("void_vein",
+            () -> new VoidVeinBlock(Block.Properties.create(Material.PLANTS)
+                    .hardnessAndResistance(0.5F)
+                    .harvestTool(ToolType.HOE)
+                    .notSolid()
+                    .sound(SoundType.NETHER_VINE),
+                    ModTileEntities.VOID_VEIN));
+
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
