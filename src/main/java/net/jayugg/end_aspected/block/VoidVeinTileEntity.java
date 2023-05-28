@@ -79,7 +79,7 @@ public class VoidVeinTileEntity extends BlockEntity {
             // if the block below is not solid
             if (!blockBelowState.canOcclude()) {
                 // break this block
-                level.destroyBlock(pos, true);
+                level.destroyBlock(pos, false);
             }
         }
     }
