@@ -3,6 +3,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -100,8 +101,24 @@ public class VoidVeinBlock extends Block {
     }
 
     @Override
+    public void randomTick(@Nonnull BlockState state, @Nonnull ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random random) {
+        super.randomTick(state, worldIn, pos, random);
+
+        for (int i = 0; i < 10; ++i) {
+            // Calculate particle position
+            double x = pos.getX() + random.nextDouble();
+            double y = pos.getY() + random.nextDouble();
+            double z = pos.getZ() + random.nextDouble();
+
+            // Spawn particles at the calculated position
+            worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, x, y, z, 2, 0, 0, 0, 0);
+        }
+    }
+
+    @Override
     public boolean isReplaceable(@Nonnull BlockState state, @Nonnull BlockItemUseContext useContext) {
         Item item = useContext.getItem().getItem();
         return item != Item.getItemFromBlock(this); // Replace the block only if the item used is not the same block
     }
+
 }
