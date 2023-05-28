@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "end_aspected:block/void_stem_top",
+    "side": "end_aspected:block/void_stem"
+  }
+}

@@ -23,6 +23,9 @@
 
   "block.end_aspected.ender_trap": "Ender Trap",
   "block.end_aspected.void_vein": "Void Vein",
+  "block.end_aspected.void_leaves": "Void Leaves",
+  "block.end_aspected.void_stem": "Void Stem",
+  "block.end_aspected.void_fungus": "Void Fungus",
 
   "entity.end_aspected.voidling": "Voidling",
 

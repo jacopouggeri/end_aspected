@@ -5,6 +5,7 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.ModTileEntities;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
 import net.jayugg.end_aspected.potion.ModPotions;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
@@ -16,7 +17,9 @@ import net.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
+import net.minecraft.potion.Potions;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -47,6 +50,9 @@ public class EndAspected
 
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
+        // Register the setup method for modloading
+        eventBus.addListener(this::setup);
+
         // Register Effects
         ModEffects.register(eventBus);
         // Register Enchantments
@@ -62,8 +68,6 @@ public class EndAspected
         // Register Potions
         ModPotions.register(eventBus);
 
-        // Register the setup method for modloading
-        eventBus.addListener(this::setup);
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
@@ -78,11 +82,15 @@ public class EndAspected
 
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(ModTrades::fillTradeData);
+        event.enqueueWork(() -> {
+            BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModItems.ASPECT_SHARD.get(), ModPotions.UNSTABLE_PHASE_POTION.get()));
+        });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDLING.get(), VoidlingRenderer::new);
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN_BLOCK.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_FUNGUS.get(), RenderType.getCutoutMipped());
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
