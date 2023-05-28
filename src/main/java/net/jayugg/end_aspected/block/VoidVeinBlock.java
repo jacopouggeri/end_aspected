@@ -88,7 +88,7 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
                     // Tick every 10 seconds
                     worldIn.getPendingBlockTicks().scheduleTick(pos, this, 200);
                     if (voidVeinTileEntity.shoudlDestroy()) {
-                        worldIn.destroyBlock(pos, true);
+                        worldIn.destroyBlock(pos, false);
                     }
                 }
             }
