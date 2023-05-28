@@ -17,7 +17,7 @@ public class VoidVeinTileEntity extends TileEntity {
         super(ModTileEntities.VOID_VEIN.get());
         Random random = new Random();
         this.lifetime = 0;
-        this.max_lifetime = MathHelper.nextInt(random, 5, 20);
+        this.max_lifetime = MathHelper.nextInt(random, 1, 5);
     }
 
     @Override

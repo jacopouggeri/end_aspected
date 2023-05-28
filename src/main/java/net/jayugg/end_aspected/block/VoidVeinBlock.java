@@ -18,6 +18,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -99,7 +100,7 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
             // if the block below is not solid
             if (!blockBelowState.isSolidSide(worldIn, blockBelowPos, Direction.UP)) {
                 // break this block
-                worldIn.destroyBlock(pos, true);
+                worldIn.destroyBlock(pos, false);
             }
         }
     }
@@ -135,6 +136,11 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
     @Override
     public boolean isReplaceable(@Nonnull BlockState state, @Nonnull BlockItemUseContext useContext) {
         return state != this.getDefaultState(); // Replace the block only if the item used is not the same block
+    }
+
+    @Override
+    public boolean isValidPosition(@Nonnull BlockState state, IWorldReader worldIn, BlockPos pos) {
+        return worldIn.getBlockState(pos.down()).isSolidSide(worldIn, pos, Direction.UP);
     }
 
 }
