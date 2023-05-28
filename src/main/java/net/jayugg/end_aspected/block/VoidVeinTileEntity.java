@@ -53,6 +53,10 @@ public class VoidVeinTileEntity extends BlockEntity {
         this.lifetime++;
     }
 
+    public void resetLifetime() {
+        this.lifetime = 0;
+    }
+
     public boolean shouldDestroy() {
         return this.lifetime >= this.max_lifetime;
     }

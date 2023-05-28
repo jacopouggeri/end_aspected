@@ -11,9 +11,13 @@ import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import net.jayugg.end_aspected.enchantment.ModEnchantments;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.item.ModItems;
+import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
+import net.jayugg.end_aspected.potion.ModPotions;
 import net.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -57,6 +61,8 @@ public class EndAspected
         ModEntityTypes.register(eventBus);
         // Register Tile Entities
         ModTileEntities.register(eventBus);
+        // Register Potions
+        ModPotions.register(eventBus);
 
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);
@@ -72,7 +78,9 @@ public class EndAspected
 
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(ModTrades::fillTradeData);
-        // EndAspectedNetwork.init();
+        event.enqueueWork(() -> {
+            BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModItems.ASPECT_SHARD.get(), ModPotions.UNSTABLE_PHASE_POTION.get()));
+        });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
