@@ -1,5 +1,6 @@
-2.2.2-1.16.5 Changelog
+2.3.0-1.16.5 Changelog
 =========================
+- 2.3.0 Added Void Vein. Now Voidlings will cover the ground in Void Veins when they walk. Changed voidling loot table. Added animated textures.
 - 2.2.2 Minor texture adjustments, added Dimension Hopper item (creative only). Added config option to set Voidling Spawn chance when teleporting.
 - 2.2.1 Various bug fixes.
 - 2.2.0 Added Voidling and Void Seed.

@@ -1,14 +1,19 @@
 package net.jayugg.end_aspected.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.material.PushReaction;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -20,11 +25,13 @@ import javax.annotation.Nonnull;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class VoidVeinBlock extends Block {
+public class VoidVeinBlock extends Block implements IWaterLoggable {
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final Supplier<TileEntityType<VoidVeinTileEntity>> tileEntityTypeSupplier;
     private static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 0.1D, 16.0D);
     public VoidVeinBlock(Properties properties, Supplier<TileEntityType<VoidVeinTileEntity>> tileEntityTypeSupplier) {
         super(properties.tickRandomly());
+        this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false));
         this.tileEntityTypeSupplier = tileEntityTypeSupplier;
     }
 
@@ -78,12 +85,9 @@ public class VoidVeinBlock extends Block {
 
                 if (voidVeinTileEntity.isPlacedByVoidling()) {
                     voidVeinTileEntity.increaseLifetime();
-                    int lifetime = voidVeinTileEntity.getLifetime();
-                    // Schedule the next tick after a random number of ticks following a Poisson distribution
-                    int nextTick = MathHelper.nextInt(worldIn.rand, 10, 30); // Adjust the range as desired
-                    worldIn.getPendingBlockTicks().scheduleTick(pos, this, nextTick);
-                    LOGGER.info("Lifetime: " + lifetime);
-                    if (lifetime > 20) {
+                    // Tick every 10 seconds
+                    worldIn.getPendingBlockTicks().scheduleTick(pos, this, 200);
+                    if (voidVeinTileEntity.shoudlDestroy()) {
                         worldIn.destroyBlock(pos, true);
                     }
                 }
@@ -103,22 +107,34 @@ public class VoidVeinBlock extends Block {
     @Override
     public void randomTick(@Nonnull BlockState state, @Nonnull ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random random) {
         super.randomTick(state, worldIn, pos, random);
-
-        for (int i = 0; i < 10; ++i) {
-            // Calculate particle position
-            double x = pos.getX() + random.nextDouble();
-            double y = pos.getY() + random.nextDouble();
-            double z = pos.getZ() + random.nextDouble();
-
-            // Spawn particles at the calculated position
-            worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, x, y, z, 2, 0, 0, 0, 0);
+        if (worldIn.rand.nextFloat() > 0.98) {
+            worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, pos.getX(), pos.getY(), pos.getZ(), 4, 0, 0, 0, 0.1);
         }
+    }
+
+    public @Nonnull FluidState getFluidState(BlockState state) {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+    }
+
+    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
+        super.getStateForPlacement(context);
+        BlockPos blockpos = context.getPos();
+        FluidState fluidstate = context.getWorld().getFluidState(blockpos);
+        return this.getDefaultState().with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(WATERLOGGED);
+    }
+
+    public @Nonnull PushReaction getPushReaction(@Nonnull BlockState pState) {
+        return PushReaction.DESTROY;
     }
 
     @Override
     public boolean isReplaceable(@Nonnull BlockState state, @Nonnull BlockItemUseContext useContext) {
-        Item item = useContext.getItem().getItem();
-        return item != Item.getItemFromBlock(this); // Replace the block only if the item used is not the same block
+        return state != this.getDefaultState(); // Replace the block only if the item used is not the same block
     }
 
 }

@@ -1,3 +1,6 @@
 {
-  "parent": "end_aspected:block/void_vein"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "end_aspected:block/void_vein"
+  }
 }

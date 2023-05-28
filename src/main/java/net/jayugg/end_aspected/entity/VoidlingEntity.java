@@ -21,6 +21,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
 
@@ -34,7 +35,7 @@ public class VoidlingEntity extends MonsterEntity {
     public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
         return MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.7D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.55D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.5D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 1.0D)
@@ -136,7 +137,7 @@ public class VoidlingEntity extends MonsterEntity {
     @Override
     public void livingTick() {
         super.livingTick();
-        if (this.isOnGround()) { // Check if entity is standing on a solid block
+        if (this.isOnGround() && ForgeEventFactory.getMobGriefingEvent(this.world, this)) { // Check if entity is standing on a solid block
             placeVoidVeinBlock();
         }
         if (this.world.isRemote) {

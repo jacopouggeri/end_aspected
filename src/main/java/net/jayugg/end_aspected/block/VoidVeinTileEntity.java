@@ -3,16 +3,21 @@ package net.jayugg.end_aspected.block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
+import java.util.Random;
 
 public class VoidVeinTileEntity extends TileEntity {
     private boolean placedByVoidling;
     private int lifetime;
+    private final int max_lifetime;
 
     public VoidVeinTileEntity() {
         super(ModTileEntities.VOID_VEIN.get());
+        Random random = new Random();
         this.lifetime = 0;
+        this.max_lifetime = MathHelper.nextInt(random, 5, 20);
     }
 
     @Override
@@ -42,8 +47,8 @@ public class VoidVeinTileEntity extends TileEntity {
         this.lifetime++;
     }
 
-    public int getLifetime() {
-        return this.lifetime;
+    public boolean shoudlDestroy() {
+        return this.lifetime >= this.max_lifetime;
     }
 }
 

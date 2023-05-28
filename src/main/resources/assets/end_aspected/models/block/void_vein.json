@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
 	"parent": "block/thin_block",
 	"textures": {
 		"0": "end_aspected:block/void_vein",

@@ -34,7 +34,7 @@ public class ModBlocks {
                     .hardnessAndResistance(0.0F)
                     .harvestTool(ToolType.HOE)
                     .notSolid()
-                    .setLightLevel((state) -> 1)
+                    .setLightLevel((state) -> 4)
                     .sound(SoundType.NETHER_VINE),
                     ModTileEntities.VOID_VEIN));
 
@@ -48,6 +48,7 @@ public class ModBlocks {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
                 new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(ModItems.VOID)));
     }
+
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
