@@ -1,10 +1,10 @@
 package net.jayugg.end_aspected.block;
 
 import net.jayugg.end_aspected.EndAspected;
+import net.jayugg.end_aspected.block.tree.VoidTree;
 import net.jayugg.end_aspected.item.ModItemGroup;
 import net.jayugg.end_aspected.item.ModItems;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -37,6 +37,22 @@ public class ModBlocks {
                     .setLightLevel((state) -> 4)
                     .sound(SoundType.NETHER_VINE),
                     ModTileEntities.VOID_VEIN));
+
+    public static final RegistryObject<Block> VOID_STEM = registerBlock("void_stem",
+            () -> new Block(Block.Properties.create(Material.NETHER_WOOD)
+                    .harvestTool(ToolType.AXE)
+                    .sound(SoundType.WOOD)));
+
+    public static final RegistryObject<Block> VOID_LEAVES = registerBlock("void_leaves",
+            () -> new LeavesBlock(Block.Properties.create(Material.LEAVES)
+                    .hardnessAndResistance(0.2f)
+                    .harvestTool(ToolType.HOE)
+                    .sound(SoundType.PLANT)));
+
+    public static final RegistryObject<Block> VOID_FUNGUS = registerBlock("void_fungus",
+            () -> new SaplingBlock(new VoidTree(),
+                    Block.Properties.from(Blocks.WARPED_FUNGUS)));
+
 
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
