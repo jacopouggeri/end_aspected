@@ -5,6 +5,9 @@
   "enchantment.end_aspected.destabilise.desc": "Inflicts Unstable Phase effect on mobs",
 
   "effect.end_aspected.unstable_phase": "Unstable Phase",
+  "item.minecraft.potion.effect.unstable_phase": "Unstable Phase Potion",
+  "item.minecraft.splash_potion.effect.unstable_phase": "Splash Potion of Unstable Phase",
+  "item.minecraft.lingering_potion.effect.unstable_phase": "Lingering Potion of Unstable Phase",
 
   "item.end_aspected.aspect_of_the_end": "Aspect of the End",
   "item.end_aspected.netherforged_aspect_of_the_end": "Netherforged Aspect of the End",

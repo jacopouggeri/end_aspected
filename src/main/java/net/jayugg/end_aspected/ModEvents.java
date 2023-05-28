@@ -20,4 +20,6 @@ public class ModEvents {
     public static void onRegisterEntities(RegistryEvent.Register<EntityType<?>> event) {
         ModSpawnEggItem.initSpawnEggs();
     }
+
+
 }

@@ -171,7 +171,9 @@ public class VoidlingEntity extends MonsterEntity {
                 TileEntity tileEntity = this.world.getTileEntity(blockpos);
                 if (tileEntity instanceof VoidVeinTileEntity) {
                     ((VoidVeinTileEntity) tileEntity).setPlacedByVoidling(true);
+                    ((VoidVeinTileEntity) tileEntity).resetLifetime();
                 }
+                this.world.setBlockState(blockpos, blockstate);
             }
         }
     }

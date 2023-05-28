@@ -5,13 +5,13 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.ModTileEntities;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.potion.ModPotions;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import net.jayugg.end_aspected.enchantment.ModEnchantments;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.render.VoidlingRenderer;
 import net.jayugg.end_aspected.item.ModItems;
-import net.jayugg.end_aspected.network.EndAspectedNetwork;
 import net.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -45,9 +45,6 @@ public class EndAspected
     public EndAspected() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register the setup method for modloading
-        eventBus.addListener(this::setup);
-
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC, "end_aspected.toml");
 
         // Register Effects
@@ -62,7 +59,11 @@ public class EndAspected
         ModEntityTypes.register(eventBus);
         // Register Tile Entities
         ModTileEntities.register(eventBus);
+        // Register Potions
+        ModPotions.register(eventBus);
 
+        // Register the setup method for modloading
+        eventBus.addListener(this::setup);
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
@@ -77,7 +78,6 @@ public class EndAspected
 
     private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(ModTrades::fillTradeData);
-        EndAspectedNetwork.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

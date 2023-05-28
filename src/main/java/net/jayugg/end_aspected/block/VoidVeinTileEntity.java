@@ -50,5 +50,9 @@ public class VoidVeinTileEntity extends TileEntity {
     public boolean shoudlDestroy() {
         return this.lifetime >= this.max_lifetime;
     }
+
+    public void resetLifetime() {
+        this.lifetime = 0;
+    }
 }
 
