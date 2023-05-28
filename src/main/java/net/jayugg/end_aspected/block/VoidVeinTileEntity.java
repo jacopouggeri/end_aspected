@@ -19,12 +19,14 @@ public class VoidVeinTileEntity extends TileEntity {
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
         this.placedByVoidling = nbt.getBoolean("PlacedByVoidling");
+        this.lifetime = nbt.getInt("Lifetime");
     }
 
     @Override
     public @Nonnull CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
         nbt.putBoolean("PlacedByVoidling", this.placedByVoidling);
+        nbt.putInt("Lifetime", this.lifetime);
         return nbt;
     }
 
@@ -37,7 +39,7 @@ public class VoidVeinTileEntity extends TileEntity {
     }
 
     public void increaseLifetime() {
-        this.lifetime += 1;
+        this.lifetime++;
     }
 
     public int getLifetime() {

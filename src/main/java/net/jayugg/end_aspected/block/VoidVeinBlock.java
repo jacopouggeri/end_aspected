@@ -1,13 +1,13 @@
 package net.jayugg.end_aspected.block;
-import net.jayugg.end_aspected.entity.VoidlingEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -39,8 +38,12 @@ public class VoidVeinBlock extends Block {
     }
 
     @Override
-    public void onBlockAdded(@Nonnull BlockState state, World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
-        worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
+    public void onBlockAdded(@Nonnull BlockState state, @Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
+        if (!worldIn.isRemote) {
+            // Schedule a task to tick the block every 20 ticks (1 second)
+            worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
+        }
     }
 
     @Override
@@ -51,16 +54,6 @@ public class VoidVeinBlock extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return this.tileEntityTypeSupplier.get().create();
-    }
-
-    @Override
-    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
-
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof VoidVeinTileEntity) {
-            ((VoidVeinTileEntity) tileEntity).setPlacedByVoidling(placer instanceof VoidlingEntity);
-        }
     }
 
     @Override
@@ -81,11 +74,17 @@ public class VoidVeinBlock extends Block {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if ((tileEntity instanceof VoidVeinTileEntity)) {
                 VoidVeinTileEntity voidVeinTileEntity = (VoidVeinTileEntity) tileEntity;
-                voidVeinTileEntity.increaseLifetime();
-                int lifetime = voidVeinTileEntity.getLifetime();
 
-                if (lifetime > 0 && voidVeinTileEntity.isPlacedByVoidling()) {
-                    worldIn.destroyBlock(pos, true);
+                if (voidVeinTileEntity.isPlacedByVoidling()) {
+                    voidVeinTileEntity.increaseLifetime();
+                    int lifetime = voidVeinTileEntity.getLifetime();
+                    // Schedule the next tick after a random number of ticks following a Poisson distribution
+                    int nextTick = MathHelper.nextInt(worldIn.rand, 10, 30); // Adjust the range as desired
+                    worldIn.getPendingBlockTicks().scheduleTick(pos, this, nextTick);
+                    LOGGER.info("Lifetime: " + lifetime);
+                    if (lifetime > 20) {
+                        worldIn.destroyBlock(pos, true);
+                    }
                 }
             }
 
@@ -98,5 +97,11 @@ public class VoidVeinBlock extends Block {
                 worldIn.destroyBlock(pos, true);
             }
         }
+    }
+
+    @Override
+    public boolean isReplaceable(@Nonnull BlockState state, @Nonnull BlockItemUseContext useContext) {
+        Item item = useContext.getItem().getItem();
+        return item != Item.getItemFromBlock(this); // Replace the block only if the item used is not the same block
     }
 }

@@ -1,6 +1,7 @@
 package net.jayugg.end_aspected.entity;
 
 import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.VoidVeinTileEntity;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -13,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -162,8 +164,13 @@ public class VoidlingEntity extends MonsterEntity {
             int j = MathHelper.floor(this.getPosY());
             int k = MathHelper.floor(this.getPosZ() + (double)((float)(l / 2 % 2 * 2 - 1) * 0.25F));
             BlockPos blockpos = new BlockPos(i, j, k);
-            if (this.world.isAirBlock(blockpos)  && blockstate.isValidPosition(this.world, blockpos)) {
+            BlockState blockBelowState = this.world.getBlockState(blockpos.down());
+            if (this.world.isAirBlock(blockpos)  && blockstate.isValidPosition(this.world, blockpos) && blockBelowState.isSolid()) {
                 this.world.setBlockState(blockpos, blockstate);
+                TileEntity tileEntity = this.world.getTileEntity(blockpos);
+                if (tileEntity instanceof VoidVeinTileEntity) {
+                    ((VoidVeinTileEntity) tileEntity).setPlacedByVoidling(true);
+                }
             }
         }
     }

@@ -10,7 +10,7 @@
         {
           "type": "item",
           "weight": 1,
-          "name": "end_aspected:void_seed",
+          "name": "end_aspected:aspect_shard",
           "conditions": [
             {
               "condition": "random_chance_with_looting",
