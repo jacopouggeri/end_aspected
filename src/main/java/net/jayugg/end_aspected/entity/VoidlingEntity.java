@@ -1,11 +1,14 @@
 package net.jayugg.end_aspected.entity;
 
+import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.VoidVeinTileEntity;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
@@ -18,7 +21,10 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
 
@@ -48,7 +54,7 @@ public class VoidlingEntity extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 20.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.7D)
+                .add(Attributes.MOVEMENT_SPEED, 0.55D)
                 .add(Attributes.ATTACK_DAMAGE, 2.5D)
                 .add(Attributes.FOLLOW_RANGE, 50.0D)
                 .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
@@ -121,7 +127,7 @@ public class VoidlingEntity extends Monster {
      */
     public void aiStep() {
         super.aiStep();
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             for(int i = 0; i < 2; ++i) {
                 this.level.addParticle(ParticleTypes.WARPED_SPORE, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(), (this.random.nextDouble() - 0.5D) * 2.0D);
             }
@@ -135,6 +141,31 @@ public class VoidlingEntity extends Monster {
                     this.level.addParticle(ParticleTypes.PORTAL, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(), (this.random.nextDouble() - 0.5D) * 2.0D);
                 }
                 this.discard();
+            }
+        }
+
+        // Place Void Vein underneath Voidling
+
+        if (!this.level.isClientSide()) {
+            if (!ForgeEventFactory.getMobGriefingEvent(this.level, this)) {
+                return;
+            }
+
+            BlockState blockstate = ModBlocks.VOID_VEIN_BLOCK.get().defaultBlockState();
+            for (int l = 0; l < 4; ++l) {
+                int i = Mth.floor(this.getX() + (double) ((float) (l % 2 * 2 - 1) * 0.25F));
+                int j = Mth.floor(this.getY());
+                int k = Mth.floor(this.getZ() + (double) ((float) (l / 2 % 2 * 2 - 1) * 0.25F));
+                BlockPos blockpos = new BlockPos(i, j, k);
+                BlockState blockBelowState = this.level.getBlockState(blockpos.below());
+                if (this.level.isEmptyBlock(blockpos) && blockstate.canSurvive(this.level, blockpos) && blockBelowState.canOcclude()) {
+                    this.level.setBlockAndUpdate(blockpos, blockstate);
+                    this.level.gameEvent(GameEvent.BLOCK_PLACE, blockpos, GameEvent.Context.of(this, blockstate));
+                    BlockEntity tileEntity = this.level.getBlockEntity(blockpos);
+                    if (tileEntity instanceof VoidVeinTileEntity) {
+                        ((VoidVeinTileEntity) tileEntity).setPlacedByVoidling(true);
+                    }
+                }
             }
         }
 

@@ -33,9 +33,18 @@ public class ModBlocks {
         return toReturn;
     }
 
+    public static final RegistryObject<Block> VOID_VEIN_BLOCK = registerBlock("void_vein",
+            () -> new VoidVeinBlock(Block.Properties.of(Material.SCULK)
+                    .noCollission()
+                    .noOcclusion()
+                    .randomTicks()
+                    .sound(SoundType.SCULK_VEIN)
+                    .lightLevel((state) -> 4),
+                    ModTileEntities.VOID_VEIN));
+
     private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block) {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
-                new Item.Properties().tab(ModItemGroup.MAIN_GROUP)));
+                new Item.Properties().tab(ModItemGroup.MAIN_GROUP).rarity(ModItems.VOID)));
     }
 
     public static void register(IEventBus eventBus) {

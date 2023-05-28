@@ -2,6 +2,7 @@ package net.jayugg.end_aspected;
 
 import net.jayugg.end_aspected.block.EnderTrapBlock;
 import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.ModTileEntities;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
@@ -54,6 +55,8 @@ public class EndAspected
         ModItems.register(eventBus);
         // Register Entities
         ModEntityTypes.register(eventBus);
+        // Register Tile Entities
+        ModTileEntities.register(eventBus);
 
         // Register the enqueueIMC method for modloading
         eventBus.addListener(this::enqueueIMC);
