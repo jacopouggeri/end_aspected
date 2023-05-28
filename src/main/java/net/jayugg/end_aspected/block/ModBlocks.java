@@ -34,6 +34,7 @@ public class ModBlocks {
                     .hardnessAndResistance(0.0F)
                     .harvestTool(ToolType.HOE)
                     .notSolid()
+                    .setLightLevel((state) -> 1)
                     .sound(SoundType.NETHER_VINE),
                     ModTileEntities.VOID_VEIN));
 
