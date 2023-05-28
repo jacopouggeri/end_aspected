@@ -69,7 +69,7 @@ public class VoidVeinTileEntity extends BlockEntity {
                 ScheduledTick<Block> scheduledTick = new ScheduledTick<>(state.getBlock(), pos, 200, TickPriority.LOW, 0L);
                 level.getBlockTicks().schedule(scheduledTick);
                 if (tile.shouldDestroy()) {
-                    level.destroyBlock(pos, true);
+                    level.destroyBlock(pos, false);
                 }
             }
 
