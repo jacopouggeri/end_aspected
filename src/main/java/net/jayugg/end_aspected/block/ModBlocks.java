@@ -34,22 +34,24 @@ public class ModBlocks {
                     .hardnessAndResistance(0.0F)
                     .harvestTool(ToolType.HOE)
                     .notSolid()
-                    .setLightLevel((state) -> 3)
+                    .setLightLevel((state) -> 4)
                     .sound(SoundType.NETHER_VINE),
-                    ModTileEntities.VOID_VEIN));
+                    ModTileEntities.VOID_VEIN)
+            );
 
     public static final RegistryObject<Block> VOID_STEM = registerBlock("void_stem",
-            () -> new VoidStemBlock(Block.Properties.create(Material.NETHER_WOOD)
+            () -> new VoidStemBlock(Block.Properties.from(Blocks.WARPED_STEM)
+                    .hardnessAndResistance(25.0F, 600.0F)
                     .harvestTool(ToolType.AXE)
                     .sound(SoundType.WOOD),
-                    ModTileEntities.VOID_TREE));
+                    ModTileEntities.VOID_TREE)
+            );
 
     public static final RegistryObject<Block> VOID_LEAVES = registerBlock("void_leaves",
-            () -> new LeavesBlock(Block.Properties.create(Material.LEAVES)
-                    .hardnessAndResistance(0.2f)
-                    .setLightLevel((state) -> 3)
+            () -> new LeavesBlock(Block.Properties.from(Blocks.WARPED_WART_BLOCK)
                     .harvestTool(ToolType.HOE)
-                    .sound(SoundType.PLANT)));
+                    .setLightLevel((state) -> 4)
+            ));
 
     public static final RegistryObject<Block> VOID_FUNGUS = registerBlock("void_fungus",
             () -> new VoidFungusBlock(new VoidTree(),

@@ -20,11 +20,8 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 public class VoidSeedItem extends Item {
-
-    private static final Random random = new Random();
 
     public VoidSeedItem(Properties properties) {
         super(properties.maxStackSize(1));

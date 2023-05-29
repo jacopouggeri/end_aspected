@@ -79,6 +79,9 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
     @Override
     public void tick(@Nonnull BlockState state, ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
         if (!worldIn.isRemote) {
+            if (worldIn.rand.nextFloat() > 0.4f) {
+                worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, pos.getX(), pos.getY(), pos.getZ(), 4, 0, 0, 0, 0.1);
+            }
 
             // Retrieve the TileEntity
             TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -103,14 +106,6 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
                 // break this block
                 worldIn.destroyBlock(pos, false);
             }
-        }
-    }
-
-    @Override
-    public void randomTick(@Nonnull BlockState state, @Nonnull ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random random) {
-        super.randomTick(state, worldIn, pos, random);
-        if (worldIn.rand.nextFloat() > 0.3) {
-            worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, pos.getX(), pos.getY(), pos.getZ(), 4, 0, 0, 0, 0.1);
         }
     }
 

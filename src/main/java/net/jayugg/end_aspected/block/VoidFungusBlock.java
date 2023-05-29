@@ -36,6 +36,11 @@ public class VoidFungusBlock extends SaplingBlock {
         this.tileEntityTypeSupplier = tileEntityTypeSupplier;
     }
 
+    @Override
+    protected boolean isValidGround(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+        return state.isSolid();
+    }
+
     public @Nonnull VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         return SHAPE;
     }
@@ -76,7 +81,7 @@ public class VoidFungusBlock extends SaplingBlock {
 
                 // Kill them if their health is low enough
                 for (LivingEntity entity : nearbyEntities) {
-                    entity.addPotionEffect(new EffectInstance(ModEffects.VOID_SICKNESS.get(), 40, 0));
+                    entity.addPotionEffect(new EffectInstance(ModEffects.VOID_SICKNESS.get(), 100, 0));
                     if (entity.getHealth() <= 2.0F) {
                         // Kill the entity without dropping loot
                         entity.setHealth(0.0F);

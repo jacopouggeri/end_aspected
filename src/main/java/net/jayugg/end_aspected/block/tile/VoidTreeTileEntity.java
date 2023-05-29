@@ -52,7 +52,11 @@ public class VoidTreeTileEntity extends TileEntity {
         this.placed = true;
     }
 
-    public boolean isPlaced() {
+    public boolean isGrown() {
         return this.placed;
+    }
+
+    public int hungerLevel() {
+        return (int) ((5f*this.hunger)/this.max_hunger);
     }
 }

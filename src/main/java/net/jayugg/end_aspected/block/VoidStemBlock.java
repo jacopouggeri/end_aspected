@@ -72,10 +72,10 @@ public class VoidStemBlock extends Block {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof VoidTreeTileEntity) {
             VoidTreeTileEntity voidTreeTileEntity = (VoidTreeTileEntity) tileEntity;
-            if (rand.nextFloat() > 0.98 && !voidTreeTileEntity.isPlaced()) {
+            if (rand.nextFloat() > 0.98 && voidTreeTileEntity.isGrown()) {
                 voidTreeTileEntity.increaseHunger();
             }
-            if (voidTreeTileEntity.isHungry() && !voidTreeTileEntity.isPlaced()) {
+            if (voidTreeTileEntity.isHungry() && voidTreeTileEntity.isGrown()) {
                 // Define search area (5 blocks radius in this example)
                 AxisAlignedBB searchArea = new AxisAlignedBB(pos).grow(5.0D);
 
@@ -84,7 +84,7 @@ public class VoidStemBlock extends Block {
 
                 // Apply wither effect if their health is low enough
                 for (LivingEntity entity : nearbyEntities) {
-                    entity.addPotionEffect(new EffectInstance(ModEffects.VOID_SICKNESS.get(), 40, 0));
+                    entity.addPotionEffect(new EffectInstance(ModEffects.VOID_SICKNESS.get(), 100, voidTreeTileEntity.hungerLevel()));
                     voidTreeTileEntity.reduceHunger(1);
                 }
             }
