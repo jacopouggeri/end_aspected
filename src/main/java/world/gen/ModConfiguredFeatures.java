@@ -16,7 +16,7 @@ public class ModConfiguredFeatures {
                             new SimpleBlockStateProvider(ModBlocks.VOID_LEAVES.get().getDefaultState()),
                             new JungleFoliagePlacer(FeatureSpread.create(3), FeatureSpread.create(1), 4),
                             new ForkyTrunkPlacer(4, 3, 1),
-                            new TwoLayerFeature(2, 1, 4)).setIgnoreVines().build())));
+                            new TwoLayerFeature(2, 1, 3)).setIgnoreVines().build())));
 
     private static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String key,
                                                                                  ConfiguredFeature<FC, ?> configuredFeature) {

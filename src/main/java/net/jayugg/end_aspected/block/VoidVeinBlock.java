@@ -1,4 +1,5 @@
 package net.jayugg.end_aspected.block;
+import net.jayugg.end_aspected.block.tile.VoidVeinTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -88,7 +89,7 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
                     voidVeinTileEntity.increaseLifetime();
                     // Tick every 10 seconds
                     worldIn.getPendingBlockTicks().scheduleTick(pos, this, 200);
-                    if (voidVeinTileEntity.shoudlDestroy()) {
+                    if (voidVeinTileEntity.shouldDestroy()) {
                         worldIn.destroyBlock(pos, false);
                     }
                 }
@@ -108,7 +109,7 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
     @Override
     public void randomTick(@Nonnull BlockState state, @Nonnull ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random random) {
         super.randomTick(state, worldIn, pos, random);
-        if (worldIn.rand.nextFloat() > 0.98) {
+        if (worldIn.rand.nextFloat() > 0.3) {
             worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, pos.getX(), pos.getY(), pos.getZ(), 4, 0, 0, 0, 0.1);
         }
     }

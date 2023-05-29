@@ -1,4 +1,4 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.end;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

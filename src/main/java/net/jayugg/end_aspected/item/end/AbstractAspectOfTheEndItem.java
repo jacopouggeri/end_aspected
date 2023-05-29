@@ -1,10 +1,9 @@
-package net.jayugg.end_aspected.item.aote;
+package net.jayugg.end_aspected.item.end;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.VoidlingEntity;
-import net.jayugg.end_aspected.item.AspectShardItem;
 import net.jayugg.end_aspected.utils.FormatUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;

@@ -1,7 +1,6 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.end;
 
 import net.jayugg.end_aspected.entity.AspectedArrowEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.ArrowItem;

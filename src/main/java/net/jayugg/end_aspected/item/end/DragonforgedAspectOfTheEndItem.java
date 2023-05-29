@@ -1,4 +1,4 @@
-package net.jayugg.end_aspected.item.aote;
+package net.jayugg.end_aspected.item.end;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.minecraft.item.IItemTier;

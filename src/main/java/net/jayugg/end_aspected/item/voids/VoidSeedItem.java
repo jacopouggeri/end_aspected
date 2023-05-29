@@ -1,8 +1,10 @@
 package net.jayugg.end_aspected.item.voids;
 
 
+import net.jayugg.end_aspected.block.ModBlocks;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,10 +20,11 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 public class VoidSeedItem extends Item {
 
-    private static final int MAX_FULLNESS = 1024;
+    private static final Random random = new Random();
 
     public VoidSeedItem(Properties properties) {
         super(properties.maxStackSize(1));
@@ -29,8 +32,11 @@ public class VoidSeedItem extends Item {
 
     public static boolean isFull(ItemStack stack) {
         CompoundNBT nbt = stack.getOrCreateTag();
-        return nbt.getInt("fullness") >= MAX_FULLNESS;
+        int fullness = nbt.getInt("fullness");
+        int maxFullness = getMaxFullness(stack);
+        return fullness >= maxFullness;
     }
+
 
     @Nonnull
     @Override
@@ -46,8 +52,7 @@ public class VoidSeedItem extends Item {
         if (thisItem.isEmpty() ||
                 heldItem.isEmpty() ||
                 !playerIn.isSneaking() ||
-                heldItem.getItem() instanceof VoidSeedItem ||
-                isFull(thisItem)) {
+                heldItem.getItem() instanceof VoidSeedItem) {
             return ActionResult.resultFail(thisItem);
         }
 
@@ -62,31 +67,34 @@ public class VoidSeedItem extends Item {
         return ActionResult.resultSuccess(thisItem);
     }
 
+    @Override
+    public void inventoryTick(@Nonnull ItemStack stack, @Nonnull World worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
+        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+        PlayerEntity player = (PlayerEntity) entityIn;
+        if (isFull(stack)) {
+            player.inventory.setInventorySlotContents(itemSlot, new ItemStack(ModBlocks.VOID_FUNGUS.get().asItem()));
+        }
+    }
+
     private static int addFullness(ItemStack stack, int toAdd) {
         CompoundNBT nbt = stack.getOrCreateTag();
-        int fullness = nbt.getInt("fullness");
-        if (fullness > MAX_FULLNESS) {
-            fullness = MAX_FULLNESS;
-            nbt.putInt("fullness", fullness);
-        }
-        int added = Math.min(toAdd, MAX_FULLNESS - fullness);
+        int fullness = Math.min(nbt.getInt("fullness"), getMaxFullness(stack));
+        int added = Math.min(toAdd, getMaxFullness(stack) - fullness);
         nbt.putInt("fullness", fullness + added);
         return added;
     }
 
     private int getFullness(ItemStack stack) {
         CompoundNBT nbt = stack.getOrCreateTag();
-        int fullness = nbt.getInt("fullness");
-        if (fullness > MAX_FULLNESS) {
-            fullness = MAX_FULLNESS;
-            nbt.putInt("fullness", fullness);
-        }
-        return fullness;
+        return nbt.getInt("fullness");
     }
 
-    @Override
-    public boolean hasEffect(@Nonnull ItemStack stack) {
-        return isFull(stack);
+    private static int getMaxFullness(ItemStack stack) {
+        CompoundNBT nbt = stack.getOrCreateTag();
+        if (!nbt.contains("maxFullness") || nbt.getInt("maxFullness") == 0) {
+            nbt.putInt("maxFullness", random.nextInt(64) + 64);
+        }
+        return nbt.getInt("maxFullness");
     }
 
     @Override
@@ -99,10 +107,8 @@ public class VoidSeedItem extends Item {
         }
 
         int fullness = getFullness(stack);
-        if (isFull(stack)) {
-            tooltip.add(new TranslationTextComponent("tooltip.end_aspected.void_seed.full"));
-        } else {
-            tooltip.add(new TranslationTextComponent("tooltip.end_aspected.void_seed.fullness", "§2" + fullness, "§2" + MAX_FULLNESS));
+        if (!isFull(stack)) {
+            tooltip.add(new TranslationTextComponent("tooltip.end_aspected.void_seed.fullness", "§2" + fullness, "§2" + getMaxFullness(stack)));
         }
     }
 

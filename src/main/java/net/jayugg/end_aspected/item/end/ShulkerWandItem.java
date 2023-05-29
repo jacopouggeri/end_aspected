@@ -1,4 +1,4 @@
-package net.jayugg.end_aspected.item;
+package net.jayugg.end_aspected.item.end;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.entity.AspectedShulkerBulletEntity;

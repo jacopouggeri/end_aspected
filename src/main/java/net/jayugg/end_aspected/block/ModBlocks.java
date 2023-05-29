@@ -1,6 +1,7 @@
 package net.jayugg.end_aspected.block;
 
 import net.jayugg.end_aspected.EndAspected;
+import net.jayugg.end_aspected.block.tile.ModTileEntities;
 import net.jayugg.end_aspected.block.tree.VoidTree;
 import net.jayugg.end_aspected.item.ModItemGroup;
 import net.jayugg.end_aspected.item.ModItems;
@@ -22,10 +23,9 @@ public class ModBlocks {
             = DeferredRegister.create(ForgeRegistries.BLOCKS, EndAspected.MOD_ID);
 
     public static final RegistryObject<Block> ENDER_TRAP_BLOCK = registerBlock("ender_trap",
-            () -> new EnderTrapBlock(Block.Properties.create(Material.GLASS)
-                    .harvestLevel(3)
+            () -> new EnderTrapBlock(Block.Properties.from(Blocks.LODESTONE)
                     .harvestTool(ToolType.PICKAXE).setRequiresTool()
-                    .hardnessAndResistance(5f)
+                    .setLightLevel((state) -> 3)
                     .sound(SoundType.LODESTONE)
             ));
 
@@ -34,24 +34,27 @@ public class ModBlocks {
                     .hardnessAndResistance(0.0F)
                     .harvestTool(ToolType.HOE)
                     .notSolid()
-                    .setLightLevel((state) -> 4)
+                    .setLightLevel((state) -> 3)
                     .sound(SoundType.NETHER_VINE),
                     ModTileEntities.VOID_VEIN));
 
     public static final RegistryObject<Block> VOID_STEM = registerBlock("void_stem",
-            () -> new Block(Block.Properties.create(Material.NETHER_WOOD)
+            () -> new VoidStemBlock(Block.Properties.create(Material.NETHER_WOOD)
                     .harvestTool(ToolType.AXE)
-                    .sound(SoundType.WOOD)));
+                    .sound(SoundType.WOOD),
+                    ModTileEntities.VOID_TREE));
 
     public static final RegistryObject<Block> VOID_LEAVES = registerBlock("void_leaves",
             () -> new LeavesBlock(Block.Properties.create(Material.LEAVES)
                     .hardnessAndResistance(0.2f)
+                    .setLightLevel((state) -> 3)
                     .harvestTool(ToolType.HOE)
                     .sound(SoundType.PLANT)));
 
     public static final RegistryObject<Block> VOID_FUNGUS = registerBlock("void_fungus",
-            () -> new SaplingBlock(new VoidTree(),
-                    Block.Properties.from(Blocks.WARPED_FUNGUS)));
+            () -> new VoidFungusBlock(new VoidTree(),
+                    Block.Properties.from(Blocks.WARPED_FUNGUS),
+                    ModTileEntities.VOID_TREE));
 
 
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block) {

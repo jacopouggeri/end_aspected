@@ -2,7 +2,7 @@ package net.jayugg.end_aspected;
 
 import net.jayugg.end_aspected.block.EnderTrapBlock;
 import net.jayugg.end_aspected.block.ModBlocks;
-import net.jayugg.end_aspected.block.ModTileEntities;
+import net.jayugg.end_aspected.block.tile.ModTileEntities;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
@@ -84,6 +84,9 @@ public class EndAspected
         event.enqueueWork(ModTrades::fillTradeData);
         event.enqueueWork(() -> {
             BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModItems.ASPECT_SHARD.get(), ModPotions.UNSTABLE_PHASE_POTION.get()));
+        });
+        event.enqueueWork(() -> {
+            BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModBlocks.VOID_LEAVES.get().asItem(), ModPotions.VOID_SICKNESS_POTION.get()));
         });
     }
 

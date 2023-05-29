@@ -1,9 +1,7 @@
 package net.jayugg.end_aspected.item;
 
 import net.jayugg.end_aspected.entity.ModEntityTypes;
-import net.jayugg.end_aspected.item.aote.AspectOfTheEndItem;
-import net.jayugg.end_aspected.item.aote.DragonforgedAspectOfTheEndItem;
-import net.jayugg.end_aspected.item.aote.NetherforgedAspectOfTheEndItem;
+import net.jayugg.end_aspected.item.end.*;
 import net.jayugg.end_aspected.item.voids.DimensionHopperItem;
 import net.jayugg.end_aspected.item.voids.VoidSeedItem;
 import net.minecraft.item.Item;

@@ -1,4 +1,4 @@
-package net.jayugg.end_aspected.block;
+package net.jayugg.end_aspected.block.tile;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,7 +47,7 @@ public class VoidVeinTileEntity extends TileEntity {
         this.lifetime++;
     }
 
-    public boolean shoudlDestroy() {
+    public boolean shouldDestroy() {
         return this.lifetime >= this.max_lifetime;
     }
 

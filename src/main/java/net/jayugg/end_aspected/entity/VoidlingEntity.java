@@ -1,7 +1,7 @@
 package net.jayugg.end_aspected.entity;
 
 import net.jayugg.end_aspected.block.ModBlocks;
-import net.jayugg.end_aspected.block.VoidVeinTileEntity;
+import net.jayugg.end_aspected.block.tile.VoidVeinTileEntity;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -176,5 +176,13 @@ public class VoidlingEntity extends MonsterEntity {
                 this.world.setBlockState(blockpos, blockstate);
             }
         }
+    }
+
+    @Override
+    public boolean isPotionApplicable(EffectInstance effect) {
+        if (effect.getPotion() == ModEffects.VOID_SICKNESS.get()) {
+            return false;
+        }
+        return super.isPotionApplicable(effect);
     }
 }
