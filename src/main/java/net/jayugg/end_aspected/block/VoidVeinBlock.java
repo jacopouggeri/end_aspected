@@ -1,4 +1,5 @@
 package net.jayugg.end_aspected.block;
+import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.block.tile.VoidVeinTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,11 +23,15 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.function.Supplier;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class VoidVeinBlock extends Block implements IWaterLoggable {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final Supplier<TileEntityType<VoidVeinTileEntity>> tileEntityTypeSupplier;
@@ -43,12 +48,12 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public boolean ticksRandomly(@Nonnull BlockState state) {
+    public boolean ticksRandomly(BlockState state) {
         return true;
     }
 
     @Override
-    public void onBlockAdded(@Nonnull BlockState state, @Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
         super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
         if (!worldIn.isRemote) {
             // Schedule a task to tick the block every 20 ticks (1 second)
@@ -57,7 +62,7 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public void neighborChanged(@Nonnull BlockState state, World worldIn, @Nonnull BlockPos pos, @Nonnull Block blockIn, @Nonnull BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
     }
 
@@ -67,21 +72,18 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public @Nonnull VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 
     @Override
-    public @Nonnull VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return VoxelShapes.empty();
     }
 
     @Override
-    public void tick(@Nonnull BlockState state, ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
+    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
         if (!worldIn.isRemote) {
-            if (worldIn.rand.nextFloat() > 0.4f) {
-                worldIn.spawnParticle(ParticleTypes.WARPED_SPORE, pos.getX(), pos.getY(), pos.getZ(), 4, 0, 0, 0, 0.1);
-            }
 
             // Retrieve the TileEntity
             TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -109,11 +111,20 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
         }
     }
 
-    public @Nonnull FluidState getFluidState(BlockState state) {
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+        super.animateTick(stateIn, worldIn, pos, rand);
+        if (worldIn.rand.nextFloat() > 0.4f) {
+            worldIn.addParticle(ParticleTypes.WARPED_SPORE, pos.getX() + 0.5f, pos.getY() + 0.1f, pos.getZ() + 0.5f, 0.0D, 0.0D, 0.0D);
+        }
+    }
+
+    public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
-    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         super.getStateForPlacement(context);
         BlockPos blockpos = context.getPos();
         FluidState fluidstate = context.getWorld().getFluidState(blockpos);
@@ -125,17 +136,17 @@ public class VoidVeinBlock extends Block implements IWaterLoggable {
         builder.add(WATERLOGGED);
     }
 
-    public @Nonnull PushReaction getPushReaction(@Nonnull BlockState pState) {
+    public PushReaction getPushReaction(BlockState pState) {
         return PushReaction.DESTROY;
     }
 
     @Override
-    public boolean isReplaceable(@Nonnull BlockState state, @Nonnull BlockItemUseContext useContext) {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         return state != this.getDefaultState(); // Replace the block only if the item used is not the same block
     }
 
     @Override
-    public boolean isValidPosition(@Nonnull BlockState state, IWorldReader worldIn, BlockPos pos) {
+    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
         return worldIn.getBlockState(pos.down()).isSolidSide(worldIn, pos, Direction.UP);
     }
 

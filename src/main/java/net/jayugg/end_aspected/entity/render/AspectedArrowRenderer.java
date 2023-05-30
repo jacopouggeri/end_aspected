@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 
 public class AspectedArrowRenderer extends ArrowRenderer<AspectedArrowEntity> {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(EndAspected.MOD_ID, "textures/entity/aspected_arrow.png");
+    public static final ResourceLocation TEXTURE = EndAspected.prefix("textures/entity/aspected_arrow.png");
 
     public AspectedArrowRenderer(EntityRendererManager manager) {
         super(manager);

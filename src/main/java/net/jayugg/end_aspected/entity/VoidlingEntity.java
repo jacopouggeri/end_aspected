@@ -52,8 +52,24 @@ public class VoidlingEntity extends MonsterEntity {
         this.goalSelector.addGoal(8, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
 
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setCallsForHelp(VoidlingEntity.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, EndermanEntity.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, EndermanEntity.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+                (livingEntity) -> !(livingEntity instanceof VoidlingEntity)));
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (source == DamageSource.OUT_OF_WORLD) {
+            return true;
+        } else {
+            return super.isInvulnerableTo(source);
+        }
     }
 
     protected float getStandingEyeHeight(@Nonnull Pose poseIn, @Nonnull EntitySize sizeIn) {
@@ -159,7 +175,7 @@ public class VoidlingEntity extends MonsterEntity {
     }
 
     private void placeVoidVeinBlock() {
-        BlockState blockstate = ModBlocks.VOID_VEIN_BLOCK.get().getDefaultState();
+        BlockState blockstate = ModBlocks.VOID_VEIN.get().getDefaultState();
         for(int l = 0; l < 4; ++l) {
             int i = MathHelper.floor(this.getPosX() + (double)((float)(l % 2 * 2 - 1) * 0.25F));
             int j = MathHelper.floor(this.getPosY());

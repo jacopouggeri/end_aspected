@@ -1,6 +1,7 @@
 package net.jayugg.end_aspected.entity.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.jayugg.end_aspected.EndAspected;
 import net.jayugg.end_aspected.entity.model.VoidlingModel;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
@@ -24,7 +25,7 @@ public class VoidlingEyesLayer<T extends Entity, M extends VoidlingModel<T>> ext
             DefaultVertexFormats.ENTITY,
             GL11.GL_QUADS, 256,
             RenderType.State.getBuilder()
-                    .texture(new RenderState.TextureState(new ResourceLocation(MOD_ID, "textures/entity/voidling_eyes.png"), false, false))
+                    .texture(new RenderState.TextureState(EndAspected.prefix("textures/entity/voidling_eyes.png"), false, false))
                     .transparency(new RenderState.TransparencyState("translucent_transparency", () -> {
                         RenderSystem.enableBlend();
                         RenderSystem.defaultBlendFunc();

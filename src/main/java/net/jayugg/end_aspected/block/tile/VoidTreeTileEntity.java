@@ -11,28 +11,28 @@ import java.util.Random;
 public class VoidTreeTileEntity extends TileEntity {
     private int hunger;
     private final int max_hunger;
-    private boolean placed;
+    private boolean grown;
 
     public VoidTreeTileEntity() {
         super(ModTileEntities.VOID_TREE.get());
         Random random = new Random();
         this.hunger = MathHelper.nextInt(random, 5, 30);
         this.max_hunger = this.hunger;
-        this.placed = false;
+        this.grown = true;
     }
 
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
         super.read(state, nbt);
         this.hunger = nbt.getInt("Hunger");
-        this.placed = nbt.getBoolean("Placed");
+        this.grown = nbt.getBoolean("Grown");
     }
 
     @Override
     public @Nonnull CompoundNBT write(@Nonnull CompoundNBT nbt) {
         super.write(nbt);
         nbt.putInt("Hunger", this.hunger);
-        nbt.putBoolean("Placed", this.placed);
+        nbt.putBoolean("Grown", this.grown);
         return nbt;
     }
 
@@ -48,15 +48,11 @@ public class VoidTreeTileEntity extends TileEntity {
         return this.hunger > 0;
     }
 
-    public void setPlaced() {
-        this.placed = true;
+    public void setGrown(boolean grown) {
+        this.grown = grown;
     }
 
     public boolean isGrown() {
-        return this.placed;
-    }
-
-    public int hungerLevel() {
-        return (int) ((5f*this.hunger)/this.max_hunger);
+        return this.grown;
     }
 }

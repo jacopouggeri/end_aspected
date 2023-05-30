@@ -14,7 +14,7 @@ public class ModTileEntities {
 
     public static final RegistryObject<TileEntityType<VoidVeinTileEntity>> VOID_VEIN =
             TILE_ENTITIES.register("void_vein",
-                    () -> TileEntityType.Builder.create(VoidVeinTileEntity::new, ModBlocks.VOID_VEIN_BLOCK.get()).build(null));
+                    () -> TileEntityType.Builder.create(VoidVeinTileEntity::new, ModBlocks.VOID_VEIN.get()).build(null));
     public static final RegistryObject<TileEntityType<VoidTreeTileEntity>> VOID_TREE =
             TILE_ENTITIES.register("void_tree",
                     () -> TileEntityType.Builder.create(VoidTreeTileEntity::new, ModBlocks.VOID_STEM.get()).build(null));

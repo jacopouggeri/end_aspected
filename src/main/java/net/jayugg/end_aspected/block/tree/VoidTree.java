@@ -14,6 +14,6 @@ public class VoidTree extends Tree {
     @Nullable
     @Override
     protected ConfiguredFeature<BaseTreeFeatureConfig, ?> getTreeFeature(@Nonnull Random randomIn, boolean largeHive) {
-        return ModConfiguredFeatures.VOID;
+        return ModConfiguredFeatures.VOID_TREE_BASE;
     }
 }

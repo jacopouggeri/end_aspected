@@ -1,0 +1,7 @@
+The files in this package (net.jayugg.end_aspected.imported) have all been imported from Twilight Forest
+https://github.com/TeamTwilight/twilightforest/blob/1.16.x
+Distributed with LGPL 2.1 License
+https://github.com/TeamTwilight/twilightforest/blob/1.16.x/LICENSE
+
+The only adaptations are to change the resource location to match this mod's package structure,
+and the removal of unused methods and fields.

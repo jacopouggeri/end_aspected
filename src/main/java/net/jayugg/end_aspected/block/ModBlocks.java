@@ -2,7 +2,7 @@ package net.jayugg.end_aspected.block;
 
 import net.jayugg.end_aspected.EndAspected;
 import net.jayugg.end_aspected.block.tile.ModTileEntities;
-import net.jayugg.end_aspected.block.tree.VoidTree;
+import net.jayugg.end_aspected.block.tree.*;
 import net.jayugg.end_aspected.item.ModItemGroup;
 import net.jayugg.end_aspected.item.ModItems;
 import net.minecraft.block.*;
@@ -29,7 +29,7 @@ public class ModBlocks {
                     .sound(SoundType.LODESTONE)
             ));
 
-    public static final RegistryObject<Block> VOID_VEIN_BLOCK = registerBlock("void_vein",
+    public static final RegistryObject<Block> VOID_VEIN = registerBlock("void_vein",
             () -> new VoidVeinBlock(Block.Properties.create(Material.PLANTS)
                     .hardnessAndResistance(0.0F)
                     .harvestTool(ToolType.HOE)
@@ -48,9 +48,19 @@ public class ModBlocks {
             );
 
     public static final RegistryObject<Block> VOID_LEAVES = registerBlock("void_leaves",
-            () -> new LeavesBlock(Block.Properties.from(Blocks.WARPED_WART_BLOCK)
+            () -> new VoidLeavesBlock(Block.Properties.from(Blocks.WARPED_WART_BLOCK)
                     .harvestTool(ToolType.HOE)
+                    .notSolid()
                     .setLightLevel((state) -> 4)
+            ));
+
+    // Register void vine
+    public static RegistryObject<Block> VOID_VINE = registerBlock("void_vine",
+            () -> new VoidVineBlock(Block.Properties.from(Blocks.WEEPING_VINES)
+                    .harvestTool(ToolType.HOE)
+                    .notSolid()
+                    .setLightLevel((state) -> 4)
+                    .sound(SoundType.NETHER_VINE)
             ));
 
     public static final RegistryObject<Block> VOID_FUNGUS = registerBlock("void_fungus",

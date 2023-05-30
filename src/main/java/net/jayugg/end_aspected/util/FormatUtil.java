@@ -1,6 +1,6 @@
-package net.jayugg.end_aspected.utils;
+package net.jayugg.end_aspected.util;
 
-public class FormatUtils {
+public class FormatUtil {
     public static String formatNumber(double num) {
         if (num == (int) num) {
             // If the number is a whole number, just return it as a string

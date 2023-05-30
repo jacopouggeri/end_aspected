@@ -4,7 +4,7 @@ import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.VoidlingEntity;
-import net.jayugg.end_aspected.utils.FormatUtils;
+import net.jayugg.end_aspected.util.FormatUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -297,8 +297,8 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
         loadConfigIfNotLoaded();
         if (Screen.hasShiftDown()) {
 
-            String reachString = FormatUtils.formatNumber(this.getTeleportDistance());
-            String cooldownString = FormatUtils.formatNumber(this.getCooldown());
+            String reachString = FormatUtil.formatNumber(this.getTeleportDistance());
+            String cooldownString = FormatUtil.formatNumber(this.getCooldown());
             TranslationTextComponent ability = new TranslationTextComponent("tooltip.end_aspected.aspect_of_the_end_ability");
             TranslationTextComponent reach = new TranslationTextComponent("tooltip.end_aspected.teleport_reach", "§2" + reachString + "§r");
             TranslationTextComponent cooldown = new TranslationTextComponent("tooltip.end_aspected.cooldown", "§2" + cooldownString + "§r");

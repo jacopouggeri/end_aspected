@@ -2,7 +2,7 @@ package net.jayugg.end_aspected.item.end;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.entity.AspectedShulkerBulletEntity;
-import net.jayugg.end_aspected.utils.FormatUtils;
+import net.jayugg.end_aspected.util.FormatUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,7 +70,7 @@ public class ShulkerWandItem extends SwordItem {
     public void addInformation(@Nonnull ItemStack item, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (Screen.hasShiftDown()) {
 
-            String cooldownString = FormatUtils.formatNumber(ModConfig.shulkerWandCooldown.get());
+            String cooldownString = FormatUtil.formatNumber(ModConfig.shulkerWandCooldown.get());
             TranslationTextComponent ability = new TranslationTextComponent("tooltip.end_aspected.shulker_wand_shift");
             TranslationTextComponent cooldown = new TranslationTextComponent("tooltip.end_aspected.cooldown", "§2" + cooldownString + "§r");
             TranslationTextComponent stats = new TranslationTextComponent("tooltip.end_aspected.stats");

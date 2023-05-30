@@ -12,7 +12,7 @@ public class VoidSicknessEffect extends Effect {
 
     @Override
     public void performEffect(LivingEntity entity, int amplifier) {
-        entity.attackEntityFrom(DamageSource.MAGIC, 1.0F + 0.5f * amplifier);
+        entity.attackEntityFrom(DamageSource.OUT_OF_WORLD.setMagicDamage(), 1.0F + 0.5F * amplifier);
     }
 
     @Override

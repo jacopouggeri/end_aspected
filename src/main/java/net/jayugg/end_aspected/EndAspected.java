@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potions;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
@@ -92,7 +93,9 @@ public class EndAspected
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDLING.get(), VoidlingRenderer::new);
-        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN_BLOCK.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_LEAVES.get(), RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VINE.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_FUNGUS.get(), RenderType.getCutoutMipped());
     }
 
@@ -131,6 +134,10 @@ public class EndAspected
     public void getEntityLastDamage(LivingHurtEvent event) {
         //LOGGER.info("ENTITY HURT!");
         EnderSlayerEnchantment.getLastDamageInflicted(event);
+    }
+
+    public static ResourceLocation prefix(String name) {
+        return new ResourceLocation(MOD_ID, name);
     }
 
 }
