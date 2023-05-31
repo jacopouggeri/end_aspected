@@ -56,7 +56,7 @@ public class ModBlocks {
 
     // Register void vine
     public static RegistryObject<Block> VOID_VINE = registerBlock("void_vine",
-            () -> new VoidVineBlock(Block.Properties.from(Blocks.WEEPING_VINES)
+            () -> new VoidVeinBBlock(Block.Properties.from(Blocks.WEEPING_VINES)
                     .harvestTool(ToolType.HOE)
                     .notSolid()
                     .setLightLevel((state) -> 4)

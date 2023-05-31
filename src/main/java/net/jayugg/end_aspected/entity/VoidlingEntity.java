@@ -2,6 +2,7 @@ package net.jayugg.end_aspected.entity;
 
 import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.tile.VoidVeinTileEntity;
+import net.jayugg.end_aspected.block.tree.VoidVeinBBlock;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -175,7 +176,7 @@ public class VoidlingEntity extends MonsterEntity {
     }
 
     private void placeVoidVeinBlock() {
-        BlockState blockstate = ModBlocks.VOID_VEIN.get().getDefaultState();
+        BlockState blockstate = ModBlocks.VOID_VINE.get().getDefaultState().with(VoidVeinBBlock.DOWN, Boolean.valueOf(true));
         for(int l = 0; l < 4; ++l) {
             int i = MathHelper.floor(this.getPosX() + (double)((float)(l % 2 * 2 - 1) * 0.25F));
             int j = MathHelper.floor(this.getPosY());
