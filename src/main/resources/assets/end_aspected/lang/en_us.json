@@ -5,7 +5,7 @@
   "enchantment.end_aspected.destabilise.desc": "Inflicts Unstable Phase effect on mobs",
 
   "effect.end_aspected.unstable_phase": "Unstable Phase",
-  "effect.end_aspected.void_sickness": "Void Sickness",
+  "effect.end_aspected.voidrue": "Voidrue",
   "item.minecraft.potion.effect.unstable_phase": "Unstable Phase Potion",
   "item.minecraft.splash_potion.effect.unstable_phase": "Splash Potion of Unstable Phase",
   "item.minecraft.lingering_potion.effect.unstable_phase": "Lingering Potion of Unstable Phase",
@@ -22,7 +22,8 @@
   "item.end_aspected.shulker_wand": "Shulker Wand",
   "item.end_aspected.aspected_arrow": "Aspected Arrow",
   "item.end_aspected.souvenir": "Souvenir",
-  "item.end_aspected.voidling_spawn_egg": "Voidling Spawn Egg",
+  "item.end_aspected.voidmite_spawn_egg": "Voidmite Spawn Egg",
+  "item.end_aspected.voidbat_spawn_egg": "Voidbat Spawn Egg",
   "item.end_aspected.void_seed": "Void Seed",
   "item.end_aspected.dimension_hopper": "Dimension Hopper",
   "itemGroup.mainGroupTab": "End Aspected",
@@ -30,11 +31,11 @@
   "block.end_aspected.ender_trap": "Ender Trap",
   "block.end_aspected.void_vein": "Void Vein",
   "block.end_aspected.void_leaves": "Void Leaves",
-  "block.end_aspected.void_vine": "Void Vine",
   "block.end_aspected.void_stem": "Void Stem",
   "block.end_aspected.void_fungus": "Void Fungus",
 
-  "entity.end_aspected.voidling": "Voidling",
+  "entity.end_aspected.voidmite": "Voidmite",
+  "entity.end_aspected.voidbat": "Voidbat",
 
   "tooltip.end_aspected.more": "§7Hold §r§eSHIFT§r§7 for more!§r",
   "tooltip.end_aspected.aspect_of_the_end_ability": "§6§lITEM ABILITY§r: \n§6Teleports you in the direction you're facing.§r\n",

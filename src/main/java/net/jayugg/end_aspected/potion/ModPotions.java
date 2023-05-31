@@ -9,7 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import static net.jayugg.end_aspected.effect.ModEffects.UNSTABLE_PHASE;
-import static net.jayugg.end_aspected.effect.ModEffects.VOID_SICKNESS;
+import static net.jayugg.end_aspected.effect.ModEffects.VOIDRUE;
 
 public class ModPotions {
 
@@ -20,7 +20,7 @@ public class ModPotions {
             () -> new Potion(new EffectInstance(UNSTABLE_PHASE.get(), 3600)));
 
     public static final RegistryObject<Potion> VOID_SICKNESS_POTION = POTIONS.register("void_sickness",
-            () -> new Potion(new EffectInstance(VOID_SICKNESS.get(), 3600)));
+            () -> new Potion(new EffectInstance(VOIDRUE.get(), 3600)));
 
     public static void register(IEventBus eventBus) { POTIONS.register(eventBus); }
 }

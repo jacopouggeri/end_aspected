@@ -62,7 +62,10 @@ public abstract class MultiFaceBlock extends Block {
         VoxelShape voxelshape = VoxelShapes.empty();
         for (Direction direction : FACING_TO_PROPERTY_MAP.keySet()) {
             if (state.get(FACING_TO_PROPERTY_MAP.get(direction))) {
-                voxelshape = VoxelShapes.or(voxelshape, getAABBForDirection(direction.getOpposite(), FACE_THICKNESS));
+                if (isCardinal(direction))
+                    voxelshape = VoxelShapes.or(voxelshape, getAABBForDirection(direction.getOpposite(), FACE_THICKNESS));
+                else
+                    voxelshape = VoxelShapes.or(voxelshape, getAABBForDirection(direction, FACE_THICKNESS));
             }
         }
         return voxelshape;
@@ -114,6 +117,10 @@ public abstract class MultiFaceBlock extends Block {
         }
 
         return i;
+    }
+
+    private static boolean isCardinal(Direction direction) {
+        return direction.getAxis().isHorizontal();
     }
 
     public static BooleanProperty getPropertyFor(Direction side) {

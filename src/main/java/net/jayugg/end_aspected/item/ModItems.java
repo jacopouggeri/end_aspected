@@ -61,8 +61,12 @@ public class ModItems {
             () -> new AspectedArrowItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(64).rarity(ASPECT)));
     public static final RegistryObject<Item> VOID_SEED = ITEMS.register("void_seed",
             () -> new VoidSeedItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1).rarity(VOID)));
-    public static final RegistryObject<ModSpawnEggItem> VOIDLING_SPAWN_EGG = ITEMS.register("voidling_spawn_egg",
-            () -> new ModSpawnEggItem(ModEntityTypes.VOIDLING, 0x07111e, 0x327b97,
+    public static final RegistryObject<ModSpawnEggItem> VOIDMITE_SPAWN_EGG = ITEMS.register("voidmite_spawn_egg",
+            () -> new ModSpawnEggItem(ModEntityTypes.VOIDMITE, 0x07111e, 0x327b97,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
+
+    public static final RegistryObject<ModSpawnEggItem> VOIDBAT_SPAWN_EGG = ITEMS.register("voidbat_spawn_egg",
+            () -> new ModSpawnEggItem(ModEntityTypes.VOIDBAT, 0x31dce9, 0x327b97,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
 
     public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper",

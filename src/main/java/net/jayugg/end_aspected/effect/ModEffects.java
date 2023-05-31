@@ -17,8 +17,8 @@ public class ModEffects{
             () -> new UnstablePhaseEffect(EffectType.HARMFUL, 0x004a47)
     );
 
-    public static final RegistryObject<Effect> VOID_SICKNESS = EFFECTS.register("void_sickness",
-            () -> new VoidSicknessEffect(EffectType.HARMFUL, 0x021123)
+    public static final RegistryObject<Effect> VOIDRUE = EFFECTS.register("voidrue",
+            () -> new VoidRueEffect(EffectType.HARMFUL, 0x021123)
     );
 
     public static void register(IEventBus eventBus) {

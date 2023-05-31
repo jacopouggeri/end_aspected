@@ -1,7 +1,8 @@
 package net.jayugg.end_aspected;
 
 import net.jayugg.end_aspected.entity.ModEntityTypes;
-import net.jayugg.end_aspected.entity.VoidlingEntity;
+import net.jayugg.end_aspected.entity.VoidBatEntity;
+import net.jayugg.end_aspected.entity.VoidMiteEntity;
 import net.jayugg.end_aspected.item.ModSpawnEggItem;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.event.RegistryEvent;
@@ -13,7 +14,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ModEvents {
     @SubscribeEvent
     public static void addEntityAttributes(EntityAttributeCreationEvent event) {
-        event.put(ModEntityTypes.VOIDLING.get(), VoidlingEntity.setCustomAttributes().create());
+        event.put(ModEntityTypes.VOIDMITE.get(), VoidMiteEntity.setCustomAttributes().create());
+        event.put(ModEntityTypes.VOIDBAT.get(), VoidBatEntity.setCustomAttributes().create());
     }
 
     @SubscribeEvent

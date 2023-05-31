@@ -3,7 +3,7 @@ package world.gen;
 import com.google.common.collect.ImmutableList;
 import net.jayugg.end_aspected.EndAspected;
 import net.jayugg.end_aspected.block.ModBlocks;
-import net.jayugg.end_aspected.block.tree.VoidVineTreeDecorator;
+import net.jayugg.end_aspected.block.tree.VoidVeinTreeDecorator;
 import net.jayugg.end_aspected.imported.feature.ModFeatures;
 import net.jayugg.end_aspected.imported.treeplacers.*;
 import net.minecraft.util.registry.Registry;
@@ -36,7 +36,7 @@ public class ModConfiguredFeatures {
                             new TreeRootsDecorator(4, 2, 15, new SimpleBlockStateProvider(ModBlocks.VOID_STEM.get().getDefaultState()), (new WeightedBlockStateProvider())
                                     .addWeightedBlockstate(ModBlocks.VOID_STEM.get().getDefaultState(), 4)
                                     .addWeightedBlockstate(ModBlocks.VOID_LEAVES.get().getDefaultState(), 1)),
-                    VoidVineTreeDecorator.DECORATOR
+                    VoidVeinTreeDecorator.DECORATOR
                     )
             )
             .build();

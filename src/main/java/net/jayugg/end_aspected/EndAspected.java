@@ -5,13 +5,14 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.tile.ModTileEntities;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.entity.render.VoidBatRenderer;
 import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
 import net.jayugg.end_aspected.potion.ModPotions;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
 import net.jayugg.end_aspected.enchantment.EnderSlayerEnchantment;
 import net.jayugg.end_aspected.enchantment.ModEnchantments;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
-import net.jayugg.end_aspected.entity.render.VoidlingRenderer;
+import net.jayugg.end_aspected.entity.render.VoidMiteRenderer;
 import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.villager.ModTrades;
 import net.minecraft.client.renderer.RenderType;
@@ -31,9 +32,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,10 +67,6 @@ public class EndAspected
         // Register Potions
         ModPotions.register(eventBus);
 
-        // Register the enqueueIMC method for modloading
-        eventBus.addListener(this::enqueueIMC);
-        // Register the processIMC method for modloading
-        eventBus.addListener(this::processIMC);
         // Register the doClientStuff method for modloading
         eventBus.addListener(this::doClientStuff);
 
@@ -92,35 +86,12 @@ public class EndAspected
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDLING.get(), VoidlingRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDMITE.get(), VoidMiteRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDBAT.get(), VoidBatRenderer::new);
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_LEAVES.get(), RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VINE.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_FUNGUS.get(), RenderType.getCutoutMipped());
     }
-
-    private void enqueueIMC(final InterModEnqueueEvent event)
-    {
-        // some example code to dispatch IMC to another mod
-        //InterModComms.sendTo("end_aspected", "helloworld", () -> { LOGGER.info("Hello world from the MDK"); return "Hello world";});
-    }
-
-    private void processIMC(final InterModProcessEvent event)
-    {
-        // some example code to receive and process InterModComms from other mods
-        /*LOGGER.info("Got IMC {}", event.getIMCStream().
-                map(m->m.getMessageSupplier().get()).
-                collect(Collectors.toList()));*/
-    }
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
-        // do something when the server starts
-        //LOGGER.info("HELLO from server starting");
-    }
-
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
 
     @SubscribeEvent
     public void onEntityTeleport(EntityTeleportEvent.EnderEntity event) {
@@ -132,7 +103,6 @@ public class EndAspected
 
     @SubscribeEvent
     public void getEntityLastDamage(LivingHurtEvent event) {
-        //LOGGER.info("ENTITY HURT!");
         EnderSlayerEnchantment.getLastDamageInflicted(event);
     }
 

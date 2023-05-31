@@ -1,5 +1,6 @@
 package net.jayugg.end_aspected.block.tree;
 
+import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.tile.VoidTreeTileEntity;
@@ -10,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -19,27 +21,35 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Supplier;
 
+@SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class VoidFungusBlock extends SaplingBlock implements IWaterLoggable {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 9.0D, 12.0D);
+    private static final GameProfile VOID_FUNGUS_PROFILE = new GameProfile(UUID.randomUUID(), "void_fungus");
     private final Supplier<TileEntityType<VoidTreeTileEntity>> tileEntityTypeSupplier;
 
     private final Tree tree;
@@ -102,7 +112,7 @@ public class VoidFungusBlock extends SaplingBlock implements IWaterLoggable {
 
                 // Kill them if their health is low enough
                 for (LivingEntity entity : nearbyEntities) {
-                    entity.addPotionEffect(new EffectInstance(ModEffects.VOID_SICKNESS.get(), 40, 0));
+                    entity.addPotionEffect(new EffectInstance(ModEffects.VOIDRUE.get(), 40, 0));
                     if (entity.getHealth() <= 2.0F) {
                         // Kill the entity without dropping loot
                         entity.setHealth(0.0F);
@@ -138,6 +148,8 @@ public class VoidFungusBlock extends SaplingBlock implements IWaterLoggable {
     }
 
     private static void placeVoidVein(ServerWorld world, BlockPos pos, Random random) {
+        VoidVeinBlock voidVeinBlock = (VoidVeinBlock) ModBlocks.VOID_VEIN.get();
+        FakePlayer fakePlayer = FakePlayerFactory.get(world, VOID_FUNGUS_PROFILE);
         int range = 4;
         for (int dx = -range; dx <= range; dx++) {
             for (int dz = -range; dz <= range; dz++) {
@@ -145,9 +157,16 @@ public class VoidFungusBlock extends SaplingBlock implements IWaterLoggable {
                 double distanceToTree = Math.sqrt(dx * dx + dz * dz) + (random.nextFloat() * 2.0F - 1.0F);
                 if (distanceToTree <= range) {
                     BlockPos groundPos = pos.add(dx, 0, dz);
-                    if (world.getBlockState(groundPos).getMaterial().isReplaceable()) {
-                        // Place the void vein block.
-                        world.setBlockState(groundPos, ModBlocks.VOID_VEIN.get().getDefaultState(), 3);
+                    BlockItemUseContext context = new BlockItemUseContext(
+                            new ItemUseContext(fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(dx, 0, dz), Direction.DOWN, groundPos, false))
+                    );
+                    BlockState currentBlockState = world.getBlockState(groundPos);
+                    boolean flag = currentBlockState.getMaterial().isReplaceable() ||
+                            currentBlockState.matchesBlock(Blocks.WATER) ||
+                            currentBlockState.matchesBlock(voidVeinBlock);
+                    BlockState state = voidVeinBlock.getStateForPlacement(context);
+                    if (state != null && flag) {
+                        world.setBlockState(groundPos, state, 3); // Flags=3 for client update
                     }
                 }
             }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
+@SuppressWarnings("deprecation")
 public class VoidStemBlock extends Block {
     private final Supplier<TileEntityType<VoidTreeTileEntity>> tileEntityTypeSupplier;
 
@@ -84,7 +85,7 @@ public class VoidStemBlock extends Block {
 
                 // Apply wither effect if their health is low enough
                 for (LivingEntity entity : nearbyEntities) {
-                    entity.addPotionEffect(new EffectInstance(ModEffects.VOID_SICKNESS.get(), 40, 0));
+                    entity.addPotionEffect(new EffectInstance(ModEffects.VOIDRUE.get(), 40, 0));
                     voidTreeTileEntity.reduceHunger(1);
                 }
             }

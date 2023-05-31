@@ -20,10 +20,15 @@ public class ModEntityTypes {
                     .size(0.5F, 0.5F)
                     .build("minecraft:shulker_bullet"));
 
-    public static final RegistryObject<EntityType<VoidlingEntity>> VOIDLING = ENTITY_TYPES.register("voidling",
-            () -> EntityType.Builder.create(VoidlingEntity::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<VoidMiteEntity>> VOIDMITE = ENTITY_TYPES.register("voidmite",
+            () -> EntityType.Builder.create(VoidMiteEntity::new, EntityClassification.MONSTER)
                     .size(0.5F, 0.5F)
-                    .build("end_aspected:voidling"));
+                    .build("end_aspected:voidmite"));
+
+    public static final RegistryObject<EntityType<VoidBatEntity>> VOIDBAT = ENTITY_TYPES.register("voidbat",
+            () -> EntityType.Builder.create(VoidBatEntity::new, EntityClassification.MONSTER)
+                    .size(0.5F, 0.5F)
+                    .build("end_aspected:voidbat"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
