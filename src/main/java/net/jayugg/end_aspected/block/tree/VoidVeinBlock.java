@@ -45,11 +45,12 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
 
     @Override
     public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (blockState == Blocks.AIR.getDefaultState()) {
-            return blockState;
+        BlockState newState = super.updatePostPlacement(blockState, facing, facingState, worldIn, currentPos, facingPos);
+        if (newState == Blocks.AIR.getDefaultState()) {
+            return newState;
         }
         FluidState fluidState = worldIn.getFluidState(currentPos);
-        BlockState newState = super.updatePostPlacement(blockState, facing, facingState, worldIn, currentPos, facingPos).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        newState = newState.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
         if (newState.hasProperty(DISTANCE)) {
             newState = updateDistance(newState, worldIn, currentPos);
             if (!isConnected(newState, worldIn, currentPos)) {
