@@ -1,4 +1,4 @@
-package world.gen;
+package net.jayugg.end_aspected.world.gen;
 
 import com.google.common.collect.ImmutableList;
 import net.jayugg.end_aspected.EndAspected;
@@ -6,26 +6,13 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.tree.VoidVeinTreeDecorator;
 import net.jayugg.end_aspected.imported.feature.ModFeatures;
 import net.jayugg.end_aspected.imported.treeplacers.*;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.blockstateprovider.WeightedBlockStateProvider;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.foliageplacer.JungleFoliagePlacer;
-import net.minecraft.world.gen.trunkplacer.ForkyTrunkPlacer;
 
 public class ModConfiguredFeatures {
-    public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> VOID =
-            register("void", Feature.TREE.withConfiguration((
-                    new BaseTreeFeatureConfig.Builder(
-                            new SimpleBlockStateProvider(ModBlocks.VOID_STEM.get().getDefaultState()),
-                            new SimpleBlockStateProvider(ModBlocks.VOID_LEAVES.get().getDefaultState()),
-                            new JungleFoliagePlacer(FeatureSpread.create(3), FeatureSpread.create(1), 4),
-                            new ForkyTrunkPlacer(4, 3, 1),
-                            new TwoLayerFeature(2, 1, 3)).setIgnoreVines().build())));
-
     private final static int LEAF_SHAG_FACTOR = 24;
-    public static final BaseTreeFeatureConfig VOID_TREE_T = new BaseTreeFeatureConfig.Builder(
+    public static final BaseTreeFeatureConfig VOID_TREE = new BaseTreeFeatureConfig.Builder(
             new SimpleBlockStateProvider(ModBlocks.VOID_STEM.get().getDefaultState()),
             new SimpleBlockStateProvider(ModBlocks.VOID_LEAVES.get().getDefaultState()),
             new LeafSpheroidFoliagePlacer(4.0f, 2f, FeatureSpread.create(0), 3, 0, -0.25f, (int) (LEAF_SHAG_FACTOR * 0.666f)),
@@ -41,10 +28,6 @@ public class ModConfiguredFeatures {
             )
             .build();
 
-    public static final ConfiguredFeature<BaseTreeFeatureConfig, ? extends Feature<?>> VOID_TREE_BASE = ModFeatures.registerWorldFeature(EndAspected.prefix("tree/void_tree_base"), Feature.TREE.withConfiguration(VOID_TREE_T));
+    public static final ConfiguredFeature<BaseTreeFeatureConfig, ? extends Feature<?>> VOID_TREE_BASE = ModFeatures.registerWorldFeature(EndAspected.prefix("tree/void_tree_base"), Feature.TREE.withConfiguration(VOID_TREE));
 
-    private static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String key,
-                                                                                 ConfiguredFeature<FC, ?> configuredFeature) {
-        return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, key, configuredFeature);
-    }
 }

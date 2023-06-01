@@ -63,7 +63,7 @@ public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
     Get an updated blockstate based on the blocks the vine is attached to
     Basically removes all illegal directions from the blockstate
      */
-    private BlockState getUpdatedBlockState(BlockState state, IBlockReader blockReader, BlockPos pos) {
+    protected BlockState getUpdatedValidState(BlockState state, IBlockReader blockReader, BlockPos pos) {
         BlockPos blockpos = pos.up();
         BlockState blockstate = null;
 
@@ -92,7 +92,7 @@ public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
 
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        BlockState blockstate = this.getUpdatedBlockState(stateIn, worldIn, currentPos);
+        BlockState blockstate = this.getUpdatedValidState(stateIn, worldIn, currentPos);
         // Remove the vine if it's not attached to anything
         return this.getPresentFaces(blockstate) ? blockstate : Blocks.AIR.getDefaultState();
     }
@@ -117,18 +117,22 @@ public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = context.getWorld().getBlockState(context.getPos());
-        // Check if new block has an acceptable blockstate, if it doesn't, use the default state
+        // Check if the block in the placement position is a vine already, if it doesn't, use the default state
         boolean flag = blockstate.matchesBlock(this);
+        LOGGER.info("Incoming Blockstate: " + blockstate + " Flag: " + flag);
         BlockState blockstate1 = flag ? blockstate : this.getDefaultState();
+        LOGGER.info("Out Blockstate: " + blockstate1 + " Flag: " + flag);
 
         // Will get closest available direction if direction is not available
         for(Direction direction : context.getNearestLookingDirections()) {
             BooleanProperty booleanproperty = getPropertyFor(direction);
+            LOGGER.info("Direction: " + direction + " Property: " + booleanproperty);
             // Check if there's a vine already attached to the block in the given direction
             boolean flag1 = flag && blockstate.get(booleanproperty);
             if (!flag1 && this.hasAttachment(context.getWorld(), context.getPos(), direction)) {
                 // If there isn't and the vine can attach to the block, add the direction to the blockstate
-                return blockstate1.with(booleanproperty, Boolean.valueOf(true));
+                LOGGER.info("Adding direction: " + direction);
+                return blockstate1.with(booleanproperty, Boolean.TRUE);
             }
         }
 

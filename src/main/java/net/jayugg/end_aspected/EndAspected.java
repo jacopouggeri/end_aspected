@@ -2,9 +2,11 @@ package net.jayugg.end_aspected;
 
 import net.jayugg.end_aspected.block.EnderTrapBlock;
 import net.jayugg.end_aspected.block.ModBlocks;
-import net.jayugg.end_aspected.block.tile.ModTileEntities;
+import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
+import net.jayugg.end_aspected.block.tree.ModTreeDecorators;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.entity.render.AspectedArrowRenderer;
 import net.jayugg.end_aspected.entity.render.VoidBatRenderer;
 import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
 import net.jayugg.end_aspected.potion.ModPotions;
@@ -15,14 +17,18 @@ import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.render.VoidMiteRenderer;
 import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.villager.ModTrades;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,7 +42,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(EndAspected.MOD_ID)
 public class EndAspected
 {
@@ -60,12 +65,12 @@ public class EndAspected
         ModBlocks.register(eventBus);
         // Register Items
         ModItems.register(eventBus);
-        // Register Entities
-        ModEntityTypes.register(eventBus);
-        // Register Tile Entities
-        ModTileEntities.register(eventBus);
         // Register Potions
         ModPotions.register(eventBus);
+        // Register Entities
+        ModEntityTypes.register(eventBus);
+        // Register Tree Decorators
+        ModTreeDecorators.register(eventBus);
 
         // Register the doClientStuff method for modloading
         eventBus.addListener(this::doClientStuff);
@@ -88,6 +93,7 @@ public class EndAspected
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDMITE.get(), VoidMiteRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDBAT.get(), VoidBatRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ASPECTED_ARROW.get(), AspectedArrowRenderer::new);
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_LEAVES.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_FUNGUS.get(), RenderType.getCutoutMipped());
@@ -99,6 +105,23 @@ public class EndAspected
         // Check for teleport hijacking or jamming effects
         UnstablePhaseEffect.damageTeleporter(entity);
         EnderTrapBlock.trapEventEntity(event, entity);
+    }
+
+    @SubscribeEvent
+    public void onEntityDeath(LivingDeathEvent event) {
+        // Get the world the entity is in
+        World world = event.getEntity().world;
+
+        // Get the block position beneath the entity
+        BlockPos pos = event.getEntity().getPosition();
+
+        // Check if the block at this position is your block
+        BlockState blockState = world.getBlockState(pos);
+        if (blockState.getBlock() == ModBlocks.VOID_VEIN.get()) {
+            int health = (int) event.getEntityLiving().getHealth();
+            // Change the block state to whatever you want
+            world.setBlockState(pos, IVeinNetworkElement.addPowerFromHealth(blockState, health));
+        }
     }
 
     @SubscribeEvent

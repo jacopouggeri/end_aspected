@@ -1,5 +1,14 @@
 {
-  "variants": {
-    "": { "model": "end_aspected:block/void_fungus" }
-  }
+  "multipart": [
+    {
+      "apply": {
+        "model": "end_aspected:block/fungus/void_fungus"
+      }
+    },
+    {
+      "apply": {
+        "model": "end_aspected:block/vine/void_vein_d"
+      }
+    }
+  ]
 }

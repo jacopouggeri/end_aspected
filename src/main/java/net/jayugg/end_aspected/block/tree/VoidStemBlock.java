@@ -1,48 +1,36 @@
 package net.jayugg.end_aspected.block.tree;
 
-import net.jayugg.end_aspected.block.tile.VoidTreeTileEntity;
+import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
-public class VoidStemBlock extends RotatedPillarBlock {
-    private final Supplier<TileEntityType<VoidTreeTileEntity>> tileEntityTypeSupplier;
+@ParametersAreNonnullByDefault
+public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkElement {
+    public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
+    public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
 
-    public VoidStemBlock(Properties properties, Supplier<TileEntityType<VoidTreeTileEntity>> tileEntityTypeSupplier) {
-        super(properties.tickRandomly());
-        this.tileEntityTypeSupplier = tileEntityTypeSupplier;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public boolean ticksRandomly(@Nonnull BlockState blockState) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(BlockState blockState, IBlockReader world) {
-        return this.tileEntityTypeSupplier.get().create();
+    public VoidStemBlock(Properties properties) {
+        super(properties);
+        this.setDefaultState(this.getStateContainer().getBaseState().with(AXIS, Direction.Axis.Y).with(POWER, 0).with(ALIVE, true));
     }
 
     @Override
@@ -55,28 +43,20 @@ public class VoidStemBlock extends RotatedPillarBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull BlockState blockState, @Nullable LivingEntity placer, @Nonnull ItemStack itemStack) {
-        super.onBlockPlacedBy(world, blockPos, blockState, placer, itemStack);
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(blockPos);
-            if (tileEntity instanceof VoidTreeTileEntity) {
-                VoidTreeTileEntity voidTreeTileEntity = (VoidTreeTileEntity) tileEntity;
-                voidTreeTileEntity.setGrown(false);
-            }
-        }
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockState finalState = super.getStateForPlacement(context);
+        return finalState != null ? finalState.with(ALIVE, false) : null;
     }
 
     @Override
     public void tick(@Nonnull BlockState blockState, ServerWorld serverWorld, @Nonnull BlockPos blockPos, @Nonnull Random rand) {
         serverWorld.getPendingBlockTicks().scheduleTick(blockPos, this, 20);
 
-        TileEntity tileEntity = serverWorld.getTileEntity(blockPos);
-        if (tileEntity instanceof VoidTreeTileEntity) {
-            VoidTreeTileEntity voidTreeTileEntity = (VoidTreeTileEntity) tileEntity;
-            if (rand.nextFloat() > 0.98 && voidTreeTileEntity.isGrown()) {
-                voidTreeTileEntity.increaseHunger();
+        if (isNotFull(blockState) && blockState.get(ALIVE)) {
+            if (rand.nextFloat() > 0.98) {
+                blockState = reducePower(blockState, 1);
             }
-            if (voidTreeTileEntity.isHungry() && voidTreeTileEntity.isGrown()) {
+            if (isNotFull(blockState)) {
                 // Define search area (5 blocks radius in this example)
                 AxisAlignedBB searchArea = new AxisAlignedBB(blockPos).grow(5.0D);
 
@@ -86,9 +66,15 @@ public class VoidStemBlock extends RotatedPillarBlock {
                 // Apply wither effect if their health is low enough
                 for (LivingEntity entity : nearbyEntities) {
                     entity.addPotionEffect(new EffectInstance(ModEffects.VOIDRUE.get(), 40, 0));
-                    voidTreeTileEntity.reduceHunger(1);
                 }
             }
         }
     }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(POWER, ALIVE);
+    }
+
 }

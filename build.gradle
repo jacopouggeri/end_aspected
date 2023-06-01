@@ -41,7 +41,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
+            jvmArgs '-Xmx5G' // Set the maximum heap size to 5 GB
             // Recommended logging data for a userdev environment
             // The markers can be changed as needed.
             // "SCAN": For mods scan.

@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.imported.TFTreeFeatureConfig;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -31,7 +32,6 @@ public abstract class TFTreeGenerator<T extends TFTreeFeatureConfig> extends Fea
     public TFTreeGenerator(Codec<T> configIn) {
         super(configIn);
     }
-
 
     protected boolean generate(IWorld world, Random random, BlockPos pos, Set<BlockPos> logpos, Set<BlockPos> leavespos, MutableBoundingBox mbb, T config) {
         Set<BlockPos> branchSet = Sets.newHashSet();
@@ -127,7 +127,7 @@ public abstract class TFTreeGenerator<T extends TFTreeFeatureConfig> extends Fea
     public static boolean canRootGrowIn(IWorldReader world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
 
-        if (blockState.isAir(world, pos)) {
+        if (blockState == Blocks.AIR.getDefaultState()) {
             // roots can grow through air if they are near a solid block
             return FeatureUtil.isNearSolid(world, pos);
         } else {

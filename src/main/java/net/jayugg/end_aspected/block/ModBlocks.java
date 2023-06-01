@@ -1,7 +1,6 @@
 package net.jayugg.end_aspected.block;
 
 import net.jayugg.end_aspected.EndAspected;
-import net.jayugg.end_aspected.block.tile.ModTileEntities;
 import net.jayugg.end_aspected.block.tree.*;
 import net.jayugg.end_aspected.item.ModItemGroup;
 import net.jayugg.end_aspected.item.ModItems;
@@ -40,9 +39,8 @@ public class ModBlocks {
             () -> new VoidStemBlock(Block.Properties.from(Blocks.WARPED_STEM)
                     .hardnessAndResistance(25.0F, 600.0F)
                     .harvestTool(ToolType.AXE)
-                    .sound(SoundType.WOOD),
-                    ModTileEntities.VOID_TREE)
-            );
+                    .sound(SoundType.WOOD)
+                    ));
 
     public static final RegistryObject<Block> VOID_LEAVES = registerBlock("void_leaves",
             () -> new VoidLeavesBlock(Block.Properties.from(Blocks.WARPED_WART_BLOCK)
@@ -53,8 +51,8 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> VOID_FUNGUS = registerBlock("void_fungus",
             () -> new VoidFungusBlock(new VoidTree(),
-                    Block.Properties.from(Blocks.WARPED_FUNGUS),
-                    ModTileEntities.VOID_TREE));
+                    Block.Properties.from(Blocks.WARPED_FUNGUS)
+            ));
 
 
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block) {
@@ -67,7 +65,6 @@ public class ModBlocks {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
                 new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(ModItems.VOID)));
     }
-
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);

@@ -10,7 +10,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModTreeDecorators {
     private static final DeferredRegister<TreeDecoratorType<?>> TREE_DECORATORS = DeferredRegister.create(ForgeRegistries.TREE_DECORATOR_TYPES, EndAspected.MOD_ID);
     public static final RegistryObject<TreeDecoratorType<VoidVeinTreeDecorator>> VOID_LEAVE_VINE = TREE_DECORATORS.register("void_leave_vine", () -> new TreeDecoratorType<>(VoidVeinTreeDecorator.CODEC));
-
     public static void register(IEventBus eventBus) {
         TREE_DECORATORS.register(eventBus);
     }

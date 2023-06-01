@@ -4,7 +4,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.block.parent.IConnectedFlora;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -37,19 +36,21 @@ import java.util.Random;
 public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShearable, IConnectedFlora  {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty DISTANCE = IConnectedFlora.DISTANCE;
-    public static final BooleanProperty CONNECTED = IConnectedFlora.CONNECTED;
 
     public VoidLeavesBlock(Properties properties) {
         super(properties);
-        this.setDefaultState(super.getDefaultState().with(WATERLOGGED, false).with(CONNECTED, false).with(DISTANCE, MAX_DISTANCE));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(WATERLOGGED, false).with(DISTANCE, MAX_DISTANCE));
     }
 
     @Override
     public BlockState updatePostPlacement(BlockState blockState, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.get(WATERLOGGED)) {
+            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+        }
         BlockState newState = super.updatePostPlacement(blockState, facing, facingState, worldIn, currentPos, facingPos);
-        if (newState.hasProperty(CONNECTED)) {
-            newState = updateConnection(newState, worldIn, currentPos);
-            if (!newState.get(CONNECTED)) {
+        if (newState.hasProperty(DISTANCE)) {
+            newState = updateDistance(newState, worldIn, currentPos);
+            if (!isConnected(newState, worldIn, currentPos)) {
                 worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 1);
             }
         }
@@ -61,8 +62,7 @@ public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShea
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos blockpos = context.getPos();
         FluidState fluidstate = context.getWorld().getFluidState(blockpos);
-        BlockState finalState = super.getStateForPlacement(context);
-        return finalState != null ? updateConnection(finalState, context.getWorld(), blockpos).with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER) : null;
+        return this.getDefaultState().with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
     }
 
     @Override
@@ -84,11 +84,11 @@ public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShea
     @Override
     public void randomTick(BlockState blockState, ServerWorld serverWorld, BlockPos blockPos, Random random) {
         if (!serverWorld.isRemote()) {
-            BlockState newState = updateConnection(blockState, serverWorld, blockPos);
-            boolean connection = newState.get(CONNECTED);
+            BlockState newState = updateDistance(blockState, serverWorld, blockPos);
+            boolean connection = isConnected(newState, serverWorld, blockPos);
             // if no connection was found nearby, destroy this block
             if (!connection) {
-                serverWorld.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 3);
+                serverWorld.setBlockState(blockPos, this.getFluidState(newState).getBlockState(), 3);
             }
         }
     }
@@ -96,7 +96,7 @@ public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShea
     @Override
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
         super.tick(state, worldIn, pos, rand);
-        worldIn.setBlockState(pos, updateConnection(state, worldIn, pos), 3);
+        worldIn.setBlockState(pos, updateDistance(state, worldIn, pos), 3);
     }
 
     @Override
@@ -106,8 +106,7 @@ public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShea
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(WATERLOGGED, CONNECTED, DISTANCE);
+        builder.add(WATERLOGGED, DISTANCE);
     }
 
     public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos) {
@@ -133,4 +132,5 @@ public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShea
             }
         }
     }
+
 }

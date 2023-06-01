@@ -1,41 +1,29 @@
 package net.jayugg.end_aspected.entity;
 
-import com.mojang.authlib.GameProfile;
 import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.tree.VoidVeinBlock;
 import net.jayugg.end_aspected.effect.ModEffects;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.jayugg.end_aspected.util.IVoidVeinPlacer;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.UUID;
 
 @ParametersAreNonnullByDefault
-public class VoidlingEntity extends MonsterEntity {
-    private static final GameProfile VOIDLING_PROFILE = new GameProfile(UUID.randomUUID(), "voidling");
+public class VoidlingEntity extends MonsterEntity implements IVoidVeinPlacer {
     private int lifetime;
     public VoidlingEntity(EntityType<? extends VoidlingEntity> type, World worldIn) {
         super(type, worldIn);
@@ -109,7 +97,7 @@ public class VoidlingEntity extends MonsterEntity {
             }
         } else {
             if (this.isOnGround() && ForgeEventFactory.getMobGriefingEvent(this.world, this)) { // Check if entity is standing on a solid block
-                placeVoidVeinBlock();
+                placeVoidVeinBlock((ServerWorld) this.world);
             }
 
             if (!this.isNoDespawnRequired()) {
@@ -125,25 +113,14 @@ public class VoidlingEntity extends MonsterEntity {
         }
     }
 
-    private void placeVoidVeinBlock() {
+    private void placeVoidVeinBlock(ServerWorld serverWorld) {
         VoidVeinBlock voidVeinBlock = (VoidVeinBlock) ModBlocks.VOID_VEIN.get();
-        FakePlayer fakePlayer = FakePlayerFactory.get((ServerWorld) this.world, VOIDLING_PROFILE);
         for(int l = 0; l < 4; ++l) {
             int i = MathHelper.floor(this.getPosX() + (double)((float)(l % 2 * 2 - 1) * 0.25F));
             int j = MathHelper.floor(this.getPosY());
             int k = MathHelper.floor(this.getPosZ() + (double)((float)(l / 2 % 2 - 1) * 0.25F));
             BlockPos blockpos = new BlockPos(i, j, k);
-            BlockItemUseContext context = new BlockItemUseContext(
-                    new ItemUseContext(fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(i, j, k), Direction.DOWN, blockpos, false))
-            );
-            BlockState currentBlockState = this.world.getBlockState(blockpos);
-            boolean flag = currentBlockState.getMaterial().isReplaceable() ||
-                    currentBlockState.matchesBlock(Blocks.WATER) ||
-                    currentBlockState.matchesBlock(voidVeinBlock);
-            BlockState state = voidVeinBlock.getStateForPlacement(context);
-            if (state != null && flag) {
-                this.world.setBlockState(blockpos, state, 3); // Flags=3 for client update
-            }
+            placeVeinAtPosition(serverWorld, blockpos, voidVeinBlock);
         }
     }
 

@@ -31,12 +31,11 @@ public abstract class MultiFaceBlock extends Block {
     public static final BooleanProperty WEST = SixWayBlock.WEST;
     public static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP;
     private final Map<BlockState, VoxelShape> stateToShapeMap;
-
     private static final double FACE_THICKNESS = 0.2;
     public MultiFaceBlock(Properties properties) {
         super(properties.tickRandomly());
-        this.setDefaultState(this.stateContainer.getBaseState().with(DOWN, false).with(UP, false).with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false));
         this.stateToShapeMap = ImmutableMap.copyOf(this.stateContainer.getValidStates().stream().collect(Collectors.toMap(Function.identity(), MultiFaceBlock::getShapeForState)));
+        this.setDefaultState(this.stateContainer.getBaseState().with(DOWN, false).with(UP, false).with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false));
     }
 
     public static VoxelShape getAABBForDirection(Direction direction, double thickness) {
