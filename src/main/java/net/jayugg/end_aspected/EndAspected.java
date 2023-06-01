@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,6 +42,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mod(EndAspected.MOD_ID)
 public class EndAspected
@@ -112,17 +116,33 @@ public class EndAspected
         // Get the world the entity is in
         World world = event.getEntity().world;
 
-        // Get the block position beneath the entity
-        BlockPos pos = event.getEntity().getPosition();
+        // Get the bounding box around the entity's position
+        AxisAlignedBB boundingBox = event.getEntity().getBoundingBox().grow(1.0D);
 
-        // Check if the block at this position is your block
-        BlockState blockState = world.getBlockState(pos);
-        if (blockState.getBlock() == ModBlocks.VOID_VEIN.get()) {
-            int health = (int) event.getEntityLiving().getHealth();
-            // Change the block state to whatever you want
-            world.setBlockState(pos, IVeinNetworkElement.addPowerFromHealth(blockState, health));
+        // Get the blocks within the bounding box
+        List<BlockPos> blockPositions = BlockPos.getAllInBox(boundingBox).collect(Collectors.toList());
+
+        // Calculate the health per block
+        int health = (int) event.getEntityLiving().getHealth();
+        int blocksCount = blockPositions.size();
+        int healthPerBlock = health / blocksCount;
+        int remainingHealth = health % blocksCount;
+
+        // Update the block states
+        for (BlockPos pos : blockPositions) {
+            BlockState blockState = world.getBlockState(pos);
+            if (blockState.getBlock() == ModBlocks.VOID_VEIN.get()) {
+                int blockHealth = healthPerBlock;
+                if (remainingHealth > 0) {
+                    blockHealth++;
+                    remainingHealth--;
+                }
+                // Change the block state to whatever you want
+                world.setBlockState(pos, IVeinNetworkElement.addPowerFromHealth(blockState, blockHealth));
+            }
         }
     }
+
 
     @SubscribeEvent
     public void getEntityLastDamage(LivingHurtEvent event) {
