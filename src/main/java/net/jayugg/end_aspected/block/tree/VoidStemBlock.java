@@ -2,8 +2,8 @@ package net.jayugg.end_aspected.block.tree;
 
 import net.jayugg.end_aspected.block.tile.VoidTreeTileEntity;
 import net.jayugg.end_aspected.effect.ModEffects;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
@@ -22,7 +22,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
-public class VoidStemBlock extends Block {
+public class VoidStemBlock extends RotatedPillarBlock {
     private final Supplier<TileEntityType<VoidTreeTileEntity>> tileEntityTypeSupplier;
 
     public VoidStemBlock(Properties properties, Supplier<TileEntityType<VoidTreeTileEntity>> tileEntityTypeSupplier) {
@@ -36,29 +36,29 @@ public class VoidStemBlock extends Block {
     }
 
     @Override
-    public boolean ticksRandomly(@Nonnull BlockState state) {
+    public boolean ticksRandomly(@Nonnull BlockState blockState) {
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public TileEntity createTileEntity(BlockState blockState, IBlockReader world) {
         return this.tileEntityTypeSupplier.get().create();
     }
 
     @Override
-    public void onBlockAdded(@Nonnull BlockState state, @Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
-        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
-        if (!worldIn.isRemote) {
+    public void onBlockAdded(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull BlockState oldState, boolean isMoving) {
+        super.onBlockAdded(blockState, world, blockPos, oldState, isMoving);
+        if (!world.isRemote) {
             // Schedule a task to tick the block
-            worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
+            world.getPendingBlockTicks().scheduleTick(blockPos, this, 1);
         }
     }
 
     @Override
-    public void onBlockPlacedBy(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-        if (!worldIn.isRemote) {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull BlockState blockState, @Nullable LivingEntity placer, @Nonnull ItemStack itemStack) {
+        super.onBlockPlacedBy(world, blockPos, blockState, placer, itemStack);
+        if (!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(blockPos);
             if (tileEntity instanceof VoidTreeTileEntity) {
                 VoidTreeTileEntity voidTreeTileEntity = (VoidTreeTileEntity) tileEntity;
                 voidTreeTileEntity.setGrown(false);
@@ -67,10 +67,10 @@ public class VoidStemBlock extends Block {
     }
 
     @Override
-    public void tick(@Nonnull BlockState state, ServerWorld worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
-        worldIn.getPendingBlockTicks().scheduleTick(pos, this, 20);
+    public void tick(@Nonnull BlockState blockState, ServerWorld serverWorld, @Nonnull BlockPos blockPos, @Nonnull Random rand) {
+        serverWorld.getPendingBlockTicks().scheduleTick(blockPos, this, 20);
 
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        TileEntity tileEntity = serverWorld.getTileEntity(blockPos);
         if (tileEntity instanceof VoidTreeTileEntity) {
             VoidTreeTileEntity voidTreeTileEntity = (VoidTreeTileEntity) tileEntity;
             if (rand.nextFloat() > 0.98 && voidTreeTileEntity.isGrown()) {
@@ -78,10 +78,10 @@ public class VoidStemBlock extends Block {
             }
             if (voidTreeTileEntity.isHungry() && voidTreeTileEntity.isGrown()) {
                 // Define search area (5 blocks radius in this example)
-                AxisAlignedBB searchArea = new AxisAlignedBB(pos).grow(5.0D);
+                AxisAlignedBB searchArea = new AxisAlignedBB(blockPos).grow(5.0D);
 
                 // Get Nearby Entities
-                List<LivingEntity> nearbyEntities = worldIn.getEntitiesWithinAABB(LivingEntity.class, searchArea);
+                List<LivingEntity> nearbyEntities = serverWorld.getEntitiesWithinAABB(LivingEntity.class, searchArea);
 
                 // Apply wither effect if their health is low enough
                 for (LivingEntity entity : nearbyEntities) {

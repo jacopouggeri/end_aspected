@@ -6,14 +6,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +26,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -49,7 +55,10 @@ public class VoidBatEntity extends VoidlingEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(1, new VoidBatEntity.RandomFlyGoal(this));
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(3, new VoidBatEntity.SweepAttackGoal());
+        this.goalSelector.addGoal(7, new VoidBatEntity.LookAroundGoal(this));
 
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setCallsForHelp(VoidMiteEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, EndermanEntity.class, false));
@@ -230,6 +239,163 @@ public class VoidBatEntity extends VoidlingEntity {
     static {
         HANGING = EntityDataManager.createKey(VoidBatEntity.class, DataSerializers.BYTE);
         field_213813_c = (new EntityPredicate()).setDistance(4.0).allowFriendlyFire();
+    }
+
+    static class LookAroundGoal extends Goal {
+        private final VoidBatEntity parentEntity;
+
+        public LookAroundGoal(VoidBatEntity bat) {
+            this.parentEntity = bat;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.LOOK));
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            return true;
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            if (this.parentEntity.getAttackTarget() == null) {
+                Vector3d vector3d = this.parentEntity.getMotion();
+                this.parentEntity.rotationYaw = -((float)MathHelper.atan2(vector3d.x, vector3d.z)) * (180F / (float)Math.PI);
+                this.parentEntity.renderYawOffset = this.parentEntity.rotationYaw;
+            } else {
+                LivingEntity livingentity = this.parentEntity.getAttackTarget();
+                if (livingentity.getDistanceSq(this.parentEntity) < 4096.0D) {
+                    double d1 = livingentity.getPosX() - this.parentEntity.getPosX();
+                    double d2 = livingentity.getPosZ() - this.parentEntity.getPosZ();
+                    this.parentEntity.rotationYaw = -((float)MathHelper.atan2(d1, d2)) * (180F / (float)Math.PI);
+                    this.parentEntity.renderYawOffset = this.parentEntity.rotationYaw;
+                }
+            }
+
+        }
+    }
+
+    static class RandomFlyGoal extends Goal {
+        private final VoidBatEntity parentEntity;
+
+        public RandomFlyGoal(VoidBatEntity bat) {
+            this.parentEntity = bat;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            MovementController movementcontroller = this.parentEntity.getMoveHelper();
+            if (!movementcontroller.isUpdating()) {
+                return true;
+            } else {
+                double d0 = movementcontroller.getX() - this.parentEntity.getPosX();
+                double d1 = movementcontroller.getY() - this.parentEntity.getPosY();
+                double d2 = movementcontroller.getZ() - this.parentEntity.getPosZ();
+                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+                return d3 < 1.0D || d3 > 3600.0D;
+            }
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            return false;
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void startExecuting() {
+            Random random = this.parentEntity.getRNG();
+            double d0 = this.parentEntity.getPosX() + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double d1 = this.parentEntity.getPosY() + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double d2 = this.parentEntity.getPosZ() + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, 1.0D);
+        }
+    }
+
+    abstract static class MoveGoal extends Goal {
+        public MoveGoal() {
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        }
+    }
+
+    class SweepAttackGoal extends VoidBatEntity.MoveGoal {
+        private SweepAttackGoal() {
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            return VoidBatEntity.this.getAttackTarget() != null;
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            LivingEntity livingentity = VoidBatEntity.this.getAttackTarget();
+            if (livingentity == null) {
+                return false;
+            } else if (!livingentity.isAlive()) {
+                return false;
+            } else if (!(livingentity instanceof PlayerEntity) || !livingentity.isSpectator() && !((PlayerEntity)livingentity).isCreative()) {
+                if (!this.shouldExecute()) {
+                    return false;
+                } else {
+                    if (VoidBatEntity.this.ticksExisted % 20 == 0) {
+                        List<CatEntity> list = VoidBatEntity.this.world.getEntitiesWithinAABB(CatEntity.class, VoidBatEntity.this.getBoundingBox().grow(16.0D), EntityPredicates.IS_ALIVE);
+                        if (!list.isEmpty()) {
+                            for(CatEntity catentity : list) {
+                                catentity.func_213420_ej();
+                            }
+
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void startExecuting() {
+        }
+
+        /**
+         * Reset the task's internal state. Called when this task is interrupted by another one
+         */
+        public void resetTask() {
+            VoidBatEntity.this.setAttackTarget(null);
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            LivingEntity livingentity = VoidBatEntity.this.getAttackTarget();
+            if (VoidBatEntity.this.getBoundingBox().grow(0.2F).intersects(livingentity.getBoundingBox())) {
+                VoidBatEntity.this.attackEntityAsMob(livingentity);
+                if (!VoidBatEntity.this.isSilent()) {
+                    VoidBatEntity.this.world.playEvent(1039, VoidBatEntity.this.getPosition(), 0);
+                }
+            }
+        }
     }
 }
 

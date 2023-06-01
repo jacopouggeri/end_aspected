@@ -27,8 +27,8 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ModVineBlock extends MultiFaceBlock implements IForgeShearable {
-    public ModVineBlock(Properties properties) {
+public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
+    public ModVeinBlock(Properties properties) {
         super(properties);
     }
     /*
@@ -139,6 +139,10 @@ public class ModVineBlock extends MultiFaceBlock implements IForgeShearable {
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return VoxelShapes.empty();
+    }
+
+    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return 1;
     }
 
     @Nonnull

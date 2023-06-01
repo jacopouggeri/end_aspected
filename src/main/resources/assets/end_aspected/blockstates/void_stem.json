@@ -1,5 +1,16 @@
 {
   "variants": {
-    "": { "model": "end_aspected:block/void_stem" }
+    "axis=x": {
+      "model": "end_aspected:block/void_stem_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "end_aspected:block/void_stem"
+    },
+    "axis=z": {
+      "model": "end_aspected:block/void_stem_horizontal",
+      "x": 90
+    }
   }
 }

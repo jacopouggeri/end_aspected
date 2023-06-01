@@ -58,10 +58,10 @@ public abstract class MultiFaceBlock extends Block {
         }
     }
 
-    private static VoxelShape getShapeForState(BlockState state) {
+    private static VoxelShape getShapeForState(BlockState blockState) {
         VoxelShape voxelshape = VoxelShapes.empty();
         for (Direction direction : FACING_TO_PROPERTY_MAP.keySet()) {
-            if (state.get(FACING_TO_PROPERTY_MAP.get(direction))) {
+            if (blockState.get(FACING_TO_PROPERTY_MAP.get(direction))) {
                 if (isCardinal(direction))
                     voxelshape = VoxelShapes.or(voxelshape, getAABBForDirection(direction.getOpposite(), FACE_THICKNESS));
                 else
@@ -71,8 +71,8 @@ public abstract class MultiFaceBlock extends Block {
         return voxelshape;
     }
 
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return this.stateToShapeMap.get(state);
+    public VoxelShape getShape(BlockState blockState, IBlockReader blockReader, BlockPos blockPos, ISelectionContext context) {
+        return this.stateToShapeMap.get(blockState);
     }
 
     @Nullable
@@ -100,18 +100,18 @@ public abstract class MultiFaceBlock extends Block {
     /*
     Return true if the blockstate has at least one face attached (at least one of the directins is true)
      */
-    protected boolean getPresentFaces(BlockState state) {
-        return this.countPresentFaces(state) > 0;
+    protected boolean getPresentFaces(BlockState blockState) {
+        return this.countPresentFaces(blockState) > 0;
     }
 
     /*
     Count how many faces the vine is attached (0-6), one for each direction
      */
-    protected int countPresentFaces(BlockState state) {
+    protected int countPresentFaces(BlockState blockState) {
         int i = 0;
 
         for(BooleanProperty booleanproperty : FACING_TO_PROPERTY_MAP.values()) {
-            if (state.get(booleanproperty)) {
+            if (blockState.get(booleanproperty)) {
                 ++i;
             }
         }
