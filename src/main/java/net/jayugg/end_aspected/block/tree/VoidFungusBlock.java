@@ -23,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -41,7 +42,8 @@ import java.util.Random;
 public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLoggable, IVeinNetworkElement, IVoidVeinPlacer {
     public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 9.0D, 12.0D);
+    protected static final VoxelShape FUNGUS_SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 9.0D, 12.0D);
+    protected static final VoxelShape VEIN_SHAPE = VoidVeinBlock.getAABBForDirection(Direction.DOWN, 0.2);
     private final Tree tree;
 
     public VoidFungusBlock(Tree treeIn, Properties properties) {
@@ -62,7 +64,7 @@ public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLogga
     }
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return SHAPE;
+        return state.get(POWER) < 3 ? VEIN_SHAPE : VoxelShapes.or(VEIN_SHAPE, FUNGUS_SHAPE);
     }
 
     @Override

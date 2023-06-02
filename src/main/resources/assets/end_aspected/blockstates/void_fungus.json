@@ -1,6 +1,7 @@
 {
   "multipart": [
     {
+      "when": { "void_flora_power": "3" },
       "apply": {
         "model": "end_aspected:block/fungus/void_fungus"
       }

@@ -5,6 +5,7 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.parent.IConnectedFlora;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.block.parent.ModVeinBlock;
+import net.jayugg.end_aspected.util.IVoidVeinPlacer;
 import net.minecraft.block.*;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.fluid.FluidState;
@@ -31,7 +32,7 @@ import java.util.Random;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVeinNetworkElement {
+public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVeinNetworkElement, IVoidVeinPlacer {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty DISTANCE = IConnectedFlora.DISTANCE;
     public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
@@ -95,7 +96,13 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
         boolean flag = connection && getPresentFaces(newState);
         // if no connection was found nearby, destroy this block
         if (!flag) {
-            serverWorld.setBlockState(blockPos, getFluidState(newState).getBlockState(), 3);
+            // If the block has power, consume it to sustain itself.
+            if (newState.get(POWER) > 0) {
+                newState = reducePower(newState, 1);
+                serverWorld.setBlockState(blockPos, newState, 3);
+            } else {
+                serverWorld.setBlockState(blockPos, getFluidState(newState).getBlockState(), 3);
+            }
         }
     }
 
@@ -106,24 +113,48 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
         newState = getUpdatedValidState(newState, serverWorld, blockPos);
         serverWorld.setBlockState(blockPos, newState, 3);
         placeVoidFungus(serverWorld, blockPos);
+        placeVoidVein(serverWorld, blockPos);
+    }
+
+    @Nullable
+    private BlockPos findValidPosition(ServerWorld serverWorld, BlockPos blockPos) {
+        for (Direction direction : Direction.values()) {
+            BlockPos placePos = blockPos.offset(direction);
+            BlockState placeState = serverWorld.getBlockState(placePos);
+            if (isValidPosition(placeState, serverWorld, placePos) && !placeState.matchesBlock(ModBlocks.VOID_VEIN.get())) {
+                return placePos;
+            }
+        }
+        return null;
+    }
+
+    private void placeVoidVein(ServerWorld serverWorld, BlockPos blockPos) {
+        // Check if the position has a VoidVeinBlock with blockstate property POWER == MAX_POWER
+        VoidVeinBlock voidVeinBlock = (VoidVeinBlock) ModBlocks.VOID_VEIN.get();
+        BlockState blockState = serverWorld.getBlockState(blockPos);
+        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(POWER) == MAX_POWER && blockState.get(DISTANCE) < MAX_DISTANCE) {
+            BlockPos placePos = findValidPosition(serverWorld, blockPos);
+            if (placePos != null) {
+                placeVeinAtPosition(serverWorld, placePos, voidVeinBlock);
+                // Reduce the power of the VoidVeinBlock
+                blockState = reducePower(blockState, MAX_POWER);
+                serverWorld.setBlockState(blockPos, blockState, 3);
+            }
+        }
     }
 
     private void placeVoidFungus(ServerWorld serverWorld, BlockPos blockPos) {
         // Check if the position has a VoidVeinBlock with blockstate property POWER == MAX_POWER
         BlockState blockState = serverWorld.getBlockState(blockPos);
-        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(POWER) == IVeinNetworkElement.MAX_POWER) {
-            // If so, check the surrounding blocks for a valid position to place a VoidFungusBlock
-            for (Direction direction : Direction.values()) {
-                BlockPos placePos = blockPos.offset(direction);
-                BlockState placeState = serverWorld.getBlockState(placePos);
-                if (isValidPosition(placeState, serverWorld, placePos) && !placeState.matchesBlock(ModBlocks.VOID_VEIN.get())) {
-                    // If a valid position is found, place a VoidFungusBlock
-                    serverWorld.setBlockState(placePos, ModBlocks.VOID_FUNGUS.get().getDefaultState().with(POWER, 0), 3);
-                    // Reduce the power of the VoidVeinBlock
-                    blockState = reducePower(blockState, IVeinNetworkElement.MAX_POWER);
-                    serverWorld.setBlockState(blockPos, blockState, 3);
-                    break;
-                }
+        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(POWER) == MAX_POWER && blockState.get(DISTANCE) <= MAX_DISTANCE) {
+            BlockPos placePos = findValidPosition(serverWorld, blockPos);
+            if (placePos != null) {
+                // If a valid position is found, place a VoidFungusBlock
+                serverWorld.setBlockState(placePos, ModBlocks.VOID_FUNGUS.get().getDefaultState(), 3);
+                serverWorld.getPendingBlockTicks().scheduleTick(placePos, ModBlocks.VOID_FUNGUS.get(), 1);
+                // Reduce the power of the VoidVeinBlock
+                blockState = reducePower(blockState, MAX_POWER);
+                serverWorld.setBlockState(blockPos, blockState, 3);
             }
         }
     }
