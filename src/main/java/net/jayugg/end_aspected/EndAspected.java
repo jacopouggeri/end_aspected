@@ -4,6 +4,7 @@ import net.jayugg.end_aspected.block.EnderTrapBlock;
 import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.block.tree.ModTreeDecorators;
+import net.jayugg.end_aspected.block.tree.VoidStemBlock;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.render.AspectedArrowRenderer;
@@ -115,32 +116,40 @@ public class EndAspected
     public void onEntityDeath(LivingDeathEvent event) {
         // Get the world the entity is in
         World world = event.getEntity().world;
-
+        if (world.isRemote) {
+            return;
+        }
         // Get the bounding box around the entity's position
         AxisAlignedBB boundingBox = event.getEntity().getBoundingBox().grow(1.0D);
 
         // Get the blocks within the bounding box
-        List<BlockPos> blockPositions = BlockPos.getAllInBox(boundingBox).collect(Collectors.toList());
+        List<BlockPos> blockPositions = BlockPos.getAllInBox(boundingBox)
+                .map(BlockPos::toImmutable) // Convert to BlockPos
+                .filter(pos -> (world.getBlockState(pos).getBlock() == ModBlocks.VOID_VEIN.get() &&
+                        world.getBlockState(pos).get(IVeinNetworkElement.POWER) < IVeinNetworkElement.MAX_POWER)
+                        ||
+                        world.getBlockState(pos) == ModBlocks.VOID_STEM.get().getDefaultState().with(VoidStemBlock.ALIVE, true))
+                .collect(Collectors.toList());
 
-        // Calculate the health per block
-        int health = (int) event.getEntityLiving().getHealth();
-        int blocksCount = blockPositions.size();
-        int healthPerBlock = health / blocksCount;
-        int remainingHealth = health % blocksCount;
-
-        // Update the block states
-        for (BlockPos pos : blockPositions) {
-            BlockState blockState = world.getBlockState(pos);
-            if (blockState.getBlock() == ModBlocks.VOID_VEIN.get()) {
-                int blockHealth = healthPerBlock;
-                if (remainingHealth > 0) {
-                    blockHealth++;
-                    remainingHealth--;
-                }
-                // Change the block state to whatever you want
-                world.setBlockState(pos, IVeinNetworkElement.addPowerFromHealth(blockState, blockHealth));
-            }
+        if (blockPositions.isEmpty()) {
+            return;
         }
+
+        LOGGER.info(blockPositions);
+
+        // Choose a block in the list at random
+        int health = (int) event.getEntityLiving().getMaxHealth();
+        BlockPos blockPos = blockPositions.get(world.rand.nextInt(blockPositions.size()));
+        // Update the block states
+        BlockState blockState = world.getBlockState(blockPos);
+        LOGGER.info("Entity died with {} health", health);
+        LOGGER.info("Block at {} is {}", blockPos, blockState);
+        if (blockState.matchesBlock(ModBlocks.VOID_VEIN.get())) {
+            world.setBlockState(blockPos, IVeinNetworkElement.addPowerFromHealth(blockState, health));
+            LOGGER.info("Adding {} health to block at {}", health, blockPos);
+        }
+        blockState = world.getBlockState(blockPos);
+        LOGGER.info("Block at {} is {}", blockPos, blockState);
     }
 
 

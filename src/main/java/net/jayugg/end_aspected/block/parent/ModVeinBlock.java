@@ -119,19 +119,15 @@ public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
         BlockState blockstate = context.getWorld().getBlockState(context.getPos());
         // Check if the block in the placement position is a vine already, if it doesn't, use the default state
         boolean flag = blockstate.matchesBlock(this);
-        LOGGER.info("Incoming Blockstate: " + blockstate + " Flag: " + flag);
         BlockState blockstate1 = flag ? blockstate : this.getDefaultState();
-        LOGGER.info("Out Blockstate: " + blockstate1 + " Flag: " + flag);
 
         // Will get closest available direction if direction is not available
         for(Direction direction : context.getNearestLookingDirections()) {
             BooleanProperty booleanproperty = getPropertyFor(direction);
-            LOGGER.info("Direction: " + direction + " Property: " + booleanproperty);
             // Check if there's a vine already attached to the block in the given direction
             boolean flag1 = flag && blockstate.get(booleanproperty);
             if (!flag1 && this.hasAttachment(context.getWorld(), context.getPos(), direction)) {
                 // If there isn't and the vine can attach to the block, add the direction to the blockstate
-                LOGGER.info("Adding direction: " + direction);
                 return blockstate1.with(booleanproperty, Boolean.TRUE);
             }
         }

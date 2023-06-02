@@ -93,7 +93,7 @@ public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLogga
                     // Kill the entity without dropping loot
                     entity.setHealth(0.0F);
                     entity.onDeath(DamageSource.OUT_OF_WORLD.setMagicDamage());
-                    // Reduce Tree Hunger by amount of health the entity had
+                    // Add power based on amount of health the entity had
                     blockState = IVeinNetworkElement.addPowerFromHealth(blockState, (int) entity.getMaxHealth());
                     serverWorld.setBlockState(blockPos, blockState);
                 }

@@ -2,46 +2,59 @@ package net.jayugg.end_aspected.block.parent;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public interface IVeinNetworkElement extends IConnectedFlora {
     int MAX_POWER = 4;
-    IntegerProperty POWER = BlockStateProperties.POWER_0_15;
-    default BlockState shareEnergyToNeighbors(BlockState blockState, IWorld worldIn, BlockPos pos) {
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
-        int energy = blockState.get(POWER);
+    IntegerProperty POWER = IntegerProperty.create("void_flora_power", 0, MAX_POWER);
+    // Add a ThreadLocal to store the updating state for each thread
+    ThreadLocal<Set<BlockPos>> UPDATING_POSITIONS = ThreadLocal.withInitial(HashSet::new);
 
-        if (energy == 0) {
+    default BlockState sharePowerToNeighbors(BlockState blockState, IWorld worldIn, BlockPos blockPos) {
+        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        int power = blockState.get(POWER);
+
+        if (power == 0 || UPDATING_POSITIONS.get().contains(blockPos)) {
             return blockState;
         }
+        UPDATING_POSITIONS.get().add(blockPos);
+        try {
+            for (Direction direction : Direction.values()) {
+                blockpos$mutable.setAndMove(blockPos, direction);
+                BlockState neighbor = worldIn.getBlockState(blockpos$mutable);
 
-        for(Direction direction : Direction.values()) {
-            blockpos$mutable.setAndMove(pos, direction);
-            BlockState neighbor = worldIn.getBlockState(blockpos$mutable);
+                if (neighbor.getBlock() instanceof IVeinNetworkElement) {
+                    int neighborPower = neighbor.get(POWER);
+                    int neighborDistance = getDistance(neighbor);
+                    int currentDistance = getDistance(blockState);
 
-            if (neighbor.getBlock() instanceof IVeinNetworkElement) {
-                int neighborEnergy = neighbor.get(POWER);
-                int neighborDistance = getDistance(neighbor);
-                int currentDistance = getDistance(blockState);
-
-                // Share energy if the neighbor is at the same distance and has lower energy or if the neighbor is closer to a node
-                if ((neighborDistance == currentDistance && neighborEnergy < energy) || neighborDistance < currentDistance) {
-                    blockState = shareEnergy(worldIn, blockState, blockpos$mutable, neighbor, energy, neighborEnergy);
+                    // Share power if the neighbor is at the same distance and has lower power or if the neighbor is closer to a node
+                    if ((neighborDistance == currentDistance && neighborPower < power) || neighborDistance < currentDistance) {
+                        blockState = sharePower(worldIn, blockState, blockpos$mutable, neighbor, power, neighborPower);
+                    }
                 }
             }
+        } finally {
+            // Remove the block position from the set of updating positions
+            UPDATING_POSITIONS.get().remove(blockPos);
         }
         return blockState;
     }
 
-    default BlockState shareEnergy(IWorld worldIn, BlockState blockState, BlockPos neighborPos, BlockState neighbor, int energy, int neighborEnergy) {
-        int sharedEnergy = Math.min(neighborEnergy + 1, MAX_POWER) - neighborEnergy;
-        energy = energy - sharedEnergy;
-        neighborEnergy = neighborEnergy + sharedEnergy;
-        blockState = blockState.with(POWER, energy);
-        neighbor = neighbor.with(POWER, neighborEnergy);
+    default BlockState sharePower(IWorld worldIn, BlockState blockState, BlockPos neighborPos, BlockState neighbor, int power, int neighborPower) {
+        if (power == 0) {
+            return blockState;
+        }
+        int sharedPower = Math.min(neighborPower + 1, MAX_POWER) - neighborPower;
+        power = power - sharedPower;
+        neighborPower = neighborPower + sharedPower;
+        blockState = blockState.with(POWER, power);
+        neighbor = neighbor.with(POWER, neighborPower);
         worldIn.setBlockState(neighborPos, neighbor, 3);
         return blockState;
     }

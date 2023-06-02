@@ -56,7 +56,7 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
             if (!isConnected(newState, worldIn, currentPos)) {
                 worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 1);
             }
-            newState = shareEnergyToNeighbors(newState, worldIn, currentPos);
+            newState = sharePowerToNeighbors(newState, worldIn, currentPos);
         }
         return newState;
     }
@@ -66,9 +66,7 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos blockpos = context.getPos();
         FluidState fluidstate = context.getWorld().getFluidState(blockpos);
-        LOGGER.info("STATE BEFORE SUPER CALL: " + context.getWorld().getBlockState(blockpos));
         BlockState finalState = super.getStateForPlacement(context);
-        LOGGER.info("STATE AFTER SUPER CALL: " + finalState);
         return finalState != null ? finalState.with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER) : null;
     }
 
@@ -84,20 +82,20 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
         worldIn.getPendingBlockTicks().scheduleTick(pos, this, 1);
     }
 
+    @Override
     public boolean ticksRandomly(BlockState state) {
-        return state.get(DISTANCE) == MAX_DISTANCE;
+        return state.get(DISTANCE) == MAX_DISTANCE || state.get(POWER) > 0;
     }
 
     @Override
     public void randomTick(BlockState blockState, ServerWorld serverWorld, BlockPos blockPos, Random random) {
-        if (!serverWorld.isRemote()) {
-            BlockState newState = updateDistance(blockState, serverWorld, blockPos);
-            boolean connection = isConnected(newState, serverWorld, blockPos);
-            boolean flag = connection && getPresentFaces(newState);
-            // if no connection was found nearby, destroy this block
-            if (!flag) {
-                serverWorld.setBlockState(blockPos, getFluidState(newState).getBlockState(), 3);
-            }
+        BlockState newState = updateDistance(blockState, serverWorld, blockPos);
+        newState = sharePowerToNeighbors(newState, serverWorld, blockPos);
+        boolean connection = isConnected(newState, serverWorld, blockPos);
+        boolean flag = connection && getPresentFaces(newState);
+        // if no connection was found nearby, destroy this block
+        if (!flag) {
+            serverWorld.setBlockState(blockPos, getFluidState(newState).getBlockState(), 3);
         }
     }
 
@@ -106,7 +104,6 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
         super.tick(blockState, serverWorld, blockPos, rand);
         BlockState newState = updateDistance(blockState, serverWorld, blockPos);
         newState = getUpdatedValidState(newState, serverWorld, blockPos);
-        newState = shareEnergyToNeighbors(newState, serverWorld, blockPos);
         serverWorld.setBlockState(blockPos, newState, 3);
         placeVoidFungus(serverWorld, blockPos);
     }
@@ -118,7 +115,8 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
             // If so, check the surrounding blocks for a valid position to place a VoidFungusBlock
             for (Direction direction : Direction.values()) {
                 BlockPos placePos = blockPos.offset(direction);
-                if (isValidPosition(blockState, serverWorld, placePos)) {
+                BlockState placeState = serverWorld.getBlockState(placePos);
+                if (isValidPosition(placeState, serverWorld, placePos) && !placeState.matchesBlock(ModBlocks.VOID_VEIN.get())) {
                     // If a valid position is found, place a VoidFungusBlock
                     serverWorld.setBlockState(placePos, ModBlocks.VOID_FUNGUS.get().getDefaultState().with(POWER, 0), 3);
                     // Reduce the power of the VoidVeinBlock
@@ -132,8 +130,9 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
 
     public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
         BlockPos blockpos = pos.down();
+        BlockState blockAtPos = worldIn.getBlockState(pos);
         boolean flag = worldIn.getBlockState(blockpos).isSolidSide(worldIn, blockpos, Direction.UP);
-        flag = flag || worldIn.getFluidState(pos).getFluid() == Fluids.EMPTY || worldIn.getFluidState(pos).getFluid() == Fluids.WATER;
+        flag = flag && (blockAtPos.isAir() || blockAtPos.getFluidState().getFluid() == Fluids.WATER);
         return flag;
     }
 

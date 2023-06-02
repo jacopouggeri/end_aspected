@@ -34,6 +34,11 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
     }
 
     @Override
+    public boolean ticksRandomly(BlockState state) {
+        return state.get(POWER) > 0;
+    }
+
+    @Override
     public void onBlockAdded(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull BlockState oldState, boolean isMoving) {
         super.onBlockAdded(blockState, world, blockPos, oldState, isMoving);
         if (!world.isRemote) {
@@ -46,6 +51,12 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState finalState = super.getStateForPlacement(context);
         return finalState != null ? finalState.with(ALIVE, false) : null;
+    }
+
+    @Override
+    public void randomTick(BlockState blockState, ServerWorld serverWorld, BlockPos blockPos, Random rand) {
+        BlockState newState = sharePowerToNeighbors(blockState, serverWorld, blockPos);
+        serverWorld.setBlockState(blockPos, newState, 3);
     }
 
     @Override
