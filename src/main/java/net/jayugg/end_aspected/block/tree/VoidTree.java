@@ -7,7 +7,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.server.ServerWorld;
-import net.jayugg.end_aspected.world.gen.ModConfiguredFeatures;
+import net.jayugg.end_aspected.world.features.ModConfiguredFeatures;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

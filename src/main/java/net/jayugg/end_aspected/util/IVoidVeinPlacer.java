@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -35,19 +36,27 @@ public interface IVoidVeinPlacer {
         // If it's a vein, keep its current state, otherwise use the default state
         BlockState newState = flag ? blockState : voidVeinBlock.getDefaultState();
 
-        // Try to place a vein in every direction
+        // Try to place a vein in the first available direction
         for (Direction direction : Direction.values()) {
             BooleanProperty booleanproperty = MultiFaceBlock.getPropertyFor(direction);
             // Check if there's a vine already attached to the block in the given direction
             boolean flag1 = flag && blockState.get(booleanproperty);
             if (!flag1 && voidVeinBlock.hasAttachment(world, blockPos, direction)) {
                 // If there isn't and the vine can attach to the block, add the direction to the blockstate
-                return newState.with(booleanproperty, Boolean.TRUE);
+                newState = newState.with(booleanproperty, Boolean.TRUE);
+                // If the block is waterlogged, add the waterlogged property to the blockstate
+                return waterlogIfFluid(world, blockPos, newState);
             }
         }
 
         // If the block is waterlogged, add the waterlogged property to the blockstate
-        return newState.with(VoidVeinBlock.WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        return waterlogIfFluid(world, blockPos, newState);
+    }
+
+    default BlockState waterlogIfFluid(IWorld world, BlockPos blockPos, BlockState newState) {
+        BlockState oldState = world.getBlockState(blockPos);
+        boolean flag = newState.hasProperty(BlockStateProperties.WATERLOGGED);
+        return flag ? newState.with(BlockStateProperties.WATERLOGGED, oldState.getFluidState().getFluid().equals(Fluids.WATER)) : oldState;
     }
 
 }

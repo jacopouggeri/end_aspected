@@ -9,6 +9,8 @@ import net.minecraft.world.IWorld;
 import java.util.HashSet;
 import java.util.Set;
 
+import static net.jayugg.end_aspected.EndAspected.LOGGER;
+
 public interface IVeinNetworkElement extends IConnectedFlora {
     int MAX_POWER = 4;
     IntegerProperty POWER = IntegerProperty.create("void_flora_power", 0, MAX_POWER);
@@ -34,7 +36,9 @@ public interface IVeinNetworkElement extends IConnectedFlora {
                     int currentDistance = getDistance(blockState);
 
                     // Share power if the neighbor is at the same distance and has lower power or if the neighbor is closer to a node
-                    if ((neighborDistance == currentDistance && neighborPower < power) || neighborDistance < currentDistance) {
+                    // Crucial to avoid infinite loops: only share power if it doesn't lower the power of the current block below the neighbor's power
+                    if ((neighborDistance == currentDistance && neighborPower + 1 < power) || neighborDistance < currentDistance) {
+                        LOGGER.info("Sharing power from {} to {}", blockPos, blockpos$mutable);
                         blockState = sharePower(worldIn, blockState, blockpos$mutable, neighbor, power, neighborPower);
                     }
                 }

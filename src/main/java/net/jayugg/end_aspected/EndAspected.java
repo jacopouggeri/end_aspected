@@ -97,7 +97,7 @@ public class EndAspected
         event.enqueueWork(() -> {
             BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModBlocks.VOID_LEAVES.get().asItem(), ModPotions.VOID_SICKNESS_POTION.get()));
         });
-        ModBiomeGeneration.generateBiomes();
+        event.enqueueWork(ModBiomeGeneration::generateBiomes);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

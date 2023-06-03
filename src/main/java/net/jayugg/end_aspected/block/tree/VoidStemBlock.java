@@ -59,6 +59,7 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
         serverWorld.setBlockState(blockPos, newState, 3);
     }
 
+
     @Override
     public void tick(@Nonnull BlockState blockState, ServerWorld serverWorld, @Nonnull BlockPos blockPos, @Nonnull Random rand) {
         serverWorld.getPendingBlockTicks().scheduleTick(blockPos, this, 20);
