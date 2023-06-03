@@ -1,4 +1,4 @@
-package net.jayugg.end_aspected.block.tree;
+package net.jayugg.end_aspected.block.tree.decorator;
 
 import net.jayugg.end_aspected.EndAspected;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;

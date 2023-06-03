@@ -42,7 +42,7 @@ public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
     /*
     Determines if the vine is attached to a legal block in the given direction
      */
-    private boolean hasAttachment(IBlockReader blockReader, BlockPos pos, Direction direction) {
+    public boolean hasAttachment(IBlockReader blockReader, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.offset(direction);
         if (canAttachTo(blockReader, blockpos, direction)) {
             // If vines can attach to the block in the given direction, return true
@@ -116,24 +116,25 @@ public class ModVeinBlock extends MultiFaceBlock implements IForgeShearable {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockState blockstate = context.getWorld().getBlockState(context.getPos());
-        // Check if the block in the placement position is a vine already, if it doesn't, use the default state
-        boolean flag = blockstate.matchesBlock(this);
-        BlockState blockstate1 = flag ? blockstate : this.getDefaultState();
+        BlockState blockState = context.getWorld().getBlockState(context.getPos());
+        // Check if the block in the placement position has a vine already, if it doesn't, use the default state
+        boolean flag = blockState.matchesBlock(this);
+        //if (!flag) {return null;}
+        BlockState newState = flag ? blockState : this.getDefaultState();
 
         // Will get closest available direction if direction is not available
         for(Direction direction : context.getNearestLookingDirections()) {
             BooleanProperty booleanproperty = getPropertyFor(direction);
             // Check if there's a vine already attached to the block in the given direction
-            boolean flag1 = flag && blockstate.get(booleanproperty);
+            boolean flag1 = flag && blockState.get(booleanproperty);
             if (!flag1 && this.hasAttachment(context.getWorld(), context.getPos(), direction)) {
                 // If there isn't and the vine can attach to the block, add the direction to the blockstate
-                return blockstate1.with(booleanproperty, Boolean.TRUE);
+                return newState.with(booleanproperty, Boolean.TRUE);
             }
         }
 
         // Return null if the incoming blockstate is not acceptable, otherwise return the new blockstate
-        return flag ? blockstate1 : null;
+        return flag ? newState : null;
     }
 
     @Override

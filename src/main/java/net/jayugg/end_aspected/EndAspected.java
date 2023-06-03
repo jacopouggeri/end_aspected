@@ -3,7 +3,7 @@ package net.jayugg.end_aspected;
 import net.jayugg.end_aspected.block.EnderTrapBlock;
 import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
-import net.jayugg.end_aspected.block.tree.ModTreeDecorators;
+import net.jayugg.end_aspected.block.tree.decorator.ModTreeDecorators;
 import net.jayugg.end_aspected.block.tree.VoidStemBlock;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
@@ -18,6 +18,8 @@ import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.render.VoidMiteRenderer;
 import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.villager.ModTrades;
+import net.jayugg.end_aspected.world.biome.ModBiomes;
+import net.jayugg.end_aspected.world.gen.ModBiomeGeneration;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -76,6 +78,8 @@ public class EndAspected
         ModEntityTypes.register(eventBus);
         // Register Tree Decorators
         ModTreeDecorators.register(eventBus);
+        // Register Biomes
+        ModBiomes.register(eventBus);
 
         // Register the doClientStuff method for modloading
         eventBus.addListener(this::doClientStuff);
@@ -93,6 +97,7 @@ public class EndAspected
         event.enqueueWork(() -> {
             BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModBlocks.VOID_LEAVES.get().asItem(), ModPotions.VOID_SICKNESS_POTION.get()));
         });
+        ModBiomeGeneration.generateBiomes();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

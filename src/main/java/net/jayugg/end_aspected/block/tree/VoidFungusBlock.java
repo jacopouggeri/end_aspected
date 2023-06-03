@@ -1,9 +1,7 @@
 package net.jayugg.end_aspected.block.tree;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
-import net.jayugg.end_aspected.util.IVoidVeinPlacer;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.minecraft.block.*;
 import net.minecraft.block.trees.Tree;
@@ -39,7 +37,7 @@ import java.util.Random;
 @SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLoggable, IVeinNetworkElement, IVoidVeinPlacer {
+public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable, IVeinNetworkElement {
     public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape FUNGUS_SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 9.0D, 12.0D);
@@ -56,11 +54,6 @@ public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLogga
     @Deprecated
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
-    }
-
-    @Override
-    protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return state.isSolid();
     }
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
@@ -104,7 +97,9 @@ public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLogga
         if (!serverWorld.isAreaLoaded(blockPos, 1)) {
             return; // Forge: prevent loading unloaded chunks when checking neighbor's light
         }
-        this.placeTree(serverWorld, blockPos, blockState, rand);
+        if (canGrow(serverWorld, blockPos, blockState, false)) {
+            grow(serverWorld, rand, blockPos, blockState);
+        }
     }
 
     @Override
@@ -113,28 +108,8 @@ public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLogga
     }
 
     public void placeTree(ServerWorld world, BlockPos pos, BlockState state, Random rand) {
-        if (state.get(POWER) == IVeinNetworkElement.MAX_POWER) {
-            if (!ForgeEventFactory.saplingGrowTree(world, rand, pos)) return;
-            if (this.tree.attemptGrowTree(world, world.getChunkProvider().getChunkGenerator(), pos, state, rand)) {
-                // Tree has successfully grown, so spread the void veins around the base of the tree.
-                placeVoidVeins(world, pos, rand);
-            }
-        }
-    }
-
-    private void placeVoidVeins(ServerWorld serverWorld, BlockPos blockPos, Random rand) {
-        VoidVeinBlock voidVeinBlock = (VoidVeinBlock) ModBlocks.VOID_VEIN.get();
-        int range = 4;
-        for (int dx = -range; dx <= range; dx++) {
-            for (int dz = -range; dz <= range; dz++) {
-                // Adding a random offset to the distance calculation
-                double distanceToTree = Math.sqrt(dx * dx + dz * dz) + (rand.nextFloat() * 2.0F - 1.0F);
-                if (distanceToTree <= range) {
-                    BlockPos groundPos = blockPos.add(dx, 0, dz);
-                    placeVeinAtPosition(serverWorld, groundPos, voidVeinBlock);
-                }
-            }
-        }
+        if (!ForgeEventFactory.saplingGrowTree(world, rand, pos)) return;
+        this.tree.attemptGrowTree(world, world.getChunkProvider().getChunkGenerator(), pos, state, rand);
     }
 
     @Override
@@ -163,12 +138,14 @@ public class VoidFungusBlock extends BushBlock implements IGrowable, IWaterLogga
         builder.add(WATERLOGGED, POWER);
     }
 
+    @Override
     public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
-        return true;
+        return state.get(POWER) == IVeinNetworkElement.MAX_POWER;
     }
 
-    public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
-        this.placeTree(worldIn, pos, state, rand);
+    @Override
+    public void grow(ServerWorld serverWorld, Random rand, BlockPos blockPos, BlockState blockState) {
+        placeTree(serverWorld, blockPos, blockState, rand);
     }
 
 }

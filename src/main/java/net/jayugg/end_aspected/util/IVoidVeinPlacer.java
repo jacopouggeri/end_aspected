@@ -1,47 +1,53 @@
 package net.jayugg.end_aspected.util;
 
-import com.mojang.authlib.GameProfile;
+import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.parent.MultiFaceBlock;
 import net.jayugg.end_aspected.block.tree.VoidVeinBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraft.world.IWorld;
 
-import java.util.UUID;
+import javax.annotation.Nullable;
 
 public interface IVoidVeinPlacer {
-    GameProfile VOID_VEIN_PLACER_PROFILE = new GameProfile(UUID.randomUUID(), "void_vein_placer");
 
-    default FakePlayer getFakePlayer(ServerWorld serverWorld) {
-        return FakePlayerFactory.get(serverWorld, VOID_VEIN_PLACER_PROFILE);
-    }
-
-    default BlockItemUseContext getBlockItemUseContext(FakePlayer fakePlayer, Vector3d posVec, BlockPos groundPos) {
-        return new BlockItemUseContext(
-                new ItemUseContext(fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(posVec, Direction.DOWN, groundPos, false))
-        );
-    }
-
-    default void placeVeinAtPosition(ServerWorld serverWorld, BlockPos groundPos, VoidVeinBlock voidVeinBlock) {
-        FakePlayer fakePlayer = getFakePlayer(serverWorld);
-        Vector3d posVec = new Vector3d(groundPos.getX(), groundPos.getY(), groundPos.getZ());
-        BlockItemUseContext context = getBlockItemUseContext(fakePlayer, posVec, groundPos);
-        BlockState currentBlockState = serverWorld.getBlockState(groundPos);
-        boolean flag = currentBlockState.getMaterial().isReplaceable() ||
-                currentBlockState.matchesBlock(Blocks.WATER) ||
-                currentBlockState.matchesBlock(voidVeinBlock);
-        BlockState state = voidVeinBlock.getStateForPlacement(context);
-        if (state != null && flag) {
-            serverWorld.setBlockState(groundPos, state, 3); // Flags=3 for client update
+    default void placeVeinAtPosition(IWorld world, BlockPos groundPos) {
+        BlockState state = getStateForPlacement(world, groundPos);
+        if (state != null) {
+            world.setBlockState(groundPos, state, 3); // Flags=3 for client update
         }
+    }
+
+    @Nullable
+    default BlockState getStateForPlacement(IWorld world, BlockPos blockPos) {
+        VoidVeinBlock voidVeinBlock = (VoidVeinBlock) ModBlocks.VOID_VEIN.get();
+        BlockState blockState = world.getBlockState(blockPos);
+        FluidState fluidState = world.getFluidState(blockPos);
+        // Proceed only if the block in the placement position is a vein already, or if it's replaceable
+        boolean flag = blockState.matchesBlock(voidVeinBlock);
+        if (!flag && !blockState.isReplaceable(fluidState.getFluid())) {
+            return null;
+        }
+        // If it's a vein, keep its current state, otherwise use the default state
+        BlockState newState = flag ? blockState : voidVeinBlock.getDefaultState();
+
+        // Try to place a vein in every direction
+        for (Direction direction : Direction.values()) {
+            BooleanProperty booleanproperty = MultiFaceBlock.getPropertyFor(direction);
+            // Check if there's a vine already attached to the block in the given direction
+            boolean flag1 = flag && blockState.get(booleanproperty);
+            if (!flag1 && voidVeinBlock.hasAttachment(world, blockPos, direction)) {
+                // If there isn't and the vine can attach to the block, add the direction to the blockstate
+                return newState.with(booleanproperty, Boolean.TRUE);
+            }
+        }
+
+        // If the block is waterlogged, add the waterlogged property to the blockstate
+        return newState.with(VoidVeinBlock.WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
 }

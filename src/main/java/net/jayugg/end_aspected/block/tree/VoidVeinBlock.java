@@ -130,12 +130,11 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
 
     private void placeVoidVein(ServerWorld serverWorld, BlockPos blockPos) {
         // Check if the position has a VoidVeinBlock with blockstate property POWER == MAX_POWER
-        VoidVeinBlock voidVeinBlock = (VoidVeinBlock) ModBlocks.VOID_VEIN.get();
         BlockState blockState = serverWorld.getBlockState(blockPos);
         if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(POWER) == MAX_POWER && blockState.get(DISTANCE) < MAX_DISTANCE) {
             BlockPos placePos = findValidPosition(serverWorld, blockPos);
             if (placePos != null) {
-                placeVeinAtPosition(serverWorld, placePos, voidVeinBlock);
+                placeVeinAtPosition(serverWorld, placePos);
                 // Reduce the power of the VoidVeinBlock
                 blockState = reducePower(blockState, MAX_POWER);
                 serverWorld.setBlockState(blockPos, blockState, 3);

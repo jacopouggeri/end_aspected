@@ -27,6 +27,12 @@ public class ModBlocks {
                     .sound(SoundType.LODESTONE)
             ));
 
+    public static final RegistryObject<Block> VOID_STONE_BLOCK = registerBlock("void_stone",
+            () -> new EnderTrapBlock(Block.Properties.from(Blocks.END_STONE)
+                    .harvestTool(ToolType.PICKAXE).setRequiresTool()
+                    .sound(SoundType.BASALT)
+            ));
+
     public static RegistryObject<Block> VOID_VEIN = registerBlock("void_vein",
             () -> new VoidVeinBlock(Block.Properties.from(Blocks.WEEPING_VINES)
                     .harvestTool(ToolType.HOE)
