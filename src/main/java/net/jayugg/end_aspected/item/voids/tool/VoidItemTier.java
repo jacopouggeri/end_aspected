@@ -53,7 +53,7 @@ public class VoidItemTier implements IItemTier, IConsumingStatSet<IItemTier, Voi
         return this;
     }
 
-    public VoidItemTier fromNBT(CompoundNBT tierTag) {
+    public static VoidItemTier fromNBT(CompoundNBT tierTag) {
         int harvestLevel = tierTag.getInt("harvestLevel");
         int maxUses = tierTag.getInt("maxUses");
         float efficiency = tierTag.getFloat("efficiency");

@@ -16,8 +16,8 @@ import java.util.Set;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class VoidToolItem extends VoidHandheldItem implements IVanishable {
-    public VoidToolItem(float attackDamageIn, float attackSpeedIn, Set<Block> effectiveBlocksIn, VoidItemTier tier, Properties properties) {
-        super(attackDamageIn, attackSpeedIn, effectiveBlocksIn, tier, properties);
+    public VoidToolItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Set<Block> effectiveBlocksIn, Properties properties) {
+        super(tier, attackDamageIn, attackSpeedIn, effectiveBlocksIn, properties);
     }
 
     @Override

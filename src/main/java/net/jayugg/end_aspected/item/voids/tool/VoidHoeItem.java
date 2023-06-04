@@ -19,13 +19,14 @@ import net.minecraftforge.event.ForgeEventFactory;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
+@SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VoidHoeItem extends VoidToolItem {
     private static final Set<Block> EFFECTIVE_ON_BLOCKS = ImmutableSet.of(Blocks.NETHER_WART_BLOCK, Blocks.WARPED_WART_BLOCK, Blocks.HAY_BLOCK, Blocks.DRIED_KELP_BLOCK, Blocks.TARGET, Blocks.SHROOMLIGHT, Blocks.SPONGE, Blocks.WET_SPONGE, Blocks.JUNGLE_LEAVES, Blocks.OAK_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.ACACIA_LEAVES, Blocks.BIRCH_LEAVES);
 
-    public VoidHoeItem(float attackDamageIn, float attackSpeedIn, VoidItemTier tier, Properties properties) {
-        super(attackDamageIn, attackSpeedIn, EFFECTIVE_ON_BLOCKS, tier, properties.addToolType(ToolType.HOE, tier.getHarvestLevel()));
+    public VoidHoeItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Properties properties) {
+        super(tier, attackDamageIn, attackSpeedIn, EFFECTIVE_ON_BLOCKS, properties.addToolType(ToolType.HOE, tier.getHarvestLevel()));
     }
 
     public ActionResultType onItemUse(ItemUseContext context) {

@@ -84,7 +84,7 @@ public class VoidArmorMaterial implements IArmorMaterial, IConsumingStatSet<IArm
         return this;
     }
 
-    public VoidArmorMaterial fromNBT(CompoundNBT tag) {
+    public static VoidArmorMaterial fromNBT(CompoundNBT tag) {
         return new VoidArmorMaterial(
                 tag.getInt("maxDamageFactor"),
                 tag.getIntArray("damageReductionAmountArray"),

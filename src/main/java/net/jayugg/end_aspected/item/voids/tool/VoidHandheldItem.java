@@ -3,7 +3,8 @@ package net.jayugg.end_aspected.item.voids.tool;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import mcp.MethodsReturnNonnullByDefault;
-import net.jayugg.end_aspected.item.voids.VoidItem;
+import net.jayugg.end_aspected.item.ModItemTier;
+import net.jayugg.end_aspected.item.voids.IVoidItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +13,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -22,21 +24,23 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class VoidHandheldItem extends VoidItem<IItemTier, VoidItemTier> {
+public abstract class VoidHandheldItem extends Item implements IVoidItem<IItemTier, VoidItemTier> {
+    VoidItemTier tier;
     private final float attackDamageBonus;
     private final float attackSpeed;
     protected float efficiency;
     protected final Set<Block> effectiveBlocks;
-    public VoidHandheldItem(float attackDamageIn, float attackSpeedIn, Set<Block> effectiveBlocksIn, VoidItemTier tier, Properties properties) {
-        super(tier, properties.defaultMaxDamage(tier.getMaxUses()));
+    public VoidHandheldItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Set<Block> effectiveBlocksIn, Item.Properties properties) {
+        super(properties.defaultMaxDamage(tier.getMaxUses()));
+        this.tier = tier;
         this.effectiveBlocks = effectiveBlocksIn;
         this.efficiency = tier.getEfficiency();
         this.attackDamageBonus = attackDamageIn;
         this.attackSpeed = attackSpeedIn;
     }
 
-    public VoidHandheldItem(float attackDamageIn, float attackSpeedIn, VoidItemTier tier, Properties properties) {
-        this(attackDamageIn, attackSpeedIn, new HashSet<>(), tier, properties);
+    public VoidHandheldItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Item.Properties properties) {
+        this(tier, attackDamageIn, attackSpeedIn, new HashSet<>(), properties);
     }
 
     private static float getAttackDamageFromStack(ItemStack itemStack) {
@@ -68,10 +72,20 @@ public abstract class VoidHandheldItem extends VoidItem<IItemTier, VoidItemTier>
         return getTierFromStack(itemStack).getAttackDamage() + this.attackDamageBonus;
     }
 
-    protected VoidItemTier getNewTier(ItemStack thisItem, ItemStack toConsume, IItemTier tierIn) {
+    public VoidItemTier getNewTier(ItemStack thisItem, ItemStack toConsume, IItemTier tierIn) {
         VoidItemTier newTier = getTierFromStack(thisItem).consume(tierIn);
         newTier = newTier.addAttackDamage(getAttackDamageFromStack(toConsume) - tierIn.getAttackDamage());
         return newTier;
+    }
+
+    @Override
+    public VoidItemTier fromNBT(CompoundNBT tag) {
+        return VoidItemTier.fromNBT(tag);
+    }
+
+    @Override
+    public VoidItemTier getTier() {
+        return this.tier;
     }
 
     public void consumeStack(ItemStack thisItem, ItemStack toConsume) {
@@ -80,6 +94,16 @@ public abstract class VoidHandheldItem extends VoidItem<IItemTier, VoidItemTier>
             VoidItemTier newTier = getNewTier(thisItem, toConsume, tierIn);
             setTierToStack(newTier, thisItem);
         }
+    }
+
+    @Override
+    public int getItemEnchantability(ItemStack itemStack) {
+        return getTierFromStack(itemStack).getEnchantability();
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+        return ModItemTier.VOID.getRepairMaterial().test(repair);
     }
 
     public abstract float getDestroySpeed(ItemStack stack, BlockState state);

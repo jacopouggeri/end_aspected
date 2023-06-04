@@ -75,31 +75,31 @@ public class ModItems {
             () -> new DimensionHopperItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1).rarity(VOID)));
 
     public static final RegistryObject<Item> VOID_SWORD = ITEMS.register("void_sword",
-            () -> new VoidSwordItem(3, -2.4F,
-                    new VoidItemTier(),
+            () -> new VoidSwordItem(new VoidItemTier(),
+                    3, -2.4F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)
             ));
 
     public static final RegistryObject<Item> VOID_SHOVEL = ITEMS.register("void_shovel",
-            () -> new VoidShovelItem(1.5F, -3.0F,
-                    new VoidItemTier(),
+            () -> new VoidShovelItem(new VoidItemTier(),
+                    1.5F, -3.0F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)
             ));
     public static final RegistryObject<Item> VOID_AXE = ITEMS.register("void_axe",
-            () -> new VoidAxeItem(5.0F, -3.0F,
-                    new VoidItemTier(),
+            () -> new VoidAxeItem(new VoidItemTier(),
+                    5.0F, -3.0F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)
             ));
 
     public static final RegistryObject<Item> VOID_PICKAXE = ITEMS.register("void_pickaxe",
-            () -> new VoidPickaxeItem(1, -2.8F,
-                    new VoidItemTier(),
+            () -> new VoidPickaxeItem(new VoidItemTier(),
+                    1, -2.8F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)
             ));
 
     public static final RegistryObject<Item> VOID_HOE = ITEMS.register("void_hoe",
-            () -> new VoidHoeItem(-3, 0.0F,
-                    new VoidItemTier(),
+            () -> new VoidHoeItem(new VoidItemTier(),
+                    -3, 0.0F,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)
             ));
 

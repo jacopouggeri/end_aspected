@@ -20,14 +20,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VoidSwordItem extends VoidHandheldItem implements IVanishable {
-    public VoidSwordItem(float attackDamageIn, float attackSpeedIn, VoidItemTier tier, Properties properties) {
-        super(attackDamageIn, attackSpeedIn, tier, properties);
+    public VoidSwordItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Properties properties) {
+        super(tier, attackDamageIn, attackSpeedIn, properties);
     }
 
     @Override
     public boolean canConsume(ItemStack stack) {
         return stack.getItem() instanceof SwordItem || stack.getItem() instanceof VoidSwordItem;
     }
+
     public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         return !player.isCreative();
     }
