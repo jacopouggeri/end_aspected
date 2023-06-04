@@ -59,10 +59,10 @@ public class EnderSlayerEnchantment extends Enchantment {
             LivingEntity user = (LivingEntity) sourceEntity;
             LivingEntity target = event.getEntityLiving();
 
-            // Get the user's main hand item
+            // Get the user's main hand tool
             ItemStack stack = user.getHeldItem(Hand.MAIN_HAND);
 
-            // Get the level of the Ender Slayer enchantment on the user's main hand item
+            // Get the level of the Ender Slayer enchantment on the user's main hand tool
             int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ENDER_SLAYER.get(), stack);
 
             // If the enchantment level is greater than 0, calculate and set the new damage amount

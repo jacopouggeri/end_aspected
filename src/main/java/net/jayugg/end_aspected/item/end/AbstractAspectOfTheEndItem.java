@@ -273,7 +273,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
                     }
                 }
 
-                // Reset cooldown cycles if the item isn't being used
+                // Reset cooldown cycles if the tool isn't being used
                 if (currentTime - lastUse >= 20L * cooldown * 5L) {
                     int cycles = tag.getInt(COOLDOWN_CYCLES_TAG);
                     if (cycles > 0) {

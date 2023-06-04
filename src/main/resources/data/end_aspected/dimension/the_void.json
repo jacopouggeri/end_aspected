@@ -2,7 +2,7 @@
   "type": "end_aspected:the_void",
   "generator": {
     "type": "minecraft:noise",
-    "seed": -378534149,
+    "seed": 574322551,
     "settings": {
       "name": "minecraft:end",
       "bedrock_roof_position": -10,
@@ -23,7 +23,7 @@
         "size_vertical": 1,
         "simplex_surface_noise": true,
         "random_density_offset": false,
-        "island_noise_override": true,
+        "island_noise_override": false,
         "sampling": {
           "xz_scale": 2,
           "y_scale": 1,
@@ -47,7 +47,7 @@
     },
     "biome_source": {
       "type": "minecraft:multi_noise",
-      "seed": -378534149,
+      "seed": 574322551,
       "altitude_noise": {
         "firstOctave": -7,
         "amplitudes": [

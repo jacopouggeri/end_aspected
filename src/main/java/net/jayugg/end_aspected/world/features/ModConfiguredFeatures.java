@@ -47,7 +47,7 @@ public class ModConfiguredFeatures {
     public static final ConfiguredFeature<BaseTreeFeatureConfig, ? extends Feature<?>> VOID_TREE_BASE = register(EndAspected.prefix("tree/void_tree_base"), ModFeatures.VOID_TREE_FEATURE.withConfiguration(VOID_TREE));
 
     // Biome Generation Features
-    public static final ConfiguredFeature<?, ?> TREES_VOID = register(EndAspected.prefix("gen/trees_void"), Feature.RANDOM_SELECTOR.withConfiguration(new MultipleRandomFeatureConfig(ImmutableList.of(VOID_TREE_BASE.withChance(0.8F)), VOID_TREE_BASE)).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(1, 0.1F, 1))));
+    public static final ConfiguredFeature<?, ?> TREES_VOID = register(EndAspected.prefix("gen/trees_void"), Feature.RANDOM_SELECTOR.withConfiguration(new MultipleRandomFeatureConfig(ImmutableList.of(VOID_TREE_BASE.withChance(0.8F)), VOID_TREE_BASE)).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(0, 0.2F, 0))));
 
     private static <FC extends IFeatureConfig, F extends Feature<FC>> ConfiguredFeature<FC, F> register(ResourceLocation key, ConfiguredFeature<FC, F> configuredFeature) {
         return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, key, configuredFeature);

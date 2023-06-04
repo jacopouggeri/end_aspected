@@ -4,9 +4,11 @@ import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.item.end.*;
 import net.jayugg.end_aspected.item.voids.DimensionHopperItem;
 import net.jayugg.end_aspected.item.voids.VoidSeedItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.Rarity;
+import net.jayugg.end_aspected.item.voids.armor.VoidArmorItem;
+import net.jayugg.end_aspected.item.voids.armor.VoidArmorMaterial;
+import net.jayugg.end_aspected.item.voids.tool.*;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -71,6 +73,55 @@ public class ModItems {
 
     public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper",
             () -> new DimensionHopperItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1).rarity(VOID)));
+
+    public static final RegistryObject<Item> VOID_SWORD = ITEMS.register("void_sword",
+            () -> new VoidSwordItem(3, -2.4F,
+                    new VoidItemTier(),
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_SHOVEL = ITEMS.register("void_shovel",
+            () -> new VoidShovelItem(1.5F, -3.0F,
+                    new VoidItemTier(),
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+    public static final RegistryObject<Item> VOID_AXE = ITEMS.register("void_axe",
+            () -> new VoidAxeItem(5.0F, -3.0F,
+                    new VoidItemTier(),
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_PICKAXE = ITEMS.register("void_pickaxe",
+            () -> new VoidPickaxeItem(1, -2.8F,
+                    new VoidItemTier(),
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_HOE = ITEMS.register("void_hoe",
+            () -> new VoidHoeItem(-3, 0.0F,
+                    new VoidItemTier(),
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_HELMET = ITEMS.register("void_helmet",
+            () -> new VoidArmorItem(new VoidArmorMaterial(), EquipmentSlotType.HEAD,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_CHESTPLATE = ITEMS.register("void_chestplate",
+            () -> new VoidArmorItem(new VoidArmorMaterial(), EquipmentSlotType.CHEST,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_LEGGINGS = ITEMS.register("void_leggings",
+            () -> new VoidArmorItem(new VoidArmorMaterial(), EquipmentSlotType.LEGS,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
+
+    public static final RegistryObject<Item> VOID_BOOTS = ITEMS.register("void_boots",
+            () -> new VoidArmorItem(new VoidArmorMaterial(), EquipmentSlotType.FEET,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)
+            ));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
