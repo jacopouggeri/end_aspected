@@ -30,7 +30,7 @@ public abstract class VoidHandheldItem extends ToolItem implements IVoidItem<IIt
     protected float efficiency;
     protected final Set<Block> effectiveBlocks;
     public VoidHandheldItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Set<Block> effectiveBlocksIn, Item.Properties properties) {
-        super(attackDamageIn, attackSpeedIn, tier, effectiveBlocksIn, properties);
+        super(attackDamageIn, attackSpeedIn, tier, effectiveBlocksIn, properties.defaultMaxDamage(tier.getMaxUses()).rarity(tier.getRarity()));
         this.tier = tier;
         this.effectiveBlocks = effectiveBlocksIn;
         this.efficiency = tier.getEfficiency();

@@ -30,7 +30,7 @@ public class VoidArmorItem extends ArmorItem implements IVoidItem<IArmorMaterial
     protected final VoidArmorMaterial material;
 
     public VoidArmorItem(VoidArmorMaterial material, EquipmentSlotType slot, Item.Properties builderIn) {
-        super(material, slot, builderIn.defaultMaxDamage(material.getDurability(slot)));
+        super(material, slot, builderIn.defaultMaxDamage(material.getDurability(slot)).rarity(material.getRarity()));
         this.material = material;
         this.slot = slot;
         this.knockbackResistance = material.getKnockbackResistance();
