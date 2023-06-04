@@ -21,17 +21,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
 import java.util.Set;
 
-@SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class VoidHandheldItem extends Item implements IVoidItem<IItemTier, VoidItemTier> {
+public abstract class VoidHandheldItem extends ToolItem implements IVoidItem<IItemTier, VoidItemTier> {
     VoidItemTier tier;
     private final float attackDamageBonus;
     private final float attackSpeed;
     protected float efficiency;
     protected final Set<Block> effectiveBlocks;
     public VoidHandheldItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Set<Block> effectiveBlocksIn, Item.Properties properties) {
-        super(properties.defaultMaxDamage(tier.getMaxUses()));
+        super(attackDamageIn, attackSpeedIn, tier, effectiveBlocksIn, properties);
         this.tier = tier;
         this.effectiveBlocks = effectiveBlocksIn;
         this.efficiency = tier.getEfficiency();
@@ -47,10 +46,10 @@ public abstract class VoidHandheldItem extends Item implements IVoidItem<IItemTi
         Item item = itemStack.getItem();
         if (item instanceof SwordItem) {
             return ((SwordItem) item).getAttackDamage();
-        } else if (item instanceof ToolItem) {
-            return ((ToolItem) item).getAttackDamage();
         } else if (item instanceof VoidHandheldItem) {
             return ((VoidHandheldItem) item).getAttackDamage(itemStack);
+        } else if (item instanceof ToolItem) {
+            return ((ToolItem) item).getAttackDamage();
         } else {
             return 0.0F;
         }
