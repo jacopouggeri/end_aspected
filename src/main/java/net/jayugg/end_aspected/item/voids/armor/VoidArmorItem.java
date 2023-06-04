@@ -46,7 +46,7 @@ public class VoidArmorItem extends ArmorItem implements IVoidItem<IArmorMaterial
         UUID uuid = ARMOR_MODIFIERS[slot.getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", material.getDamageReductionAmount(equipmentSlot), AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", material.getToughness(), AttributeModifier.Operation.ADDITION));
-        if (this.knockbackResistance > 0) {
+        if (material.getKnockbackResistance() > 0) {
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", material.getKnockbackResistance(), AttributeModifier.Operation.ADDITION));
         }
         return builder.build();
