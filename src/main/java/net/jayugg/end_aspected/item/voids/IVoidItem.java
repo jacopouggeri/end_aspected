@@ -1,7 +1,6 @@
 package net.jayugg.end_aspected.item.voids;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.jayugg.end_aspected.item.ModItemTier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;

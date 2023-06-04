@@ -6,7 +6,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.item.ModItemTier;
 import net.jayugg.end_aspected.item.voids.IVoidItem;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
