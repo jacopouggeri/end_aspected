@@ -17,6 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import static net.jayugg.end_aspected.EndAspected.MOD_ID;
 
+@SuppressWarnings("unused")
 public class ModItems {
 
     public static final Rarity ASPECT = Rarity.create("Aspect", TextFormatting.DARK_AQUA);
