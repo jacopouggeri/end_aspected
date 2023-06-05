@@ -24,6 +24,7 @@
   "item.end_aspected.souvenir": "Souvenir",
   "item.end_aspected.voidmite_spawn_egg": "Voidmite Spawn Egg",
   "item.end_aspected.voidbat_spawn_egg": "Voidbat Spawn Egg",
+  "item.end_aspected.void_shade_spawn_egg": "Void Shade Spawn Egg",
   "item.end_aspected.void_seed": "Void Seed",
   "item.end_aspected.dimension_hopper": "Dimension Hopper",
   "item.end_aspected.void_sword": "Void Sword",
@@ -46,6 +47,8 @@
 
   "entity.end_aspected.voidmite": "Voidmite",
   "entity.end_aspected.voidbat": "Voidbat",
+  "entity.end_aspected.void_shade": "Void Shade",
+  "entity.end_aspected.void_beast": "Void Beast",
 
   "tooltip.end_aspected.more": "§7Hold §r§eSHIFT§r§7 for more!§r",
   "tooltip.end_aspected.aspect_of_the_end_ability": "§6§lITEM ABILITY§r: \n§6Teleports you in the direction you're facing.§r\n",

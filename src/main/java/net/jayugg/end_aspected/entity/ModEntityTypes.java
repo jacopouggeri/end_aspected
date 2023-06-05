@@ -29,6 +29,14 @@ public class ModEntityTypes {
             () -> EntityType.Builder.create(VoidBatEntity::new, EntityClassification.MONSTER)
                     .size(0.5F, 0.5F)
                     .build("end_aspected:voidbat"));
+    public static final RegistryObject<EntityType<VoidShadeEntity>> VOID_SHADE = ENTITY_TYPES.register("void_shade",
+            () -> EntityType.Builder.create(VoidShadeEntity::new, EntityClassification.MONSTER)
+                    .size(0.9F, 0.5F)
+                    .build("end_aspected:void_shade"));
+    public static final RegistryObject<EntityType<VoidBeastEntity>> VOID_BEAST = ENTITY_TYPES.register("void_beast",
+            () -> EntityType.Builder.create(VoidBeastEntity::new, EntityClassification.MONSTER)
+                    .size(0.9F, 0.5F)
+                    .build("end_aspected:void_beast"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

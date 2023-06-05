@@ -9,6 +9,7 @@ import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.render.AspectedArrowRenderer;
 import net.jayugg.end_aspected.entity.render.VoidBatRenderer;
+import net.jayugg.end_aspected.entity.render.VoidShadeRenderer;
 import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
 import net.jayugg.end_aspected.potion.ModPotions;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
@@ -103,6 +104,8 @@ public class EndAspected
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDMITE.get(), VoidMiteRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOIDBAT.get(), VoidBatRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOID_SHADE.get(), VoidShadeRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOID_BEAST.get(), VoidShadeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ASPECTED_ARROW.get(), AspectedArrowRenderer::new);
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_LEAVES.get(), RenderType.getCutoutMipped());

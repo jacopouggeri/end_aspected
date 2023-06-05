@@ -67,9 +67,11 @@ public class ModItems {
     public static final RegistryObject<ModSpawnEggItem> VOIDMITE_SPAWN_EGG = ITEMS.register("voidmite_spawn_egg",
             () -> new ModSpawnEggItem(ModEntityTypes.VOIDMITE, 0x07111e, 0x327b97,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
-
     public static final RegistryObject<ModSpawnEggItem> VOIDBAT_SPAWN_EGG = ITEMS.register("voidbat_spawn_egg",
             () -> new ModSpawnEggItem(ModEntityTypes.VOIDBAT, 0x31dce9, 0x327b97,
+                    new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
+    public static final RegistryObject<ModSpawnEggItem> VOIDSHADE_SPAWN_EGG = ITEMS.register("void_shade_spawn_egg",
+            () -> new ModSpawnEggItem(ModEntityTypes.VOID_SHADE, 0x31dce9, 0x327b97,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
 
     public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper",
