@@ -9,7 +9,6 @@ import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.CatEntity;
@@ -35,6 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -70,10 +70,9 @@ public class VoidShadeEntity extends FlyingEntity implements IMob, IVoidMob {
         this.goalSelector.addGoal(1, new VoidShadeEntity.PickAttackGoal());
         this.goalSelector.addGoal(2, new VoidShadeEntity.SweepAttackGoal());
         this.goalSelector.addGoal(3, new VoidShadeEntity.OrbitPointGoal());
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, EndermanEntity.class, false));
+        this.targetSelector.addGoal(1, new VoidShadeEntity.AttackEntityGoal((livingEntity) -> !(livingEntity instanceof EndermanEntity)));
         this.targetSelector.addGoal(2, new VoidShadeEntity.AttackPlayerGoal());
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
-                (livingEntity) -> !(livingEntity instanceof IVoidMob)));
+        this.targetSelector.addGoal(3, new VoidShadeEntity.AttackEntityGoal((livingEntity) -> !(livingEntity instanceof IVoidMob)));
     }
 
     protected void registerData() {
@@ -236,6 +235,48 @@ public class VoidShadeEntity extends FlyingEntity implements IMob, IVoidMob {
                     for(PlayerEntity playerentity : list) {
                         if (VoidShadeEntity.this.canAttack(playerentity, EntityPredicate.DEFAULT)) {
                             VoidShadeEntity.this.setAttackTarget(playerentity);
+                            return true;
+                        }
+                    }
+                }
+
+            }
+            return false;
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            LivingEntity livingentity = VoidShadeEntity.this.getAttackTarget();
+            return livingentity != null && VoidShadeEntity.this.canAttack(livingentity, EntityPredicate.DEFAULT);
+        }
+    }
+
+    class AttackEntityGoal extends Goal {
+        private Predicate<Entity> predicate = EntityPredicates.IS_ALIVE;
+        private int tickDelay = 20;
+
+        private AttackEntityGoal(Predicate<Entity> predicate) {
+            this.predicate = predicate;
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            if (this.tickDelay > 0) {
+                --this.tickDelay;
+            } else {
+                this.tickDelay = 60;
+                List<LivingEntity> list = VoidShadeEntity.this.world.getEntitiesWithinAABB(LivingEntity.class, VoidShadeEntity.this.getBoundingBox().grow(16.0D, 64.0D, 16.0D), this.predicate);
+                if (!list.isEmpty()) {
+                    list.sort(Comparator.comparing(Entity::getPosY).reversed());
+
+                    for(LivingEntity selectedEntity : list) {
+                        if (VoidShadeEntity.this.canAttack(selectedEntity, EntityPredicate.DEFAULT)) {
+                            VoidShadeEntity.this.setAttackTarget(selectedEntity);
                             return true;
                         }
                     }
