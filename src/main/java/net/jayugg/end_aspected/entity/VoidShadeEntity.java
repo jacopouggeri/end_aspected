@@ -237,7 +237,7 @@ public class VoidShadeEntity extends FlyingEntity implements IMob {
                 this.tickDelay = 60;
                 List<PlayerEntity> list = VoidShadeEntity.this.world.getTargettablePlayersWithinAABB(this.field_220842_b, VoidShadeEntity.this, VoidShadeEntity.this.getBoundingBox().grow(16.0D, 64.0D, 16.0D));
                 if (!list.isEmpty()) {
-                    list.sort(Comparator.<Entity, Double>comparing(Entity::getPosY).reversed());
+                    list.sort(Comparator.comparing(Entity::getPosY).reversed());
 
                     for(PlayerEntity playerentity : list) {
                         if (VoidShadeEntity.this.canAttack(playerentity, EntityPredicate.DEFAULT)) {

@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class VoidShadeRenderer extends MobRenderer<VoidShadeEntity, VoidShadeModel<VoidShadeEntity>> {
-    private static final ResourceLocation PHANTOM_LOCATION = new ResourceLocation("textures/entity/phantom.png");
+    private static final ResourceLocation VOID_SHADE_LOCATION = new ResourceLocation("textures/entity/void_shade.png");
 
     public VoidShadeRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn, new VoidShadeModel<>(), 0.75F);
@@ -29,7 +29,7 @@ public class VoidShadeRenderer extends MobRenderer<VoidShadeEntity, VoidShadeMod
      * Returns the location of an entity's texture.
      */
     public ResourceLocation getEntityTexture(VoidShadeEntity entity) {
-        return PHANTOM_LOCATION;
+        return VOID_SHADE_LOCATION;
     }
 
     protected void preRenderCallback(VoidShadeEntity entitylivingbaseIn, MatrixStack matrixStackIn, float partialTickTime) {

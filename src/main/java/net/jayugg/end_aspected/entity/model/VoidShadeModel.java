@@ -8,6 +8,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
+
 @OnlyIn(Dist.CLIENT)
 public class VoidShadeModel<T extends Entity> extends SegmentedModel<T> {
     private final ModelRenderer body;
@@ -61,6 +63,7 @@ public class VoidShadeModel<T extends Entity> extends SegmentedModel<T> {
         this.body.addChild(this.rightWingBody);
     }
 
+    @Nonnull
     public Iterable<ModelRenderer> getParts() {
         return ImmutableList.of(this.body);
     }
@@ -70,7 +73,6 @@ public class VoidShadeModel<T extends Entity> extends SegmentedModel<T> {
      */
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float f = ((float)(entityIn.getEntityId() * 3) + ageInTicks) * 0.13F;
-        float f1 = 16.0F;
         this.leftWingBody.rotateAngleZ = MathHelper.cos(f) * 16.0F * ((float)Math.PI / 180F);
         this.leftWing.rotateAngleZ = MathHelper.cos(f) * 16.0F * ((float)Math.PI / 180F);
         this.rightWingBody.rotateAngleZ = -this.leftWingBody.rotateAngleZ;
