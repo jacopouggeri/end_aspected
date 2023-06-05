@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+import java.util.function.Supplier;
 
 @Immutable
 public class VoidItemTier implements IItemTier, IConsumingStatSet<IItemTier, VoidItemTier> {
@@ -18,7 +19,7 @@ public class VoidItemTier implements IItemTier, IConsumingStatSet<IItemTier, Voi
     private float efficiency;
     private final float attackDamage;
     private int enchantability;
-    private final Ingredient repairMaterial = Ingredient.fromItems(ModBlocks.VOID_STEM.get().asItem());
+    private final Supplier<Ingredient> repairMaterial = () -> Ingredient.fromItems(ModBlocks.VOID_STEM.get());
 
     public VoidItemTier() {
         // Set initial values based on the incoming tier
@@ -100,7 +101,7 @@ public class VoidItemTier implements IItemTier, IConsumingStatSet<IItemTier, Voi
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return this.repairMaterial;
+        return this.repairMaterial.get();
     }
 
     public VoidItemTier addAttackDamage(float attackDamage) {

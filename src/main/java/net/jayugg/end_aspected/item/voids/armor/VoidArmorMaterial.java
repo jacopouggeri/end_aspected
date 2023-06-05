@@ -1,6 +1,7 @@
 package net.jayugg.end_aspected.item.voids.armor;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.item.ModArmorMaterial;
 import net.jayugg.end_aspected.item.voids.IConsumingStatSet;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -10,13 +11,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VoidArmorMaterial implements IArmorMaterial, IConsumingStatSet<IArmorMaterial, VoidArmorMaterial> {
     private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
     private final SoundEvent soundEvent = ModArmorMaterial.VOID.getSoundEvent();
-    private final Ingredient repairMaterial = ModArmorMaterial.VOID.getRepairMaterial();
+    private final Supplier<Ingredient> repairMaterial = () -> Ingredient.fromItems(ModBlocks.VOID_STEM.get());
     private int maxDamageFactor;
     private int[] damageReductionAmountArray;
     private int enchantability;
@@ -112,7 +114,7 @@ public class VoidArmorMaterial implements IArmorMaterial, IConsumingStatSet<IArm
         return this.soundEvent;
     }
     public Ingredient getRepairMaterial() {
-        return this.repairMaterial;
+        return this.repairMaterial.get();
     }
     public float getToughness() {
         return this.toughness;

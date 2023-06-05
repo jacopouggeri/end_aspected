@@ -254,8 +254,11 @@ public class VoidShadeEntity extends FlyingEntity implements IMob, IVoidMob {
     }
 
     class AttackEntityGoal extends Goal {
-        private Predicate<Entity> predicate = EntityPredicates.IS_ALIVE;
+        private final Predicate<Entity> predicate;
         private int tickDelay = 20;
+        private AttackEntityGoal() {
+            this.predicate = EntityPredicates.IS_ALIVE;
+        }
 
         private AttackEntityGoal(Predicate<Entity> predicate) {
             this.predicate = predicate;

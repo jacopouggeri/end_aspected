@@ -27,7 +27,7 @@ public class EnderTrapBlock extends Block {
                             .offset(Direction.WEST, z);
                     Block currentBlock = world.getBlockState(currentPos).getBlock();
 
-                    if (currentBlock == ModBlocks.ENDER_TRAP_BLOCK.get()) {
+                    if (currentBlock == ModBlocks.ENDER_TRAP.get()) {
                         int distSquared = (int) center.distanceSq(currentPos);
                         if (distSquared <= minDistSquared) {
                             minDistSquared = distSquared;

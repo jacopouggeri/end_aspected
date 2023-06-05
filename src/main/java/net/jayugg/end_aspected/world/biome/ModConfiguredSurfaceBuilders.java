@@ -11,14 +11,14 @@ public class ModConfiguredSurfaceBuilders {
     }
 
     public static ConfiguredSurfaceBuilder<?> VOID_BARREN_SURFACE = register("void_barren_surface", SurfaceBuilder.DEFAULT.func_242929_a( new SurfaceBuilderConfig(
-            ModBlocks.VOID_STONE_BLOCK.get().getDefaultState(),
-            ModBlocks.VOID_STONE_BLOCK.get().getDefaultState(),
-            ModBlocks.VOID_STONE_BLOCK.get().getDefaultState()
+            ModBlocks.VOID_STONE.get().getDefaultState(),
+            ModBlocks.VOID_STONE.get().getDefaultState(),
+            ModBlocks.VOID_STONE.get().getDefaultState()
     )));
 
     public static ConfiguredSurfaceBuilder<?> VOID_EXPANSE_SURFACE = register("void_expanse_surface", SurfaceBuilder.DEFAULT.func_242929_a( new SurfaceBuilderConfig(
-            ModBlocks.VOID_STONE_BLOCK.get().getDefaultState(),
-            ModBlocks.VOID_STONE_BLOCK.get().getDefaultState(),
-            ModBlocks.VOID_STONE_BLOCK.get().getDefaultState()
+            ModBlocks.VOID_STONE.get().getDefaultState(),
+            ModBlocks.VOID_STONE.get().getDefaultState(),
+            ModBlocks.VOID_STONE.get().getDefaultState()
     )));
 }

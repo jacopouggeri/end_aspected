@@ -35,7 +35,7 @@ public class ModEntityTypes {
                     .build("end_aspected:void_shade"));
     public static final RegistryObject<EntityType<VoidBeastEntity>> VOID_BEAST = ENTITY_TYPES.register("void_beast",
             () -> EntityType.Builder.create(VoidBeastEntity::new, EntityClassification.MONSTER)
-                    .size(2.5F, 1F)
+                    .size(2F, 0.7F)
                     .build("end_aspected:void_beast"));
 
     public static void register(IEventBus eventBus) {
