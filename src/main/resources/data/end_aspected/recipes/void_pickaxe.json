@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    " / ",
+    " /  "
+  ],
+  "key": {
+    "#": {
+      "item": "end_aspected:void_stem"
+    },
+    "/": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "end_aspected:void_pickaxe",
+    "count": 1
+  }
+}
