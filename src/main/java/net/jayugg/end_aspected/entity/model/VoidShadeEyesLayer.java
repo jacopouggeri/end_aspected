@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
 public class VoidShadeEyesLayer<T extends Entity> extends AbstractEyesLayer<T, VoidShadeModel<T>> {
-    private static final RenderType RENDER_TYPE = RenderType.getEyes(EndAspected.prefix("textures/entity/void:shade_eyes.png"));
+    private static final RenderType RENDER_TYPE = RenderType.getEyes(EndAspected.prefix("textures/entity/void_shade_eyes.png"));
 
     public VoidShadeEyesLayer(IEntityRenderer<T, VoidShadeModel<T>> model) {
         super(model);
