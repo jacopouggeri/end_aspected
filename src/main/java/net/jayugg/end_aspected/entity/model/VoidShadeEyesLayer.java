@@ -1,6 +1,5 @@
 package net.jayugg.end_aspected.entity.model;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.EndAspected;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
