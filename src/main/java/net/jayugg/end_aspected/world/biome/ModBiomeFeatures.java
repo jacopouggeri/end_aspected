@@ -13,7 +13,8 @@ public class ModBiomeFeatures {
     }
 
     public static void withVoidlings(MobSpawnInfo.Builder builder) {
-        builder.withSpawner(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(ModEntityTypes.VOIDMITE.get(), 10, 4, 4));
-        builder.withSpawner(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(ModEntityTypes.VOIDBAT.get(), 10, 4, 4));
+        builder.withSpawner(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(ModEntityTypes.VOIDMITE.get(), 10, 1, 4));
+        builder.withSpawner(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(ModEntityTypes.VOIDBAT.get(), 10, 1, 10));
+        builder.withSpawner(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(ModEntityTypes.VOID_SHADE.get(), 5, 1, 1));
     }
 }

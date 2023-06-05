@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class VoidlingEntity extends MonsterEntity implements IVoidVeinPlacer {
+public class VoidlingEntity extends MonsterEntity implements IVoidVeinPlacer, IVoidMob {
     private int lifetime;
     public VoidlingEntity(EntityType<? extends VoidlingEntity> type, World worldIn) {
         super(type, worldIn);
@@ -37,7 +37,7 @@ public class VoidlingEntity extends MonsterEntity implements IVoidVeinPlacer {
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, EndermanEntity.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
-                (livingEntity) -> !(livingEntity instanceof VoidlingEntity)));
+                (livingEntity) -> !(livingEntity instanceof IVoidMob)));
     }
 
     @Override

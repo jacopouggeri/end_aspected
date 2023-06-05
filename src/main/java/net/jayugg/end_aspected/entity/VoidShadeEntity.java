@@ -9,6 +9,8 @@ import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,8 +38,9 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class VoidShadeEntity extends FlyingEntity implements IMob {
+public class VoidShadeEntity extends FlyingEntity implements IMob, IVoidMob {
     protected static final DataParameter<Integer> SIZE = EntityDataManager.createKey(VoidShadeEntity.class, DataSerializers.VARINT);
+    private static final float SPEED_FACTOR = 0.3f;
     private Vector3d orbitOffset = Vector3d.ZERO;
     private BlockPos orbitPosition = BlockPos.ZERO;
     private VoidShadeEntity.AttackPhase attackPhase = VoidShadeEntity.AttackPhase.CIRCLE;
@@ -67,7 +70,10 @@ public class VoidShadeEntity extends FlyingEntity implements IMob {
         this.goalSelector.addGoal(1, new VoidShadeEntity.PickAttackGoal());
         this.goalSelector.addGoal(2, new VoidShadeEntity.SweepAttackGoal());
         this.goalSelector.addGoal(3, new VoidShadeEntity.OrbitPointGoal());
-        this.targetSelector.addGoal(1, new VoidShadeEntity.AttackPlayerGoal());
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, EndermanEntity.class, false));
+        this.targetSelector.addGoal(2, new VoidShadeEntity.AttackPlayerGoal());
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+                (livingEntity) -> !(livingEntity instanceof IVoidMob)));
     }
 
     protected void registerData() {
@@ -285,7 +291,7 @@ public class VoidShadeEntity extends FlyingEntity implements IMob {
     }
 
     class MoveHelperController extends MovementController {
-        private float speedFactor = 0.1F;
+        private float speedFactor = VoidShadeEntity.SPEED_FACTOR;
 
         public MoveHelperController(MobEntity entityIn) {
             super(entityIn);
