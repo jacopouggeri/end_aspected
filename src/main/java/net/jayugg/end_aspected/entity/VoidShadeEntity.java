@@ -37,7 +37,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VoidShadeEntity extends FlyingEntity implements IMob {
-    private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(VoidShadeEntity.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> SIZE = EntityDataManager.createKey(VoidShadeEntity.class, DataSerializers.VARINT);
     private Vector3d orbitOffset = Vector3d.ZERO;
     private BlockPos orbitPosition = BlockPos.ZERO;
     private VoidShadeEntity.AttackPhase attackPhase = VoidShadeEntity.AttackPhase.CIRCLE;
@@ -52,7 +52,7 @@ public class VoidShadeEntity extends FlyingEntity implements IMob {
     public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
         return MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 40.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 0.0D)
@@ -124,18 +124,6 @@ public class VoidShadeEntity extends FlyingEntity implements IMob {
             this.world.addParticle(ParticleTypes.WARPED_SPORE, this.getPosX() - (double)f2, this.getPosY() + (double)f4, this.getPosZ() - (double)f3, 0.0D, 0.0D, 0.0D);
         }
 
-    }
-
-    /**
-     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
-     * use this to react to sunlight and start to burn.
-     */
-    public void livingTick() {
-        if (this.isAlive() && this.isInDaylight()) {
-            this.setFire(8);
-        }
-
-        super.livingTick();
     }
 
     protected void updateAITasks() {

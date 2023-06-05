@@ -19,20 +19,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VoidBeastEntity extends VoidShadeEntity {
+    private static final int SIZE_VALUE = 48;
     private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.BLUE, BossInfo.Overlay.PROGRESS);
     public VoidBeastEntity(EntityType<? extends VoidShadeEntity> type, World worldIn) {
         super(type, worldIn);
-        this.setPhantomSize(64);
+        this.setPhantomSize();
     }
 
     public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
         return MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 100.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 10.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.5D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 9.0D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 5.0D)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 5.0D);
+    }
+
+    @Override
+    public void setPhantomSize(int sizeIn) {
+        this.setPhantomSize();
+    }
+
+    public void setPhantomSize() {
+        this.dataManager.set(SIZE, SIZE_VALUE);
     }
 
     @Override
@@ -41,14 +51,14 @@ public class VoidBeastEntity extends VoidShadeEntity {
     }
 
     public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-        this.setPhantomSize(64);
+        this.setPhantomSize();
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     @Override
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.setPhantomSize(64);
+        this.setPhantomSize();
     }
 
     @Override
