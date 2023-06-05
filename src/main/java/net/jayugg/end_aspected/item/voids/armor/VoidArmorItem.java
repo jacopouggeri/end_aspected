@@ -16,7 +16,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
@@ -73,17 +72,6 @@ public class VoidArmorItem extends ArmorItem implements IVoidItem<IArmorMaterial
     @Override
     public VoidArmorMaterial fromNBT(CompoundNBT tag) {
         return VoidArmorMaterial.fromNBT(tag);
-    }
-
-    @Override
-    public VoidArmorMaterial getTierFromStack(ItemStack itemStack) {
-        CompoundNBT nbt = itemStack.getOrCreateTag();
-        if (nbt.contains("tier", Constants.NBT.TAG_COMPOUND)) {
-            CompoundNBT tierNBT = nbt.getCompound("tier");
-            return VoidArmorMaterial.fromNBT(tierNBT);
-        } else {
-            return this.material;
-        }
     }
 
     @Override

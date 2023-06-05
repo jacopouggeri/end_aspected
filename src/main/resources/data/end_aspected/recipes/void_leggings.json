@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "# #",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "end_aspected:void_stem"
+    }
+  },
+  "result": {
+    "item": "end_aspected:void_leggings",
+    "count": 1
+  }
+}
