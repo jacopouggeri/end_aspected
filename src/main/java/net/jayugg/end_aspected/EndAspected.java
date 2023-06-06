@@ -104,6 +104,7 @@ public class EndAspected
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOID_SHADE.get(), VoidShadeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.VOID_BEAST.get(), VoidBeastRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ASPECTED_ARROW.get(), AspectedArrowRenderer::new);
+        RenderTypeLookup.setRenderLayer(ModBlocks.VOID_BLOCK.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_VEIN.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_LEAVES.get(), RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.VOID_FUNGUS.get(), RenderType.getCutoutMipped());

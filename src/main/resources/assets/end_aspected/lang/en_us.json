@@ -44,6 +44,7 @@
   "block.end_aspected.void_leaves": "Void Leaves",
   "block.end_aspected.void_stem": "Void Stem",
   "block.end_aspected.void_fungus": "Void Fungus",
+  "block.end_aspected.void": "Void",
 
   "entity.end_aspected.voidmite": "Voidmite",
   "entity.end_aspected.voidbat": "Voidbat",

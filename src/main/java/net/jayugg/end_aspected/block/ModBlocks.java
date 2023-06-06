@@ -5,6 +5,7 @@ import net.jayugg.end_aspected.block.tree.*;
 import net.jayugg.end_aspected.item.ModItemGroup;
 import net.jayugg.end_aspected.item.ModItems;
 import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
@@ -54,6 +55,13 @@ public class ModBlocks {
                     .hardnessAndResistance(25.0F, 600.0F)
                     .harvestTool(ToolType.AXE)
                     .sound(SoundType.WOOD)
+            ), ModItems.VOID);
+
+    public static final RegistryObject<Block> VOID_BLOCK = registerBlock("void",
+            () -> new VoidBlock(Block.Properties.create(Material.GLASS)
+                    .harvestTool(ToolType.HOE)
+                    .hardnessAndResistance(0.2F)
+                    .sound(SoundType.FUNGUS)
             ), ModItems.VOID);
 
     public static final RegistryObject<Block> VOID_STONE = registerBlock("void_stone",
