@@ -49,7 +49,7 @@ public class ModBiomes {
     }
 
     public static Biome makeVoidExpanseBiome() {
-        BiomeGenerationSettings.Builder biomegenerationsettings$builder = (new BiomeGenerationSettings.Builder()).withSurfaceBuilder(ModConfiguredSurfaceBuilders.VOID_BARREN_SURFACE).withFeature(GenerationStage.Decoration.VEGETAL_DECORATION, ModConfiguredFeatures.VOID_TREE_BASE);
+        BiomeGenerationSettings.Builder biomegenerationsettings$builder = (new BiomeGenerationSettings.Builder()).withSurfaceBuilder(ModConfiguredSurfaceBuilders.VOID_EXPANSE_SURFACE).withFeature(GenerationStage.Decoration.VEGETAL_DECORATION, ModConfiguredFeatures.VOID_TREE_BASE);
         return makeVoidBiome(biomegenerationsettings$builder);
     }
 

@@ -1,5 +1,10 @@
 {
   "variants": {
-    "": { "model": "end_aspected:block/void_leaves" }
+    "": [
+        { "model": "end_aspected:block/void_leaves" },
+        { "model": "end_aspected:block/void_leaves", "x": 180 },
+        { "model": "end_aspected:block/void_leaves", "x": 180, "y": 180 },
+        { "model": "end_aspected:block/void_leaves", "y": 180 }
+    ]
   }
 }

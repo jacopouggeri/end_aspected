@@ -10,7 +10,10 @@
       "sea_level": 0,
       "disable_mob_generation": true,
       "default_block": {
-        "Name": "end_aspected:void_stone"
+        "Name": "end_aspected:void",
+        "Properties": {
+          "full": "false"
+        }
       },
       "default_fluid": {
         "Name": "minecraft:air"

@@ -18,9 +18,7 @@ import java.util.function.IntSupplier;
 @ParametersAreNonnullByDefault
 public class DropExperienceBlock extends Block {
     private final IntSupplier xpRange;
-    public DropExperienceBlock(Block.Properties properties) {
-        this(properties, () -> 0);
-    }
+
     public DropExperienceBlock(Block.Properties pProperties, IntSupplier xpRange) {
         super(pProperties);
         this.xpRange = xpRange;
@@ -32,9 +30,15 @@ public class DropExperienceBlock extends Block {
         if (worldIn.isRemote()) {
             return;
         }
-        ItemStack heldItem = player.getHeldItemMainhand();
-        int silkTouchLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, heldItem);
-        int exp = silkTouchLevel == 0 ? this.xpRange.getAsInt() : 0;
-        dropXpOnBlockBreak((ServerWorld) worldIn, pos, exp);
+        if (this.canDropExp(state)) {
+            ItemStack heldItem = player.getHeldItemMainhand();
+            int silkTouchLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, heldItem);
+            int exp = silkTouchLevel == 0 ? this.xpRange.getAsInt() : 0;
+            dropXpOnBlockBreak((ServerWorld) worldIn, pos, exp);
+        }
+    }
+
+    protected boolean canDropExp(BlockState blockState) {
+        return true;
     }
 }

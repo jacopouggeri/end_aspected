@@ -64,12 +64,6 @@ public class ModBlocks {
                     .sound(SoundType.FUNGUS)
             ), ModItems.VOID);
 
-    public static final RegistryObject<Block> VOID_STONE = registerBlock("void_stone",
-            () -> new Block(Block.Properties.from(Blocks.END_STONE)
-                    .harvestTool(ToolType.PICKAXE).setRequiresTool()
-                    .sound(SoundType.BASALT)
-            ), ModItems.VOID);
-
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block, Rarity rarity) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, rarity);

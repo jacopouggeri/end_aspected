@@ -2,6 +2,7 @@ package net.jayugg.end_aspected.world.biome;
 
 import net.jayugg.end_aspected.EndAspected;
 import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.VoidBlock;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.surfacebuilders.*;
 
@@ -11,14 +12,14 @@ public class ModConfiguredSurfaceBuilders {
     }
 
     public static ConfiguredSurfaceBuilder<?> VOID_BARREN_SURFACE = register("void_barren_surface", SurfaceBuilder.DEFAULT.func_242929_a( new SurfaceBuilderConfig(
-            ModBlocks.VOID_STONE.get().getDefaultState(),
-            ModBlocks.VOID_STONE.get().getDefaultState(),
-            ModBlocks.VOID_STONE.get().getDefaultState()
+            ModBlocks.VOID_BLOCK.get().getDefaultState().with(VoidBlock.FULL, false),
+            ModBlocks.VOID_BLOCK.get().getDefaultState().with(VoidBlock.FULL, false),
+            ModBlocks.VOID_BLOCK.get().getDefaultState().with(VoidBlock.FULL, false)
     )));
 
     public static ConfiguredSurfaceBuilder<?> VOID_EXPANSE_SURFACE = register("void_expanse_surface", SurfaceBuilder.DEFAULT.func_242929_a( new SurfaceBuilderConfig(
-            ModBlocks.VOID_STONE.get().getDefaultState(),
-            ModBlocks.VOID_STONE.get().getDefaultState(),
-            ModBlocks.VOID_STONE.get().getDefaultState()
+            ModBlocks.VOID_BLOCK.get().getDefaultState().with(VoidBlock.FULL, true),
+            ModBlocks.VOID_BLOCK.get().getDefaultState().with(VoidBlock.FULL, true),
+            ModBlocks.VOID_BLOCK.get().getDefaultState().with(VoidBlock.FULL, false)
     )));
 }
