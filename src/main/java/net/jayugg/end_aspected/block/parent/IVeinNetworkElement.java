@@ -92,9 +92,4 @@ public interface IVeinNetworkElement extends IConnectedFlora {
     default boolean isNotFull(BlockState blockState) {
         return getCharge(blockState) != MAX_CHARGE;
     }
-
-    @Override
-    default boolean hasDistance() {
-        return true;
-    }
 }

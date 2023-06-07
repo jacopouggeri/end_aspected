@@ -1,9 +1,10 @@
 package net.jayugg.end_aspected.block.tree;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkNode;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.item.voids.tool.VoidAxeItem;
-import net.jayugg.end_aspected.particle.ModParticleTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
@@ -11,15 +12,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
+import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
@@ -32,6 +32,7 @@ import java.util.Random;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNode {
     public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
 
@@ -96,34 +97,49 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNod
         builder.add(CHARGE, ALIVE);
     }
 
-    @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        ItemStack stack = new ItemStack(this);
-        stack.getOrCreateTag().putBoolean("IsAlive", state.get(ALIVE));
-        return stack;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        if (stack.hasTag() && stack.getTag().contains("IsAlive")) {
-            world.setBlockState(pos, state.with(ALIVE, stack.getTag().getBoolean("IsAlive")), 2);
-        }
-    }
-
-    @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        List<ItemStack> dropsOriginal = super.getDrops(state, builder);
-        if (!dropsOriginal.isEmpty()) {
-            ItemStack itemstack = dropsOriginal.get(0);
-            itemstack.getOrCreateTag().putBoolean("IsAlive", state.get(ALIVE));
-        }
-        return dropsOriginal;
-    }
-
     @Nullable
     @Override
     public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType) {
         if (toolType == ToolType.AXE) return VoidAxeItem.getAxeStrippingState(state);
         return super.getToolModifiedState(state, world, pos, player, stack, toolType);
+    }
+
+
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        ItemStack heldItem = player.getHeldItem(hand);
+        if (heldItem.getItem() == Items.GLASS_BOTTLE) {
+            if (this.canExtractSap(state)) {
+                if (!world.isRemote()) {
+                    // Change the block state to indicate that it's been tapped
+                    this.tap(world, pos, state);
+
+                    // Replace the bottle in the player's hand with a sap bottle, or drop it at their feet
+                    if (!player.abilities.isCreativeMode) {
+                        heldItem.shrink(1);
+                    }
+                    ItemStack sapStack = new ItemStack(ModItems.VOID_SAP.get());
+                    if (!player.addItemStackToInventory(sapStack)) {
+                        player.dropItem(sapStack, false);
+                    }
+                }
+
+                // Play a sound effect
+                world.playSound(player, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+                return ActionResultType.SUCCESS;
+            }
+        }
+
+        // If the player isn't holding a bottle, or the block isn't ready to give sap, do the usual thing
+        return super.onBlockActivated(state, world, pos, player, hand, hit);
+    }
+
+    private void tap(World world, BlockPos pos, BlockState state) {
+        world.setBlockState(pos, state.with(CHARGE, 0));
+    }
+
+    private boolean canExtractSap(BlockState state) {
+        return state.get(CHARGE) == 4;
     }
 }

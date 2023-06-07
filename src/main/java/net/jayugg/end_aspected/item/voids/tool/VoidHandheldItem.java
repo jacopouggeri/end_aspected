@@ -11,9 +11,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -73,7 +76,7 @@ public abstract class VoidHandheldItem extends ToolItem implements IVoidItem<IIt
 
     public VoidItemTier getNewTier(ItemStack thisItem, ItemStack toConsume, IItemTier tierIn) {
         VoidItemTier newTier = getTierFromStack(thisItem).consume(tierIn);
-        newTier = newTier.addAttackDamage(getAttackDamageFromStack(toConsume) - tierIn.getAttackDamage());
+        newTier = newTier.addAttackDamage(getAttackDamageFromStack(toConsume));
         return newTier;
     }
 
@@ -109,4 +112,13 @@ public abstract class VoidHandheldItem extends ToolItem implements IVoidItem<IIt
     public abstract boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving);
     public abstract boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker);
     public abstract boolean canHarvestBlock(BlockState blockIn);
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (playerIn.isSneaking()) {
+            return consumeOnRightClick(worldIn, playerIn, handIn);
+        } else {
+            return super.onItemRightClick(worldIn, playerIn, handIn);
+        }
+    }
 }

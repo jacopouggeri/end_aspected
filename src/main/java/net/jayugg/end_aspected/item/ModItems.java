@@ -28,7 +28,7 @@ public class ModItems {
             DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
     public static final RegistryObject<Item> ASPECT_SHARD = ITEMS.register("aspect_shard",
-            () -> new AspectShardItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(ASPECT))
+            () -> new Item(new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(ASPECT))
     );
 
     public static final RegistryObject<Item> SOUVENIR = ITEMS.register("souvenir",
@@ -125,6 +125,14 @@ public class ModItems {
             () -> new VoidArmorItem(new VoidArmorMaterial(), EquipmentSlotType.FEET,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)
             ));
+
+    public static final RegistryObject<Item> VOID_SAP = ITEMS.register("void_sap",
+            () -> new Item((new Item.Properties()).containerItem(Items.GLASS_BOTTLE).group(ModItemGroup.MAIN_GROUP).rarity(VOID)
+            ));
+
+    public static final RegistryObject<Item> VOID_GEM = ITEMS.register("void_gem",
+            () -> new Item(new Item.Properties().group(ModItemGroup.MAIN_GROUP).rarity(VOID))
+    );
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

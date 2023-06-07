@@ -1,6 +1,5 @@
 package net.jayugg.end_aspected.block.parent;
 
-import net.jayugg.end_aspected.util.ModTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.Direction;
@@ -11,7 +10,7 @@ public interface IConnectedFlora {
     int MAX_DISTANCE = 15;
     IntegerProperty DISTANCE = IntegerProperty.create("distance", 0, MAX_DISTANCE);
 
-    default boolean hasDistance() {
+    default boolean isNode() {
         return false;
     }
 
@@ -19,7 +18,7 @@ public interface IConnectedFlora {
         if (!(state.getBlock() instanceof IConnectedFlora)) {
             return state;
         }
-        if (!((IConnectedFlora) state.getBlock()).hasDistance()) {
+        if (((IConnectedFlora) state.getBlock()).isNode()) {
             return state;
         }
         int i = MAX_DISTANCE;
@@ -41,7 +40,7 @@ public interface IConnectedFlora {
         if (!(state.getBlock() instanceof IConnectedFlora)) {
             return false;
         }
-        if (!((IConnectedFlora) state.getBlock()).hasDistance()) {
+        if (((IConnectedFlora) state.getBlock()).isNode()) {
             return true;
         }
         boolean connected = false;
@@ -62,7 +61,7 @@ public interface IConnectedFlora {
     default int getDistance(BlockState neighbor) {
         if (!(neighbor.getBlock() instanceof IConnectedFlora)) {
             return MAX_DISTANCE;
-        } else if (!((IConnectedFlora) neighbor.getBlock()).hasDistance()) {
+        } else if (((IConnectedFlora) neighbor.getBlock()).isNode()) {
             return 0;
         } else {
             return neighbor.get(DISTANCE);

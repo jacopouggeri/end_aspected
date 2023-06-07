@@ -1,7 +1,6 @@
 package net.jayugg.end_aspected.block;
 
 import net.jayugg.end_aspected.block.parent.DropExperienceBlock;
-import net.jayugg.end_aspected.particle.ModParticleTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,7 +9,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.ParametersAreNonnullByDefault;

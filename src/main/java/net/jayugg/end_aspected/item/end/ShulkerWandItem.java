@@ -2,6 +2,7 @@ package net.jayugg.end_aspected.item.end;
 
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.entity.AspectedShulkerBulletEntity;
+import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.util.FormatUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,7 +43,7 @@ public class ShulkerWandItem extends SwordItem {
 
     @Override
     public boolean getIsRepairable(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return repair.getItem() instanceof AspectShardItem;
+        return repair.getItem() == ModItems.ASPECT_SHARD.get();
     }
 
     @Override

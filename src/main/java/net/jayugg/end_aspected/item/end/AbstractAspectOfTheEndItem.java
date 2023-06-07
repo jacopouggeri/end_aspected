@@ -4,6 +4,7 @@ import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.VoidMiteEntity;
+import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.util.FormatUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -251,7 +252,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
 
     @Override
     public boolean getIsRepairable(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
-        return repair.getItem() instanceof AspectShardItem;
+        return repair.getItem() == ModItems.ASPECT_SHARD.get();
     }
 
     // Update the last use time to decrease cooldown counter when not in use

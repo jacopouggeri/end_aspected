@@ -1,26 +1,62 @@
 {
   "variants": {
-    "axis=x,alive=true": {
+    "axis=x,charge=4": {
       "model": "end_aspected:block/stripped_void_stem_horizontal",
       "x": 90,
       "y": 90
     },
-    "axis=y,alive=true": {
+    "axis=y,charge=4": {
       "model": "end_aspected:block/stripped_void_stem"
     },
-    "axis=z,alive=true": {
+    "axis=z,charge=4": {
       "model": "end_aspected:block/stripped_void_stem_horizontal",
       "x": 90
     },
-    "axis=x,alive=false": {
+    "axis=x,charge=3": {
       "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
       "x": 90,
       "y": 90
     },
-    "axis=y,alive=false": {
+    "axis=y,charge=3": {
       "model": "end_aspected:block/stripped_void_stem_dead"
     },
-    "axis=z,alive=false": {
+    "axis=z,charge=3": {
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
+      "x": 90
+    },
+    "axis=x,charge=2": {
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,charge=2": {
+      "model": "end_aspected:block/stripped_void_stem_dead"
+    },
+    "axis=z,charge=2": {
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
+      "x": 90
+    },
+    "axis=x,charge=1": {
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,charge=1": {
+      "model": "end_aspected:block/stripped_void_stem_dead"
+    },
+    "axis=z,charge=1": {
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
+      "x": 90
+    },
+    "axis=x,charge=0": {
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,charge=0": {
+      "model": "end_aspected:block/stripped_void_stem_dead"
+    },
+    "axis=z,charge=0": {
       "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
       "x": 90
     }
