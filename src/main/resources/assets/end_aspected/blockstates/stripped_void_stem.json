@@ -12,15 +12,15 @@
       "model": "end_aspected:block/stripped_void_stem_horizontal",
       "x": 90
     },
-    "axis=x": {
+    "axis=x,alive=false": {
       "model": "end_aspected:block/void_stem_dead_horizontal",
       "x": 90,
       "y": 90
     },
-    "axis=y": {
+    "axis=y,alive=false": {
       "model": "end_aspected:block/stripped_void_stem_dead"
     },
-    "axis=z": {
+    "axis=z,alive=false": {
       "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
       "x": 90
     }

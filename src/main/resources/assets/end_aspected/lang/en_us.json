@@ -43,7 +43,9 @@
   "block.end_aspected.void_vein": "Void Vein",
   "block.end_aspected.void_leaves": "Void Leaves",
   "block.end_aspected.void_stem": "Void Stem",
+  "block.end_aspected.stripped_void_stem": "Stripped Void Stem",
   "block.end_aspected.void_fungus": "Void Fungus",
+  "block.end_aspected.void_mycelium": "Void Mycelium",
   "block.end_aspected.void": "Void",
 
   "entity.end_aspected.voidmite": "Voidmite",

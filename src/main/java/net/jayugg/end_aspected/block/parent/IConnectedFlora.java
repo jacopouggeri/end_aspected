@@ -60,11 +60,12 @@ public interface IConnectedFlora {
     }
 
     default int getDistance(BlockState neighbor) {
-        if (ModTags.PERSISTENT_VOID_FLORA_BLOCKS.contains(neighbor.getBlock()) || !((IConnectedFlora) neighbor.getBlock()).hasDistance()) {
+        if (!(neighbor.getBlock() instanceof IConnectedFlora)) {
+            return MAX_DISTANCE;
+        } else if (!((IConnectedFlora) neighbor.getBlock()).hasDistance()) {
             return 0;
         } else {
-            return neighbor.getBlock() instanceof IConnectedFlora && ((IConnectedFlora) neighbor.getBlock()).hasDistance()
-                    ? neighbor.get(DISTANCE) : MAX_DISTANCE;
+            return neighbor.get(DISTANCE);
         }
     }
 
