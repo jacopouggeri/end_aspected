@@ -2,7 +2,6 @@ package net.jayugg.end_aspected.block.tree;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.jayugg.end_aspected.block.ModBlocks;
-import net.jayugg.end_aspected.block.parent.IConnectedFlora;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.block.parent.ModVeinBlock;
 import net.jayugg.end_aspected.util.IVoidVeinPlacer;
@@ -13,7 +12,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
@@ -34,14 +32,12 @@ import java.util.Random;
 @MethodsReturnNonnullByDefault
 public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVeinNetworkElement, IVoidVeinPlacer {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final IntegerProperty DISTANCE = IConnectedFlora.DISTANCE;
-    public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
 
     public VoidVeinBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState()
                 .with(DOWN, false).with(UP, false).with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false)
-                .with(WATERLOGGED, false).with(DISTANCE, MAX_DISTANCE).with(POWER, 0));
+                .with(WATERLOGGED, false).with(DISTANCE, MAX_DISTANCE).with(CHARGE, 0));
     }
 
     @Override
@@ -57,7 +53,7 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
             if (!isConnected(newState, worldIn, currentPos)) {
                 worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 1);
             }
-            newState = sharePowerToNeighbors(newState, worldIn, currentPos);
+            newState = shareChargeToNeighbors(newState, worldIn, currentPos);
         }
         return newState;
     }
@@ -85,20 +81,20 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
 
     @Override
     public boolean ticksRandomly(BlockState state) {
-        return state.get(DISTANCE) == MAX_DISTANCE || state.get(POWER) > 0;
+        return state.get(DISTANCE) == MAX_DISTANCE || state.get(CHARGE) > 0;
     }
 
     @Override
     public void randomTick(BlockState blockState, ServerWorld serverWorld, BlockPos blockPos, Random random) {
         BlockState newState = updateDistance(blockState, serverWorld, blockPos);
-        newState = sharePowerToNeighbors(newState, serverWorld, blockPos);
+        newState = shareChargeToNeighbors(newState, serverWorld, blockPos);
         boolean connection = isConnected(newState, serverWorld, blockPos);
         boolean flag = connection && getPresentFaces(newState);
         // if no connection was found nearby, destroy this block
         if (!flag) {
             // If the block has power, consume it to sustain itself.
-            if (newState.get(POWER) > 0) {
-                newState = reducePower(newState, 1);
+            if (newState.get(CHARGE) > 0) {
+                newState = reduceCharge(newState, 1);
                 serverWorld.setBlockState(blockPos, newState, 3);
             } else {
                 serverWorld.setBlockState(blockPos, getFluidState(newState).getBlockState(), 3);
@@ -129,30 +125,30 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
     }
 
     private void placeVoidVein(ServerWorld serverWorld, BlockPos blockPos) {
-        // Check if the position has a VoidVeinBlock with blockstate property POWER == MAX_POWER
+        // Check if the position has a VoidVeinBlock with blockstate property CHARGE == MAX_CHARGE
         BlockState blockState = serverWorld.getBlockState(blockPos);
-        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(POWER) == MAX_POWER && blockState.get(DISTANCE) < MAX_DISTANCE) {
+        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(CHARGE) == MAX_CHARGE && blockState.get(DISTANCE) < MAX_DISTANCE) {
             BlockPos placePos = findValidPosition(serverWorld, blockPos);
             if (placePos != null) {
                 placeVeinAtPosition(serverWorld, placePos);
                 // Reduce the power of the VoidVeinBlock
-                blockState = reducePower(blockState, MAX_POWER);
+                blockState = reduceCharge(blockState, MAX_CHARGE);
                 serverWorld.setBlockState(blockPos, blockState, 3);
             }
         }
     }
 
     private void placeVoidFungus(ServerWorld serverWorld, BlockPos blockPos) {
-        // Check if the position has a VoidVeinBlock with blockstate property POWER == MAX_POWER
+        // Check if the position has a VoidVeinBlock with blockstate property CHARGE == MAX_CHARGE
         BlockState blockState = serverWorld.getBlockState(blockPos);
-        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(POWER) == MAX_POWER && blockState.get(DISTANCE) <= MAX_DISTANCE) {
+        if (blockState.getBlock() instanceof VoidVeinBlock && blockState.get(CHARGE) == MAX_CHARGE && blockState.get(DISTANCE) <= MAX_DISTANCE) {
             BlockPos placePos = findValidPosition(serverWorld, blockPos);
             if (placePos != null) {
                 // If a valid position is found, place a VoidFungusBlock
                 serverWorld.setBlockState(placePos, ModBlocks.VOID_FUNGUS.get().getDefaultState(), 3);
                 serverWorld.getPendingBlockTicks().scheduleTick(placePos, ModBlocks.VOID_FUNGUS.get(), 1);
                 // Reduce the power of the VoidVeinBlock
-                blockState = reducePower(blockState, MAX_POWER);
+                blockState = reduceCharge(blockState, MAX_CHARGE);
                 serverWorld.setBlockState(blockPos, blockState, 3);
             }
         }
@@ -183,7 +179,7 @@ public class VoidVeinBlock extends ModVeinBlock implements IWaterLoggable, IVein
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(WATERLOGGED, DISTANCE, POWER);
+        builder.add(WATERLOGGED, DISTANCE, CHARGE);
     }
 
     @Override

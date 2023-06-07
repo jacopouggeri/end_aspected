@@ -12,14 +12,14 @@ import java.util.Set;
 import static net.jayugg.end_aspected.EndAspected.LOGGER;
 
 public interface IVeinNetworkElement extends IConnectedFlora {
-    int MAX_POWER = 4;
-    IntegerProperty POWER = IntegerProperty.create("void_flora_power", 0, MAX_POWER);
+    int MAX_CHARGE = 4;
+    IntegerProperty CHARGE = IntegerProperty.create("charge", 0, MAX_CHARGE);
     // Add a ThreadLocal to store the updating state for each thread
     ThreadLocal<Set<BlockPos>> UPDATING_POSITIONS = ThreadLocal.withInitial(HashSet::new);
 
-    default BlockState sharePowerToNeighbors(BlockState blockState, IWorld worldIn, BlockPos blockPos) {
+    default BlockState shareChargeToNeighbors(BlockState blockState, IWorld worldIn, BlockPos blockPos) {
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
-        int power = blockState.get(POWER);
+        int power = blockState.get(CHARGE);
 
         if (power == 0 || UPDATING_POSITIONS.get().contains(blockPos)) {
             return blockState;
@@ -31,15 +31,15 @@ public interface IVeinNetworkElement extends IConnectedFlora {
                 BlockState neighbor = worldIn.getBlockState(blockpos$mutable);
 
                 if (neighbor.getBlock() instanceof IVeinNetworkElement) {
-                    int neighborPower = neighbor.get(POWER);
+                    int neighborPower = neighbor.get(CHARGE);
                     int neighborDistance = getDistance(neighbor);
                     int currentDistance = getDistance(blockState);
 
                     // Share power if the neighbor is at the same distance and has lower power or if the neighbor is closer to a node
                     // Crucial to avoid infinite loops: only share power if it doesn't lower the power of the current block below the neighbor's power
                     if ((neighborDistance == currentDistance && neighborPower + 1 < power) || neighborDistance < currentDistance) {
-                        LOGGER.info("Sharing power from {} to {}", blockPos, blockpos$mutable);
-                        blockState = sharePower(worldIn, blockState, blockpos$mutable, neighbor, power, neighborPower);
+                        LOGGER.info("Sharing charge from {} to {}", blockPos, blockpos$mutable);
+                        blockState = shareCharge(worldIn, blockState, blockpos$mutable, neighbor, power, neighborPower);
                     }
                 }
             }
@@ -50,46 +50,51 @@ public interface IVeinNetworkElement extends IConnectedFlora {
         return blockState;
     }
 
-    default BlockState sharePower(IWorld worldIn, BlockState blockState, BlockPos neighborPos, BlockState neighbor, int power, int neighborPower) {
+    default BlockState shareCharge(IWorld worldIn, BlockState blockState, BlockPos neighborPos, BlockState neighbor, int power, int neighborCharge) {
         if (power == 0) {
             return blockState;
         }
-        int sharedPower = Math.min(neighborPower + 1, MAX_POWER) - neighborPower;
+        int sharedPower = Math.min(neighborCharge + 1, MAX_CHARGE) - neighborCharge;
         power = power - sharedPower;
-        neighborPower = neighborPower + sharedPower;
-        blockState = blockState.with(POWER, power);
-        neighbor = neighbor.with(POWER, neighborPower);
+        neighborCharge = neighborCharge + sharedPower;
+        blockState = blockState.with(CHARGE, power);
+        neighbor = neighbor.with(CHARGE, neighborCharge);
         worldIn.setBlockState(neighborPos, neighbor, 3);
         return blockState;
     }
 
-    static BlockState addPowerFromHealth(BlockState blockState, int healthAmount) {
+    static BlockState addChargeFromHealth(BlockState blockState, int healthAmount) {
         // Want to add 1 every 10 health on average
         int toAdd = healthAmount / 10;
         float addChance = (healthAmount % 10) / 10f;
         if (Math.random() < addChance) {
             toAdd++;
         }
-        return addPower(blockState, toAdd);
+        return addCharge(blockState, toAdd);
     }
 
-    static BlockState addPower(BlockState blockState, int amount) {
-        int power = blockState.get(POWER);
-        int newPower = Math.min(power + amount, MAX_POWER);
-        return blockState.with(POWER, newPower);
+    static BlockState addCharge(BlockState blockState, int amount) {
+        int charge = blockState.get(CHARGE);
+        int newCharge = Math.min(charge + amount, MAX_CHARGE);
+        return blockState.with(CHARGE, newCharge);
     }
 
-    default BlockState reducePower(BlockState blockState, int amount) {
-        int power = blockState.get(POWER);
-        int newPower = Math.max(power - amount, 0);
-        return blockState.with(POWER, newPower);
+    default BlockState reduceCharge(BlockState blockState, int amount) {
+        int charge = blockState.get(CHARGE);
+        int newCharge = Math.max(charge - amount, 0);
+        return blockState.with(CHARGE, newCharge);
     }
 
-    default int getPower(BlockState blockState) {
-        return blockState.getBlock() instanceof IVeinNetworkElement ? blockState.get(POWER) : 0;
+    default int getCharge(BlockState blockState) {
+        return blockState.getBlock() instanceof IVeinNetworkElement ? blockState.get(CHARGE) : 0;
     }
 
     default boolean isNotFull(BlockState blockState) {
-        return getPower(blockState) != MAX_POWER;
+        return getCharge(blockState) != MAX_CHARGE;
+    }
+
+    @Override
+    default boolean hasDistance() {
+        return true;
     }
 }

@@ -1,10 +1,14 @@
 package net.jayugg.end_aspected.item.voids.tool;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import mcp.MethodsReturnNonnullByDefault;
+import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.tree.VoidStemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -15,7 +19,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 import java.util.Set;
 
 @ParametersAreNonnullByDefault
@@ -23,7 +29,7 @@ import java.util.Set;
 public class VoidAxeItem extends VoidToolItem {
     private static final Set<Material> EFFECTIVE_ON_MATERIALS = Sets.newHashSet(Material.WOOD, Material.NETHER_WOOD, Material.PLANTS, Material.TALL_PLANTS, Material.BAMBOO, Material.GOURD);
     private static final Set<Block> EFFECTIVE_ON_BLOCKS = Sets.newHashSet(Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.CRIMSON_BUTTON, Blocks.WARPED_BUTTON);
-
+    protected static final Map<Block, Block> BLOCK_STRIPPING_MAP = (new ImmutableMap.Builder<Block, Block>()).put(ModBlocks.VOID_STEM.get(), ModBlocks.STRIPPED_VOID_STEM.get()).build();
     public VoidAxeItem(VoidItemTier tier, float attackDamageIn, float attackSpeedIn, Properties properties) {
         super(tier, attackDamageIn, attackSpeedIn, EFFECTIVE_ON_BLOCKS, properties.addToolType(ToolType.AXE, tier.getHarvestLevel()));
     }
@@ -57,5 +63,15 @@ public class VoidAxeItem extends VoidToolItem {
         } else {
             return ActionResultType.PASS;
         }
+    }
+
+    @Nullable
+    public static BlockState getAxeStrippingState(BlockState originalState) {
+        Block block = BLOCK_STRIPPING_MAP.get(originalState.getBlock());
+        return block != null ?
+                block.getDefaultState().with(RotatedPillarBlock.AXIS, originalState.get(RotatedPillarBlock.AXIS))
+                        .with(VoidStemBlock.ALIVE, originalState.get(VoidStemBlock.ALIVE))
+                        .with(VoidStemBlock.CHARGE, originalState.get(VoidStemBlock.CHARGE))
+                : null;
     }
 }

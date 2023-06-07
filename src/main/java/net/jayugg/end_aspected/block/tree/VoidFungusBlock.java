@@ -11,7 +11,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
@@ -38,7 +37,6 @@ import java.util.Random;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable, IVeinNetworkElement {
-    public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape FUNGUS_SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 9.0D, 12.0D);
     protected static final VoxelShape VEIN_SHAPE = VoidVeinBlock.getAABBForDirection(Direction.DOWN, 0.2);
@@ -47,7 +45,7 @@ public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable,
     public VoidFungusBlock(Tree treeIn, Properties properties) {
         super(properties);
         this.tree = treeIn;
-        this.setDefaultState(this.getStateContainer().getBaseState().with(WATERLOGGED, false).with(POWER, 0));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(WATERLOGGED, false).with(CHARGE, 0));
     }
 
     @Override
@@ -57,7 +55,7 @@ public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable,
     }
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return state.get(POWER) < 3 ? VEIN_SHAPE : VoxelShapes.or(VEIN_SHAPE, FUNGUS_SHAPE);
+        return state.get(CHARGE) < 3 ? VEIN_SHAPE : VoxelShapes.or(VEIN_SHAPE, FUNGUS_SHAPE);
     }
 
     @Override
@@ -89,7 +87,7 @@ public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable,
                     entity.setHealth(0.0F);
                     entity.onDeath(DamageSource.OUT_OF_WORLD.setMagicDamage());
                     // Add power based on amount of health the entity had
-                    blockState = IVeinNetworkElement.addPowerFromHealth(blockState, (int) entity.getMaxHealth());
+                    blockState = IVeinNetworkElement.addChargeFromHealth(blockState, (int) entity.getMaxHealth());
                     serverWorld.setBlockState(blockPos, blockState);
                 }
             }
@@ -135,12 +133,12 @@ public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable,
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(WATERLOGGED, POWER);
+        builder.add(WATERLOGGED, CHARGE);
     }
 
     @Override
     public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
-        return state.get(POWER) == IVeinNetworkElement.MAX_POWER;
+        return state.get(CHARGE) == IVeinNetworkElement.MAX_CHARGE;
     }
 
     @Override

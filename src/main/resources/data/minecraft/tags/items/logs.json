@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "end_aspected:void_stem"
+    "end_aspected:void_stem",
+    "end_aspected:stripped_void_stem"
   ]
 }

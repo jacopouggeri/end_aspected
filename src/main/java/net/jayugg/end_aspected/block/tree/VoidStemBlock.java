@@ -1,42 +1,45 @@
 package net.jayugg.end_aspected.block.tree;
 
-import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
+import net.jayugg.end_aspected.block.parent.IVeinNetworkNode;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.item.voids.tool.VoidAxeItem;
 import net.jayugg.end_aspected.particle.ModParticleTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
-public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkElement {
-    public static final IntegerProperty POWER = IVeinNetworkElement.POWER;
+public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNode {
     public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
 
     public VoidStemBlock(Properties properties) {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(AXIS, Direction.Axis.Y).with(POWER, 0).with(ALIVE, true));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(AXIS, Direction.Axis.Y).with(CHARGE, 0).with(ALIVE, true));
     }
 
     @Override
     public boolean ticksRandomly(BlockState state) {
-        return state.get(POWER) > 0;
+        return state.get(CHARGE) > 0;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
 
     @Override
     public void randomTick(BlockState blockState, ServerWorld serverWorld, BlockPos blockPos, Random rand) {
-        BlockState newState = sharePowerToNeighbors(blockState, serverWorld, blockPos);
+        BlockState newState = shareChargeToNeighbors(blockState, serverWorld, blockPos);
         serverWorld.setBlockState(blockPos, newState, 3);
     }
 
@@ -67,7 +70,7 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
 
         if (isNotFull(blockState) && blockState.get(ALIVE)) {
             if (rand.nextFloat() > 0.98) {
-                blockState = reducePower(blockState, 1);
+                blockState = reduceCharge(blockState, 1);
             }
             if (isNotFull(blockState)) {
                 // Define search area (5 blocks radius in this example)
@@ -87,7 +90,7 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(POWER, ALIVE);
+        builder.add(CHARGE, ALIVE);
     }
 
     @Override
@@ -98,4 +101,10 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
         }
     }
 
+    @Nullable
+    @Override
+    public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType) {
+        if (toolType == ToolType.AXE) return VoidAxeItem.getAxeStrippingState(state);
+        return super.getToolModifiedState(state, world, pos, player, stack, toolType);
+    }
 }

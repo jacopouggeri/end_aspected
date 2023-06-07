@@ -132,5 +132,4 @@ public class VoidLeavesBlock extends Block implements IWaterLoggable, IForgeShea
             }
         }
     }
-
 }

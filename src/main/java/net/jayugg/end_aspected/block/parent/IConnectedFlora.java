@@ -11,8 +11,15 @@ public interface IConnectedFlora {
     int MAX_DISTANCE = 15;
     IntegerProperty DISTANCE = IntegerProperty.create("distance", 0, MAX_DISTANCE);
 
+    default boolean hasDistance() {
+        return false;
+    }
+
     default BlockState updateDistance(BlockState state, IWorld worldIn, BlockPos pos) {
         if (!(state.getBlock() instanceof IConnectedFlora)) {
+            return state;
+        }
+        if (!((IConnectedFlora) state.getBlock()).hasDistance()) {
             return state;
         }
         int i = MAX_DISTANCE;
@@ -31,6 +38,12 @@ public interface IConnectedFlora {
     }
 
     default boolean isConnected(BlockState state, IWorld worldIn, BlockPos pos) {
+        if (!(state.getBlock() instanceof IConnectedFlora)) {
+            return false;
+        }
+        if (!((IConnectedFlora) state.getBlock()).hasDistance()) {
+            return true;
+        }
         boolean connected = false;
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
@@ -46,17 +59,13 @@ public interface IConnectedFlora {
         return connected;
     }
 
-    /*
-    Need to find a way to structure this better, as blocks in ModTags.PERSISTENT_VOID_FLORA_BLOCKS
-    should not have the DISTANCE property, but they implement IVeinConnectedElement which extends IConnectedFlora,
-    so if they somehow skip the first check, the code will try to access their DISTANCE and crash. This shouldn't
-    happen if the tags are set up correctly, but it's not the safest way to go.
-     */
     default int getDistance(BlockState neighbor) {
-        if (ModTags.PERSISTENT_VOID_FLORA_BLOCKS.contains(neighbor.getBlock())) {
+        if (ModTags.PERSISTENT_VOID_FLORA_BLOCKS.contains(neighbor.getBlock()) || !((IConnectedFlora) neighbor.getBlock()).hasDistance()) {
             return 0;
         } else {
-            return neighbor.getBlock() instanceof IConnectedFlora ? neighbor.get(DISTANCE) : MAX_DISTANCE;
+            return neighbor.getBlock() instanceof IConnectedFlora && ((IConnectedFlora) neighbor.getBlock()).hasDistance()
+                    ? neighbor.get(DISTANCE) : MAX_DISTANCE;
         }
     }
+
 }

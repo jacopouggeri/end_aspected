@@ -3,7 +3,9 @@
   "values": [
     "end_aspected:void_vein",
     "end_aspected:void_fungus",
+    "end_aspected:void_mycelium",
     "end_aspected:void_stem",
+    "end_aspected:stripped_void_stem",
     "end_aspected:void_leaves"
   ]
 }

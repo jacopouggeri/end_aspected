@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "end_aspected:block/void"
+      },
+      {
+        "model": "end_aspected:block/void_mirrored"
+      },
+      {
+        "model": "end_aspected:block/void",
+        "y": 180
+      },
+      {
+        "model": "end_aspected:block/void_mirrored",
+        "y": 180
+      }
+    ]
+  }
+}

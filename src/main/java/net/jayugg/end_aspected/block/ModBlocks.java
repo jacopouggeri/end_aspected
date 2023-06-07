@@ -54,13 +54,27 @@ public class ModBlocks {
             () -> new VoidStemBlock(Block.Properties.from(Blocks.WARPED_STEM)
                     .hardnessAndResistance(25.0F, 600.0F)
                     .harvestTool(ToolType.AXE)
-                    .sound(SoundType.WOOD)
+                    .sound(SoundType.HYPHAE)
+            ), ModItems.VOID);
+
+    public static final RegistryObject<Block> STRIPPED_VOID_STEM = registerBlock("stripped_void_stem",
+            () -> new VoidStemBlock(Block.Properties.from(Blocks.WARPED_STEM)
+                    .hardnessAndResistance(25.0F, 600.0F)
+                    .harvestTool(ToolType.AXE)
+                    .sound(SoundType.HYPHAE)
             ), ModItems.VOID);
 
     public static final RegistryObject<Block> VOID_BLOCK = registerBlock("void",
-            () -> new VoidBlock(Block.Properties.create(Material.GLASS)
+            () -> new VoidBlock(Block.Properties.create(Material.ORGANIC)
                     .harvestTool(ToolType.HOE)
                     .hardnessAndResistance(0.2F)
+                    .sound(SoundType.FUNGUS)
+            ), ModItems.VOID);
+
+    public static final RegistryObject<Block> VOID_MYCELIUM = registerBlock("void_mycelium",
+            () -> new VoidBlock(Block.Properties.create(Material.ORGANIC)
+                    .harvestTool(ToolType.HOE)
+                    .hardnessAndResistance(1F)
                     .sound(SoundType.FUNGUS)
             ), ModItems.VOID);
 

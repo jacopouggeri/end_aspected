@@ -135,7 +135,7 @@ public class EndAspected
         List<BlockPos> blockPositions = BlockPos.getAllInBox(boundingBox)
                 .map(BlockPos::toImmutable) // Convert to BlockPos
                 .filter(pos -> (world.getBlockState(pos).getBlock() == ModBlocks.VOID_VEIN.get() &&
-                        world.getBlockState(pos).get(IVeinNetworkElement.POWER) < IVeinNetworkElement.MAX_POWER)
+                        world.getBlockState(pos).get(IVeinNetworkElement.CHARGE) < IVeinNetworkElement.MAX_CHARGE)
                         ||
                         world.getBlockState(pos) == ModBlocks.VOID_STEM.get().getDefaultState().with(VoidStemBlock.ALIVE, true))
                 .collect(Collectors.toList());
@@ -154,7 +154,7 @@ public class EndAspected
         LOGGER.info("Entity died with {} health", health);
         LOGGER.info("Block at {} is {}", blockPos, blockState);
         if (blockState.matchesBlock(ModBlocks.VOID_VEIN.get())) {
-            world.setBlockState(blockPos, IVeinNetworkElement.addPowerFromHealth(blockState, health));
+            world.setBlockState(blockPos, IVeinNetworkElement.addChargeFromHealth(blockState, health));
             LOGGER.info("Adding {} health to block at {}", health, blockPos);
         }
         blockState = world.getBlockState(blockPos);
