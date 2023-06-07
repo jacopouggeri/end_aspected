@@ -11,12 +11,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
@@ -94,11 +97,27 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNod
     }
 
     @Override
-    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-        super.animateTick(stateIn, worldIn, pos, rand);
-        if (rand.nextFloat() > 0.7) {
-            worldIn.addParticle(ModParticleTypes.VOID_CHARGE_POP.get(), pos.getX() + 0.5D, pos.getY() + 1.15D, pos.getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+        ItemStack stack = new ItemStack(this);
+        stack.getOrCreateTag().putBoolean("IsAlive", state.get(ALIVE));
+        return stack;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if (stack.hasTag() && stack.getTag().contains("IsAlive")) {
+            world.setBlockState(pos, state.with(ALIVE, stack.getTag().getBoolean("IsAlive")), 2);
         }
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        List<ItemStack> dropsOriginal = super.getDrops(state, builder);
+        if (!dropsOriginal.isEmpty()) {
+            ItemStack itemstack = dropsOriginal.get(0);
+            itemstack.getOrCreateTag().putBoolean("IsAlive", state.get(ALIVE));
+        }
+        return dropsOriginal;
     }
 
     @Nullable

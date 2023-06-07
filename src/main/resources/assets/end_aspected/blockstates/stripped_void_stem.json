@@ -1,7 +1,7 @@
 {
   "variants": {
     "axis=x,alive=true": {
-      "model": "end_aspected:block/void_stem_horizontal",
+      "model": "end_aspected:block/stripped_void_stem_horizontal",
       "x": 90,
       "y": 90
     },
@@ -13,7 +13,7 @@
       "x": 90
     },
     "axis=x,alive=false": {
-      "model": "end_aspected:block/void_stem_dead_horizontal",
+      "model": "end_aspected:block/stripped_void_stem_dead_horizontal",
       "x": 90,
       "y": 90
     },

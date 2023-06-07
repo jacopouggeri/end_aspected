@@ -49,12 +49,4 @@ public class VoidBlock extends DropExperienceBlock {
         super.fillStateContainer(builder);
         builder.add(FULL);
     }
-
-    @Override
-    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-        super.animateTick(stateIn, worldIn, pos, rand);
-        if (rand.nextFloat() > 0.7) {
-            worldIn.addParticle(ModParticleTypes.VOID_CHARGE.get(), pos.getX() + 0.5D, pos.getY() + 1.15D, pos.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
-        }
-    }
 }
