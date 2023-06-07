@@ -51,16 +51,16 @@ public class AspectedArrowEntity extends AbstractArrowEntity {
             Vector3d startVec = this.getShooter().getPositionVec();
             Vector3d hitVec = result.getHitVec();
 
-            // Vectors to find where to spawn particles at the start
+            // Vectors to find where to spawn particle at the start
             Vector3d lookVec = this.getShooter().getLookVec().normalize();
             Vector3d particleVec = startVec.add(lookVec.scale(0.25));
 
-            // Spawn particles where arrow reappears
+            // Spawn particle where arrow reappears
 
             BlockPos startPos = new BlockPos(startVec.x, startVec.y, startVec.z);
             BlockPos destPos = new BlockPos(hitVec.x, hitVec.y, hitVec.z);
 
-            // Spawn particles along the ray
+            // Spawn particle along the ray
             world.playSound(null, startPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
             world.playSound(null, destPos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
 

@@ -8,6 +8,7 @@ import net.jayugg.end_aspected.block.tree.VoidStemBlock;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.render.*;
+import net.jayugg.end_aspected.particle.ModParticleTypes;
 import net.jayugg.end_aspected.potion.BetterBrewingRecipe;
 import net.jayugg.end_aspected.potion.ModPotions;
 import net.jayugg.end_aspected.effect.UnstablePhaseEffect;
@@ -78,6 +79,8 @@ public class EndAspected
         ModTreeDecorators.register(eventBus);
         // Register Biomes
         ModBiomes.register(eventBus);
+        // Register Particle Types
+        ModParticleTypes.register(eventBus);
 
         // Register the doClientStuff method for modloading
         eventBus.addListener(this::doClientStuff);

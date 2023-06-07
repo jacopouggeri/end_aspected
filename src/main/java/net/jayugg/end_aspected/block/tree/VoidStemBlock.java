@@ -2,6 +2,7 @@ package net.jayugg.end_aspected.block.tree;
 
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.effect.ModEffects;
+import net.jayugg.end_aspected.particle.ModParticleTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
@@ -87,6 +88,14 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkEle
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(POWER, ALIVE);
+    }
+
+    @Override
+    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+        super.animateTick(stateIn, worldIn, pos, rand);
+        if (rand.nextFloat() > 0.7) {
+            worldIn.addParticle(ModParticleTypes.VOID_CHARGE_POP.get(), pos.getX() + 0.5D, pos.getY() + 1.15D, pos.getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
+        }
     }
 
 }
