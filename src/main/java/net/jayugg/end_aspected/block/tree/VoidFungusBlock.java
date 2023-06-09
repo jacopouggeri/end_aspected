@@ -72,7 +72,7 @@ public class VoidFungusBlock extends Block implements IGrowable, IWaterLoggable,
         // Schedule Tick every second
         serverWorld.getPendingBlockTicks().scheduleTick(blockPos, this, 20);
 
-        if (isNotFull(blockState)) {
+        if (!isFull(blockState)) {
             // Define search area
             AxisAlignedBB searchArea = new AxisAlignedBB(blockPos).grow(3.5D);
 

@@ -89,7 +89,12 @@ public interface IVeinNetworkElement extends IConnectedFlora {
         return blockState.getBlock() instanceof IVeinNetworkElement ? blockState.get(CHARGE) : 0;
     }
 
-    default boolean isNotFull(BlockState blockState) {
-        return getCharge(blockState) != MAX_CHARGE;
+    default boolean isFull(BlockState blockState) {
+        return getCharge(blockState) == MAX_CHARGE;
     }
+
+    default boolean isNotEmpty(BlockState blockState) {
+        return getCharge(blockState) > 0;
+    }
+
 }

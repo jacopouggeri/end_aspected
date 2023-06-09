@@ -16,6 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.function.IntSupplier;
 
+@SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 public class VoidMyceliumBlock extends DropExperienceBlock implements IVeinNetworkNode {
 

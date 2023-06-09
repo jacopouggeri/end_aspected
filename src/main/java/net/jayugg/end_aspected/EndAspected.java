@@ -5,6 +5,8 @@ import net.jayugg.end_aspected.block.ModBlocks;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.block.tree.decorator.ModTreeDecorators;
 import net.jayugg.end_aspected.block.tree.VoidStemBlock;
+import net.jayugg.end_aspected.capabilities.ModCapabilities;
+import net.jayugg.end_aspected.capabilities.TeleportData;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.render.*;
@@ -23,13 +25,21 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.IntNBT;
 import net.minecraft.potion.Potions;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -45,6 +55,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,6 +110,7 @@ public class EndAspected
             BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModBlocks.VOID_LEAVES.get().asItem(), ModPotions.VOID_SICKNESS_POTION.get()));
         });
         event.enqueueWork(ModBiomeGeneration::generateBiomes);
+        event.enqueueWork(ModCapabilities::register);  // Register Capabilities
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -114,15 +126,47 @@ public class EndAspected
     }
 
     @SubscribeEvent
-    public void onEntityTeleport(EntityTeleportEvent.EnderEntity event) {
+    public static void onAttachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof PlayerEntity) {
+            TeleportData teleportData = new TeleportData();
+            event.addCapability(prefix("teleport_data"), new ICapabilitySerializable<IntNBT>() {
+                @Nonnull
+                @Override
+                public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+                    return ModCapabilities.TELEPORT_DATA.orEmpty(cap, LazyOptional.of(() -> teleportData));
+                }
+
+                @Override
+                public IntNBT serializeNBT() {
+                    return IntNBT.valueOf(teleportData.getTeleportCount());
+                }
+
+                @Override
+                public void deserializeNBT(IntNBT nbt) {
+                    teleportData.setTeleportCount(nbt.getInt());
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityTeleport(EntityTeleportEvent event) {
+        if (!(event instanceof EntityTeleportEvent.EnderEntity) && !(event instanceof EntityTeleportEvent.EnderPearl)) {
+            return;
+        }
+
         Entity entity = event.getEntity();
         // Check for teleport hijacking or jamming effects
         UnstablePhaseEffect.damageTeleporter(entity);
         EnderTrapBlock.trapEventEntity(event, entity);
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
+            player.getCapability(ModCapabilities.TELEPORT_DATA).ifPresent(TeleportData::incrementTeleportCount);
+        }
     }
 
     @SubscribeEvent
-    public void onEntityDeath(LivingDeathEvent event) {
+    public void voidVeinChargeOnDeath(LivingDeathEvent event) {
         // Get the world the entity is in
         World world = event.getEntity().world;
         if (world.isRemote) {
@@ -151,14 +195,39 @@ public class EndAspected
         BlockPos blockPos = blockPositions.get(world.rand.nextInt(blockPositions.size()));
         // Update the block states
         BlockState blockState = world.getBlockState(blockPos);
-        LOGGER.info("Entity died with {} health", health);
-        LOGGER.info("Block at {} is {}", blockPos, blockState);
         if (blockState.matchesBlock(ModBlocks.VOID_VEIN.get())) {
             world.setBlockState(blockPos, IVeinNetworkElement.addChargeFromHealth(blockState, health));
-            LOGGER.info("Adding {} health to block at {}", health, blockPos);
+            world.addParticle(ModParticleTypes.VOID_CHARGE.get(), blockPos.getX() + 0.5D, blockPos.getY() + 0.75D, blockPos.getZ() + 0.5D,
+                    0.0D, 0.0D, 0.0D);
         }
-        blockState = world.getBlockState(blockPos);
-        LOGGER.info("Block at {} is {}", blockPos, blockState);
+    }
+
+    @SubscribeEvent
+    public void voidVeinSpawnOnDeath(LivingDeathEvent event) {
+        World world = event.getEntity().world;
+        if (world.isRemote) {
+            return;
+        }
+        boolean voidRueActive = event.getEntityLiving().isPotionActive(ModEffects.VOIDRUE.get());
+        if (voidRueActive) {
+            LivingEntity livingEntity = event.getEntityLiving();
+            BlockPos entityPos = livingEntity.getPosition();
+            double health = livingEntity.getMaxHealth();
+            int radius =  health > 20 ? 2 * (int) Math.log10(livingEntity.getMaxHealth()/2) : 1;
+
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dy = -radius; dy <= radius; dy++) {
+                    for (int dz = -radius; dz <= radius; dz++) {
+                        if (dx * dx + dy * dy + dz * dz <= radius * radius) { // only affect blocks within the sphere
+                            BlockPos pos = entityPos.add(dx, dy, dz);
+                            if (world.isAirBlock(pos) && world.getBlockState(pos.down()).isSolid()) {
+                                world.setBlockState(pos, ModBlocks.VOID_VEIN.get().getDefaultState());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

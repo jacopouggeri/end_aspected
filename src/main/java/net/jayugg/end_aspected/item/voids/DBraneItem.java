@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class DimensionHopperItem extends Item {
-    public DimensionHopperItem(Properties properties) {
+public class DBraneItem extends Item {
+    public DBraneItem(Properties properties) {
         super(properties);
     }
 

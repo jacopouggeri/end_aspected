@@ -54,14 +54,16 @@ public class ModBlocks {
             () -> new VoidStemBlock(Block.Properties.from(Blocks.WARPED_STEM)
                     .hardnessAndResistance(25.0F, 600.0F)
                     .harvestTool(ToolType.AXE)
-                    .sound(SoundType.HYPHAE)
+                    .sound(SoundType.HYPHAE),
+                    false
             ), ModItems.VOID);
 
     public static final RegistryObject<Block> STRIPPED_VOID_STEM = registerBlock("stripped_void_stem",
             () -> new VoidStemBlock(Block.Properties.from(Blocks.WARPED_STEM)
                     .hardnessAndResistance(25.0F, 600.0F)
                     .harvestTool(ToolType.AXE)
-                    .sound(SoundType.HYPHAE)
+                    .sound(SoundType.HYPHAE),
+                    true
             ), ModItems.VOID);
 
     public static final RegistryObject<Block> VOID_BLOCK = registerBlock("void",

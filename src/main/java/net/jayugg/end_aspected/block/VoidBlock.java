@@ -12,7 +12,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault

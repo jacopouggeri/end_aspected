@@ -1,9 +1,12 @@
 package net.jayugg.end_aspected.item.end;
 
+import net.jayugg.end_aspected.capabilities.ModCapabilities;
+import net.jayugg.end_aspected.capabilities.TeleportData;
 import net.jayugg.end_aspected.config.ModConfig;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.entity.VoidMiteEntity;
+import net.jayugg.end_aspected.entity.VoidShadeEntity;
 import net.jayugg.end_aspected.item.ModItems;
 import net.jayugg.end_aspected.util.FormatUtil;
 import net.minecraft.client.gui.screen.Screen;
@@ -49,7 +52,6 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     private int lostDurability;
     private boolean enableUnstableTeleports;
     private int unstableTeleportLimit;
-    private double voidlingSpawnChance;
 
     public String TELEPORTS_REMAINING_TAG = "teleports_remaining";
     public String COOLDOWN_CYCLES_TAG = "cooldownCycles";
@@ -71,7 +73,6 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
             this.maxTeleports = ModConfig.maxTeleports.get();
             this.enableUnstableTeleports = ModConfig.unstableTeleports.get();
             this.unstableTeleportLimit = ModConfig.unstableTeleportsLimit.get();
-            this.voidlingSpawnChance = ModConfig.voidlingSpawnChance.get();
 
             // Handle config values for different items
             this.cooldown = loadCooldownConfig();
@@ -148,16 +149,31 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
             }
         }
         // Spawn Voidling
-        spawnVoidling(world, player);
+        trySpawnVoidling(world, player);
         return ActionResult.resultSuccess(player.getHeldItem(hand));
     }
 
-    private void spawnVoidling(World world, PlayerEntity player) {
-        if (random.nextFloat() > 1 - voidlingSpawnChance) {
-            VoidMiteEntity voidling = new VoidMiteEntity(ModEntityTypes.VOIDMITE.get(), world);
-            voidling.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
-            world.addEntity(voidling);
+    private void trySpawnVoidling(World world, PlayerEntity player) {
+        int subCycleValue = player.getCapability(ModCapabilities.TELEPORT_DATA)
+                .map(TeleportData::getSubCycleValue)
+                .orElse(0);
+        if (subCycleValue == 2) {
+            spawnVoidShade(world, player);
+        } else if (subCycleValue == 1) {
+            spawnVoidMite(world, player);
         }
+    }
+
+    private void spawnVoidMite(World world, PlayerEntity player) {
+        VoidMiteEntity voidMite = new VoidMiteEntity(ModEntityTypes.VOIDMITE.get(), world);
+        voidMite.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+        world.addEntity(voidMite);
+    }
+
+    private void spawnVoidShade(World world, PlayerEntity player) {
+        VoidShadeEntity voidShade = new VoidShadeEntity(ModEntityTypes.VOID_SHADE.get(), world);
+        voidShade.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+        world.addEntity(voidShade);
     }
 
     private void soundAndParticles(World world, PlayerEntity player) {
@@ -237,7 +253,7 @@ public abstract class AbstractAspectOfTheEndItem extends SwordItem {
     public Vector3d raiseFeet(Vector3d teleportPos, World world) {
         BlockPos feetPos = new BlockPos(teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
         if (world.getBlockState(feetPos).isSolid()) {
-            // If the feet would be inside a block, adjust the teleport position up by the difference between the block top and the player's feet
+            // If the feet were inside a block, adjust the teleport position up by the difference between the block top and the player's feet
             double blockY = feetPos.getY() + world.getBlockState(feetPos).getShape(world, feetPos).getEnd(Direction.Axis.Y);
             double feetOverlap = blockY - teleportPos.getY();
             teleportPos = teleportPos.add(0, feetOverlap, 0);

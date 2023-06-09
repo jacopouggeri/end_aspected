@@ -2,7 +2,7 @@ package net.jayugg.end_aspected.item;
 
 import net.jayugg.end_aspected.entity.ModEntityTypes;
 import net.jayugg.end_aspected.item.end.*;
-import net.jayugg.end_aspected.item.voids.DimensionHopperItem;
+import net.jayugg.end_aspected.item.voids.DBraneItem;
 import net.jayugg.end_aspected.item.voids.VoidSeedItem;
 import net.jayugg.end_aspected.item.voids.armor.VoidArmorItem;
 import net.jayugg.end_aspected.item.voids.armor.VoidArmorMaterial;
@@ -74,8 +74,8 @@ public class ModItems {
             () -> new ModSpawnEggItem(ModEntityTypes.VOID_SHADE, 0x31dce9, 0x327b97,
                     new Item.Properties().group(ModItemGroup.MAIN_GROUP)));
 
-    public static final RegistryObject<Item> DIMENSION_HOPPER = ITEMS.register("dimension_hopper",
-            () -> new DimensionHopperItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1).rarity(VOID)));
+    public static final RegistryObject<Item> D_BRANE = ITEMS.register("d_brane",
+            () -> new DBraneItem(new Item.Properties().group(ModItemGroup.MAIN_GROUP).maxStackSize(1).rarity(VOID)));
 
     public static final RegistryObject<Item> VOID_SWORD = ITEMS.register("void_sword",
             () -> new VoidSwordItem(new VoidItemTier(),

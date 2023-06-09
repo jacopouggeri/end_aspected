@@ -1,6 +1,8 @@
 package net.jayugg.end_aspected.block.tree;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.jayugg.end_aspected.block.ModBlocks;
+import net.jayugg.end_aspected.block.parent.IVeinNetworkElement;
 import net.jayugg.end_aspected.block.parent.IVeinNetworkNode;
 import net.jayugg.end_aspected.effect.ModEffects;
 import net.jayugg.end_aspected.item.ModItems;
@@ -36,8 +38,11 @@ import java.util.Random;
 public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNode {
     public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
 
-    public VoidStemBlock(Properties properties) {
+    private final boolean isStripped;
+
+    public VoidStemBlock(Properties properties, boolean isStripped) {
         super(properties);
+        this.isStripped = isStripped;
         this.setDefaultState(this.getStateContainer().getBaseState().with(AXIS, Direction.Axis.Y).with(CHARGE, 0).with(ALIVE, true));
     }
 
@@ -72,11 +77,19 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNod
     public void tick(@Nonnull BlockState blockState, ServerWorld serverWorld, @Nonnull BlockPos blockPos, @Nonnull Random rand) {
         serverWorld.getPendingBlockTicks().scheduleTick(blockPos, this, 20);
 
-        if (isNotFull(blockState) && blockState.get(ALIVE)) {
-            if (rand.nextFloat() > 0.98) {
+        if (!blockState.get(ALIVE) && isNotEmpty(blockState)) {
+            blockState = blockState.with(ALIVE, true);
+            blockState = reduceCharge(blockState, 1);
+            serverWorld.setBlockState(blockPos, blockState, 3);
+        }
+
+        if (!isFull(blockState) && blockState.get(ALIVE)) {
+            if (isStripped && rand.nextFloat() > 0.95) {
                 blockState = reduceCharge(blockState, 1);
+                blockState = ModBlocks.VOID_STEM.get().getDefaultState().with(CHARGE, blockState.get(CHARGE));
+                serverWorld.setBlockState(blockPos, blockState, 3);
             }
-            if (isNotFull(blockState)) {
+            if (!isFull(blockState)) {
                 // Define search area (5 blocks radius in this example)
                 AxisAlignedBB searchArea = new AxisAlignedBB(blockPos).grow(5.0D);
 
@@ -109,7 +122,7 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNod
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack heldItem = player.getHeldItem(hand);
         if (heldItem.getItem() == Items.GLASS_BOTTLE) {
-            if (this.canExtractSap(state)) {
+            if (this.isFull(state)) {
                 if (!world.isRemote()) {
                     // Change the block state to indicate that it's been tapped
                     this.tap(world, pos, state);
@@ -129,17 +142,39 @@ public class VoidStemBlock extends RotatedPillarBlock implements IVeinNetworkNod
 
                 return ActionResultType.SUCCESS;
             }
+        } else if (heldItem.getItem() == ModItems.VOID_SAP.get()) {
+            if (!this.isFull(state)) {
+                if (!world.isRemote()) {
+                    // Charge the block state
+                    this.fill(world, pos, state);
+
+                    // Replace the bottle in the player's hand with an empty, or drop it at their feet
+                    if (!player.abilities.isCreativeMode) {
+                        heldItem.shrink(1);
+                    }
+                    ItemStack bottleStack = new ItemStack(Items.GLASS_BOTTLE);
+                    if (!player.addItemStackToInventory(bottleStack)) {
+                        player.dropItem(bottleStack, false);
+                    }
+                }
+
+                // Play a sound effect
+                world.playSound(player, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+                return ActionResultType.SUCCESS;
+            }
         }
 
         // If the player isn't holding a bottle, or the block isn't ready to give sap, do the usual thing
         return super.onBlockActivated(state, world, pos, player, hand, hit);
     }
 
-    private void tap(World world, BlockPos pos, BlockState state) {
-        world.setBlockState(pos, state.with(CHARGE, 0));
+    private void fill(World world, BlockPos pos, BlockState state) {
+        world.setBlockState(pos, IVeinNetworkElement.addCharge(state, 1));
     }
 
-    private boolean canExtractSap(BlockState state) {
-        return state.get(CHARGE) == 4;
+    private void tap(World world, BlockPos pos, BlockState state) {
+        world.setBlockState(pos, reduceCharge(state, 0));
     }
+
 }
