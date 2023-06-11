@@ -107,7 +107,7 @@ public class EndAspected
             BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModItems.ASPECT_SHARD.get(), ModPotions.UNSTABLE_PHASE_POTION.get()));
         });
         event.enqueueWork(() -> {
-            BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModBlocks.VOID_LEAVES.get().asItem(), ModPotions.VOID_SICKNESS_POTION.get()));
+            BrewingRecipeRegistry.addRecipe(new BetterBrewingRecipe(Potions.WATER, ModBlocks.VOID_LEAVES.get().asItem(), ModPotions.VOIDRUE.get()));
         });
         event.enqueueWork(ModBiomeGeneration::generateBiomes);
         event.enqueueWork(ModCapabilities::register);  // Register Capabilities

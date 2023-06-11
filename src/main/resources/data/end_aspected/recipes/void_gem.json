@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "group": "netherite_ingot",
+  "group": "end_aspected:void_gem",
   "ingredients": [
     {
       "item": "end_aspected:void_sap"
@@ -19,6 +19,6 @@
     }
   ],
   "result": {
-    "item": "minecraft:void_gem"
+    "item": "end_aspected:void_gem"
   }
 }
