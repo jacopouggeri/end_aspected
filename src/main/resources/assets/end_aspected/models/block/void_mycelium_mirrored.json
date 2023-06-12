@@ -1,9 +1,9 @@
 {
   "textures": {
-    "0": "end_aspected:void_mycelium_side",
-    "1": "end_aspected:void_mycelium_bottom",
-    "2": "end_aspected:void",
-    "particle": "end_aspected:void"
+    "0": "end_aspected:block/void_mycelium_side",
+    "1": "end_aspected:block/void_mycelium_bottom",
+    "2": "end_aspected:block/void",
+    "particle": "end_aspected:block/:void"
   },
   "elements": [
     {
